@@ -4,7 +4,7 @@ FROM python:3.11-slim
 # Install the missing Linux system libraries required by MediaPipe
 RUN apt-get update && apt-get install -y \
     libgles2 \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
