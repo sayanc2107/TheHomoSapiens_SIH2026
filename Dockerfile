@@ -1,11 +1,12 @@
 # Use official Python 3.11
 FROM python:3.11-slim
 
-# Install the missing Linux system libraries required by MediaPipe
+# Install all Linux system libraries required by MediaPipe
 RUN apt-get update && apt-get install -y \
     libgles2 \
     libgl1 \
     libglib2.0-0 \
+    libegl1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up the working directory
