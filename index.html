@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISL Translator | The Homo Sapiens</title>
+    
+    <!-- Inter Font for clean, accessible typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons for modern, accessible UI icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        charcoal: {
+                            800: '#1f2937',
+                            900: '#111827',
+                            950: '#030712',
+                        },
+                        teal: {
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base transitions for smooth theme switching */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Custom Viewfinder Frame for Camera Simulation */
+        .viewfinder-corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-color: #2dd4bf;
+            border-width: 0;
+            transition: all 0.3s ease;
+        }
+        .viewfinder-tl { top: 10px; left: 10px; border-top-width: 4px; border-left-width: 4px; border-top-left-radius: 8px; }
+        .viewfinder-tr { top: 10px; right: 10px; border-top-width: 4px; border-right-width: 4px; border-top-right-radius: 8px; }
+        .viewfinder-bl { bottom: 10px; left: 10px; border-bottom-width: 4px; border-left-width: 4px; border-bottom-left-radius: 8px; }
+        .viewfinder-br { bottom: 10px; right: 10px; border-bottom-width: 4px; border-right-width: 4px; border-bottom-right-radius: 8px; }
+
+        /* STREAMING_CHUNK:Adding animation keyframes for recording states... -->
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(45, 212, 191, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(45, 212, 191, 0); }
+        }
+        .recording-pulse {
+            animation: pulse-ring 2s infinite;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans antialiased bg-gray-50 text-gray-900 dark:bg-charcoal-950 dark:text-gray-100 selection:bg-teal-500 selection:text-white overflow-x-hidden transition-colors duration-300">
+
+    <header class="w-full border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-charcoal-900/80 sticky top-0 z-50 backdrop-blur-md transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="ph-fill ph-hands-clapping text-teal-500 dark:text-teal-400 text-3xl"></i>
+                <span class="font-bold text-xl tracking-tight">The Homo Sapiens</span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-600 dark:text-gray-400">
+                    <a href="#" class="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">How it Works</a>
+                    <a href="#" class="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">Team</a>
+                </nav>
+                
+                <button onclick="toggleTheme()" class="p-2 rounded-full bg-gray-100 dark:bg-charcoal-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors shadow-inner" aria-label="Toggle Dark Mode">
+                    <i id="theme-icon" class="ph-fill ph-sun text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center pt-8 pb-16 px-4 w-full">
+        
+        <section class="text-center max-w-3xl mb-10 animate-fade-in">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-gray-900 dark:text-white transition-colors duration-300">
+                Bridging the Gap with <br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-teal-700 dark:from-teal-400 dark:to-teal-600">Real-Time ISL Translation</span>
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400 text-lg md:text-xl transition-colors duration-300">
+                Seamless two-way communication. Translate Indian Sign Language to speech, or spoken words into sign—instantly.
+            </p>
+        </section>
+
+        <div class="w-full max-w-4xl glass-panel bg-white/70 dark:bg-charcoal-800/70 rounded-2xl shadow-xl dark:shadow-2xl dark:shadow-teal-500/10 p-3 sm:p-5 border border-gray-200 dark:border-gray-700/50 transition-colors duration-300">
+            
+            <div class="flex flex-col sm:flex-row bg-gray-100 dark:bg-charcoal-900 rounded-xl p-1.5 mb-6 relative transition-colors duration-300">
+                <button id="btn-sign-to-text" onclick="switchTab('sign-to-text')" class="flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 bg-teal-500 text-white dark:text-charcoal-950 shadow-md">
+                    <i class="ph-bold ph-hand-waving text-lg"></i>
+                    Sign to Audio / Text
+                </button>
+                <button id="btn-text-to-sign" onclick="switchTab('text-to-sign')" class="flex-1 py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-charcoal-800">
+                    <i class="ph-bold ph-speaker-hifi text-lg"></i>
+                    Audio / Text to Sign
+                </button>
+            </div>
+
+            <div id="view-sign-to-text" class="space-y-6 block animate-fade-in">
+                
+                <!-- Camera Simulator -->
+                <div class="relative w-full aspect-video bg-black rounded-xl overflow-hidden border border-gray-300 dark:border-gray-800 flex items-center justify-center group shadow-inner">
+                    <div class="viewfinder-corner viewfinder-tl group-hover:border-teal-400"></div>
+                    <div class="viewfinder-corner viewfinder-tr group-hover:border-teal-400"></div>
+                    <div class="viewfinder-corner viewfinder-bl group-hover:border-teal-400"></div>
+                    <div class="viewfinder-corner viewfinder-br group-hover:border-teal-400"></div>
+                    
+                    <div class="text-center flex flex-col items-center text-gray-400">
+                        <div class="w-16 h-16 rounded-full bg-gray-900 flex items-center justify-center mb-4 recording-pulse">
+                            <i class="ph-fill ph-video-camera text-3xl text-teal-500"></i>
+                        </div>
+                        <p class="font-medium text-gray-300">Camera Feed Active</p>
+                        <p class="text-sm mt-1 text-gray-500">Please position your hands within the frame.</p>
+                    </div>
+
+                    <div class="absolute top-4 right-4 flex items-center gap-2 bg-black/60 px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm border border-gray-700 text-white">
+                        <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                        Translating...
+                    </div>
+                </div>
+
+                <div class="w-full bg-gray-50 dark:bg-charcoal-900 rounded-xl p-5 border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex-grow">
+                            <h3 class="text-xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-2">Translation Output</h3>
+                            <p class="text-lg md:text-xl font-medium leading-relaxed min-h-[3rem] text-gray-800 dark:text-gray-100" id="mock-output">
+                                Hello, my name is...
+                            </p>
+                        </div>
+                        <button onclick="playMockAudio(this)" class="shrink-0 w-12 h-12 bg-teal-500 hover:bg-teal-600 dark:hover:bg-teal-400 text-white dark:text-charcoal-950 rounded-full flex items-center justify-center transition-colors shadow-lg shadow-teal-500/30" title="Play Audio">
+                            <i class="ph-fill ph-play text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-text-to-sign" class="hidden animate-fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Input Section -->
+                    <div class="flex flex-col space-y-4">
+                        <div class="w-full bg-gray-50 dark:bg-charcoal-900 rounded-xl p-5 border border-gray-200 dark:border-gray-700 h-full flex flex-col transition-colors duration-300 shadow-sm min-h-[250px]">
+                            <h3 class="text-xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-3">Input Text or Audio</h3>
+                            <textarea 
+                                class="w-full bg-transparent border-none outline-none resize-none text-lg text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 flex-grow" 
+                                placeholder="Type here or use the microphone..."
+                            ></textarea>
+                            <div class="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700 mt-2">
+                                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">English (India)</span>
+                                <button onclick="toggleMic(this)" class="w-12 h-12 bg-white dark:bg-charcoal-800 border border-gray-300 dark:border-gray-600 hover:border-teal-500 dark:hover:border-teal-400 hover:text-teal-600 dark:hover:text-teal-400 rounded-full flex items-center justify-center transition-colors shadow-sm text-gray-600 dark:text-gray-300" title="Speech to Text">
+                                    <i class="ph-fill ph-microphone text-xl"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative w-full aspect-square md:aspect-auto bg-gray-100 dark:bg-black rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 flex flex-col items-center justify-center shadow-inner transition-colors duration-300 min-h-[250px]">
+                        <i class="ph-duotone ph-user-circle text-8xl text-gray-300 dark:text-gray-700 mb-4"></i>
+                        <p class="font-medium text-gray-500 dark:text-gray-400">ISL Avatar Viewer</p>
+                        <p class="text-sm text-gray-400 dark:text-gray-600 mt-2 max-w-[200px] text-center">Video sequence or 3D avatar will render here.</p>
+                        
+                        <div class="absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-black/80 px-4 py-2 rounded-lg text-center backdrop-blur-sm text-sm border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 shadow-sm">
+                            Waiting for input...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer class="w-full py-8 border-t border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-charcoal-900/50 mt-auto transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="text-gray-600 dark:text-gray-400 font-medium">
+                Designed for SIH 2026 by <span class="text-gray-900 dark:text-white font-bold">Team The Homo Sapiens</span>
+            </p>
+            <p class="text-sm text-gray-500 mt-2">
+                IcfaiTech, IFHE Hyderabad
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle Logic
+        const htmlElement = document.documentElement;
+        const themeIcon = document.getElementById('theme-icon');
+
+        // Initialize Theme based on localStorage or System Preference
+        function initTheme() {
+            if (localStorage.getItem('theme') === 'light') {
+                htmlElement.classList.remove('dark');
+                themeIcon.classList.replace('ph-sun', 'ph-moon');
+            } else {
+                htmlElement.classList.add('dark');
+                themeIcon.classList.replace('ph-moon', 'ph-sun');
+            }
+        }
+
+        // Toggle Theme Function
+        function toggleTheme() {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                themeIcon.classList.replace('ph-sun', 'ph-moon');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                themeIcon.classList.replace('ph-moon', 'ph-sun');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize on load
+        initTheme();
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            const btnSignToText = document.getElementById('btn-sign-to-text');
+            const btnTextToSign = document.getElementById('btn-text-to-sign');
+            const viewSignToText = document.getElementById('view-sign-to-text');
+            const viewTextToSign = document.getElementById('view-text-to-sign');
+
+            const activeClasses = ['bg-teal-500', 'text-white', 'dark:text-charcoal-950', 'shadow-md'];
+            const inactiveClasses = ['text-gray-500', 'dark:text-gray-400', 'hover:text-gray-900', 'dark:hover:text-white', 'hover:bg-gray-200', 'dark:hover:bg-charcoal-800'];
+
+            if (tabId === 'sign-to-text') {
+                viewSignToText.classList.remove('hidden');
+                viewTextToSign.classList.add('hidden');
+                
+                btnSignToText.classList.add(...activeClasses);
+                btnSignToText.classList.remove(...inactiveClasses);
+                
+                btnTextToSign.classList.add(...inactiveClasses);
+                btnTextToSign.classList.remove(...activeClasses);
+            } else {
+                viewTextToSign.classList.remove('hidden');
+                viewSignToText.classList.add('hidden');
+                
+                btnTextToSign.classList.add(...activeClasses);
+                btnTextToSign.classList.remove(...inactiveClasses);
+                
+                btnSignToText.classList.add(...inactiveClasses);
+                btnSignToText.classList.remove(...activeClasses);
+            }
+        }
+
+        // Mock Audio Playback Interaction
+        function playMockAudio(btn) {
+            const icon = btn.querySelector('i');
+            icon.classList.remove('ph-play');
+            icon.classList.add('ph-pause', 'animate-pulse');
+            
+            setTimeout(() => {
+                icon.classList.remove('ph-pause', 'animate-pulse');
+                icon.classList.add('ph-play');
+            }, 2000);
+        }
+
+        // Mock Microphone Interaction
+        function toggleMic(btn) {
+            btn.classList.toggle('bg-teal-50');
+            btn.classList.toggle('dark:bg-teal-900/30');
+            btn.classList.toggle('border-teal-500');
+            btn.classList.toggle('text-teal-600');
+            btn.classList.toggle('dark:text-teal-400');
+            
+            const icon = btn.querySelector('i');
+            if(btn.classList.contains('border-teal-500')) {
+                icon.classList.add('animate-pulse', 'text-teal-500');
+            } else {
+                icon.classList.remove('animate-pulse', 'text-teal-500');
+            }
+        }
+    </script>
+</body>
+</html>
