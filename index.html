@@ -48,11 +48,11 @@
         <div id="mode-sign-to-text" class="w-full max-w-4xl flex flex-col gap-6">
             <div class="relative bg-black rounded-xl overflow-hidden aspect-video shadow-lg border-2 border-transparent dark:border-gray-700">
                 <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform scale-x-[-1]"></video>
-                 !-- Added z-10 to force it above the video -->
+                <!-- Canvas Overlay for Skeleton Tracking -->
                 <canvas id="overlay" class="absolute inset-0 w-full h-full z-10 transform scale-x-[-1] pointer-events-none object-cover"></canvas>
-
-                <div class="absolute inset-0 border-4 border-teal-500/30 rounded-xl pointer-events-none"></div>
-                <div class="absolute bottom-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+                
+                <div class="absolute inset-0 border-4 border-teal-500/30 rounded-xl pointer-events-none z-20"></div>
+                <div class="absolute bottom-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse z-20">
                     LIVE
                 </div>
             </div>
@@ -137,14 +137,15 @@
 
         // --- WebSocket & Camera Logic ---
         const RENDER_URL = "wss://thehomosapiens-sih2026.onrender.com/ws/translate"; 
-        
+
         let ws;
         const videoElement = document.getElementById('webcam');
         const outputElement = document.getElementById('translated-text');
         const canvasOverlay = document.getElementById('overlay');
         const ctx = canvasOverlay.getContext('2d');
 
-        // The MediaPipe hand connections (which points connect to which)
+        let isProcessing = false; // Prevents queue buildup
+
         const HAND_CONNECTIONS = [
             [0,1], [1,2], [2,3], [3,4], // Thumb
             [0,5], [5,6], [6,7], [7,8], // Index finger
@@ -162,45 +163,40 @@
             };
 
             ws.onmessage = (event) => {
-    const response = JSON.parse(event.data);
-    if (outputElement) {
-        outputElement.innerText = response.translation;
-    }
-    
-    // Debugging: This will print the points to your browser console (F12)
-    // If this is undefined, your backend is not sending the landmarks!
-    // console.log("Received landmarks:", response.landmarks);
-    
-    if (response.landmarks && response.landmarks.length > 0) {
-        drawLandmarks(response.landmarks);
-    } else {
-        // Clear canvas if no hand is detected
-        ctx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
-    }
-};
+                isProcessing = false; // Unlock: Render is ready for the next frame
+                
+                const response = JSON.parse(event.data);
+                if (outputElement) {
+                    outputElement.innerText = response.translation;
+                }
+                
+                if (response.landmarks && response.landmarks.length > 0) {
+                    drawLandmarks(response.landmarks);
+                } else {
+                    ctx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
+                }
+            };
+
             ws.onerror = (error) => {
                 console.error("WebSocket Error:", error);
                 outputElement.innerText = "Error connecting to backend.";
+                isProcessing = false; // Unlock on error to prevent freezing
             };
 
             ws.onclose = () => {
-                console.log("WebSocket connection closed. Reconnecting in 3 seconds...");
+                console.log("WebSocket connection closed. Reconnecting...");
                 setTimeout(connectWebSocket, 3000);
             };
         }
 
         function drawLandmarks(landmarks) {
-            // Match canvas internal resolution to the actual video resolution
             canvasOverlay.width = videoElement.videoWidth;
             canvasOverlay.height = videoElement.videoHeight;
-            
-            // Clear the previous frame's drawings
             ctx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
             
             if (!landmarks || landmarks.length === 0) return;
 
-            // Draw the connecting lines
-            ctx.strokeStyle = '#0D9488'; // Teal color
+            ctx.strokeStyle = '#0D9488'; 
             ctx.lineWidth = 3;
             HAND_CONNECTIONS.forEach(connection => {
                 const startPoint = landmarks[connection[0]];
@@ -212,8 +208,7 @@
                 ctx.stroke();
             });
 
-            // Draw the 21 individual joints
-            ctx.fillStyle = '#ef4444'; // Red color
+            ctx.fillStyle = '#ef4444'; 
             landmarks.forEach(point => {
                 ctx.beginPath();
                 ctx.arc(point.x * canvasOverlay.width, point.y * canvasOverlay.height, 5, 0, 2 * Math.PI);
@@ -228,14 +223,12 @@
                 });
                 videoElement.srcObject = stream;
                 
-                // Wait for video to actually start playing before setting canvas size
                 videoElement.onloadedmetadata = () => {
                     canvasOverlay.width = videoElement.videoWidth;
                     canvasOverlay.height = videoElement.videoHeight;
                     connectWebSocket();
                     startVideoStreaming();
                 };
-                
             } catch (err) {
                 console.error("Camera access denied:", err);
                 outputElement.innerText = "Camera access required to use the translator.";
@@ -247,15 +240,21 @@
             const hiddenCtx = hiddenCanvas.getContext("2d");
 
             setInterval(() => {
+                if (isProcessing) return; // Skip if backend is still calculating
+
                 if (ws && ws.readyState === WebSocket.OPEN && videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-                    hiddenCanvas.width = videoElement.videoWidth;
-                    hiddenCanvas.height = videoElement.videoHeight;
+                    isProcessing = true; // Lock the stream
+                    
+                    // Downscale to 320x240 for fast internet transfer
+                    hiddenCanvas.width = 320; 
+                    hiddenCanvas.height = 240; 
                     hiddenCtx.drawImage(videoElement, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
                     
-                    const base64Frame = hiddenCanvas.toDataURL("image/jpeg", 0.5); 
+                    // Apply heavy JPEG compression
+                    const base64Frame = hiddenCanvas.toDataURL("image/jpeg", 0.3); 
                     ws.send(base64Frame);
                 }
-            }, 150);
+            }, 30); // We can check quickly, but it will only fire if unlocked
         }
 
         window.addEventListener('load', startCamera);
