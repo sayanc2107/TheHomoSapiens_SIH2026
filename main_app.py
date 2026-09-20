@@ -76,27 +76,31 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
-            # Receive the frame from the frontend
             data = await websocket.receive_text()
             img_data = base64.b64decode(data.split(',')[1])
             np_arr = np.frombuffer(img_data, np.uint8)
             img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
             
-            # Format for the Tasks API
             img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=img_rgb)
             
-            # Process the frame
             detection_result = detector.detect(mp_image)
             
             translation = "No hand detected"
+            landmarks_data = [] # New list to hold coordinate data
             
             if detection_result.hand_landmarks:
                 for hand_landmarks in detection_result.hand_landmarks:
                     translation = recognize_gesture(hand_landmarks)
+                    # Extract the X and Y coordinates for all 21 points
+                    landmarks_data = [{"x": lm.x, "y": lm.y} for lm in hand_landmarks]
                     break 
                     
-            await websocket.send_json({"translation": translation})
+            # Send both translation and coordinates back to the frontend
+            await websocket.send_json({
+                "translation": translation, 
+                "landmarks": landmarks_data
+            })
             
     except WebSocketDisconnect:
         print("Client disconnected")
