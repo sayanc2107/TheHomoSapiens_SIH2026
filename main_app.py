@@ -66,6 +66,10 @@ def recognize_gesture(hand_landmarks):
         
     return "Sign not recognized..."
 
+@app.get("/")
+def keep_alive():
+    return {"status": "The Homo Sapiens backend is awake 24/7!"}
+
 # 4. WebSocket Endpoint for live video frames
 @app.websocket("/ws/translate")
 async def websocket_endpoint(websocket: WebSocket):
