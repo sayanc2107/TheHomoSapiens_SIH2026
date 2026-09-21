@@ -7,6 +7,7 @@ import datetime
 import jwt
 import bcrypt
 import asyncio
+import threading
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -19,8 +20,9 @@ from mediapipe.tasks.python import vision
 # ==========================================
 # 1. MONGODB & AUTHENTICATION SETUP
 # ==========================================
+# IMPORTANT: Server timeout set to 5 seconds to prevent permanent freezing if IP is blocked
 MONGO_URL = "mongodb+srv://sayan2008c_db_user:IoeLEYRREtrqTnmS@cluster0.njngnoe.mongodb.net/?appName=Cluster0"
-client = AsyncIOMotorClient(MONGO_URL)
+client = AsyncIOMotorClient(MONGO_URL, serverSelectionTimeoutMS=5000) 
 db = client.sih_database 
 
 SECRET_KEY = "sih2026_super_secret_key" 
@@ -54,8 +56,16 @@ class ChatSave(BaseModel):
     mode_used: str
     transcript: str
 
+# Thread-safe password hashing functions to unblock the main server loop
+def hash_password(password: str) -> str:
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+
+def check_password(password: str, hashed: str) -> bool:
+    return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+
 # ==========================================
-# 2. MEDIAPIPE AI SETUP
+# 2. MEDIAPIPE AI SETUP (THREAD SAFE)
 # ==========================================
 MODEL_URL = "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task"
 MODEL_PATH = "gesture_recognizer.task"
@@ -73,6 +83,13 @@ options = vision.GestureRecognizerOptions(
     min_tracking_confidence=0.85
 )
 recognizer = vision.GestureRecognizer.create_from_options(options)
+
+# CRITICAL FIX: Global lock prevents MediaPipe from crashing the server
+recognizer_lock = threading.Lock()
+
+def process_frame_sync(mp_image):
+    with recognizer_lock:
+        return recognizer.recognize(mp_image)
 
 gesture_map = {
     "Thumb_Up": "👍 Good / Yes", "Thumb_Down": "👎 Bad / No",
@@ -108,9 +125,7 @@ async def register_user(user: UserRegister):
     if existing_user:
         raise HTTPException(status_code=400, detail="Email or Mobile is already registered.")
     
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), salt).decode('utf-8')
-    
+    hashed_password = await asyncio.to_thread(hash_password, user.password)
     user_dict = user.dict()
     user_dict["password"] = hashed_password
     user_dict["created_at"] = datetime.datetime.utcnow()
@@ -121,8 +136,11 @@ async def register_user(user: UserRegister):
 @app.post("/api/login")
 async def login_user(user: UserLogin):
     db_user = await db.users.find_one({"$or": [{"email": user.identifier}, {"mobile": user.identifier}]})
-    
-    if not db_user or not bcrypt.checkpw(user.password.encode('utf-8'), db_user["password"].encode('utf-8')):
+    if not db_user:
+        raise HTTPException(status_code=401, detail="Invalid email/mobile or password.")
+        
+    is_valid = await asyncio.to_thread(check_password, user.password, db_user["password"])
+    if not is_valid:
         raise HTTPException(status_code=401, detail="Invalid email/mobile or password.")
     
     token = jwt.encode({"email": db_user["email"], "name": db_user["name"]}, SECRET_KEY, algorithm="HS256")
@@ -138,8 +156,11 @@ async def get_user_details(email: str):
 @app.post("/api/update_user")
 async def update_user(update_data: UserUpdate):
     db_user = await db.users.find_one({"email": update_data.original_email})
-    
-    if not db_user or not bcrypt.checkpw(update_data.current_password.encode('utf-8'), db_user["password"].encode('utf-8')):
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found.")
+        
+    is_valid = await asyncio.to_thread(check_password, update_data.current_password, db_user["password"])
+    if not is_valid:
         raise HTTPException(status_code=401, detail="Authentication failed. Incorrect current password.")
     
     if update_data.email != update_data.original_email:
@@ -163,13 +184,14 @@ async def update_user(update_data: UserUpdate):
 @app.post("/api/change_password")
 async def change_password(data: PasswordChange):
     db_user = await db.users.find_one({"email": data.email})
-    
-    if not db_user or not bcrypt.checkpw(data.current_password.encode('utf-8'), db_user["password"].encode('utf-8')):
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found.")
+        
+    is_valid = await asyncio.to_thread(check_password, data.current_password, db_user["password"])
+    if not is_valid:
         raise HTTPException(status_code=401, detail="Incorrect current password.")
     
-    salt = bcrypt.gensalt()
-    hashed_new_password = bcrypt.hashpw(data.new_password.encode('utf-8'), salt).decode('utf-8')
-    
+    hashed_new_password = await asyncio.to_thread(hash_password, data.new_password)
     await db.users.update_one({"email": data.email}, {"$set": {"password": hashed_new_password}})
     return {"message": "Password updated successfully!"}
 
@@ -183,7 +205,7 @@ async def save_chat(chat: ChatSave):
 @app.get("/api/history/{email}")
 async def get_history(email: str):
     cursor = db.conversations.find({"email": email}).sort("timestamp", -1)
-    history = await cursor.to_list(length=50)
+    history = await cursor.to_list(length=100)
     for item in history:
         item["_id"] = str(item["_id"]) 
         if "timestamp" in item:
@@ -206,8 +228,8 @@ async def websocket_endpoint(websocket: WebSocket):
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
             
-            # --- CRITICAL LATENCY FIX: Offload heavy AI to background thread ---
-            recognition_result = await asyncio.to_thread(recognizer.recognize, mp_image)
+            # --- Safely offload to locked thread ---
+            recognition_result = await asyncio.to_thread(process_frame_sync, mp_image)
             
             response = {"translation": "No hand detected", "landmarks": []}
             
@@ -219,5 +241,5 @@ async def websocket_endpoint(websocket: WebSocket):
                     response["translation"] = gesture_map.get(top_gesture, "Sign not recognized...") if top_gesture not in ["", "None"] else "Sign not recognized..."
             
             await websocket.send_json(response)
-    except WebSocketDisconnect:
-        pass
+    except Exception as e:
+        print(f"Connection closed: {e}")

@@ -8,8 +8,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; padding-bottom: 40px; }
-        
-        /* Auto-Save Toggle Switch Styles */
         .toggle-checkbox:checked { right: 0; border-color: #4A9084; }
         .toggle-checkbox:checked + .toggle-label { background-color: #4A9084; }
         .toggle-checkbox { right: 4; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
@@ -28,8 +26,6 @@
         <div class="flex items-center gap-4">
             <i class="fa-solid fa-hands-asl-interpreting text-blue-600 text-xl"></i>
             <span class="font-bold text-gray-800 text-lg">TheHomoSapiens <span class="text-gray-400 font-normal text-sm">| SIH 2026</span></span>
-            
-            <!-- Dashboard Back Button (Hidden on Home) -->
             <button id="btn-back-home" onclick="goHome()" class="hidden ml-4 text-sm bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md hover:bg-gray-200 transition font-medium border border-gray-200">
                 <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
             </button>
@@ -45,16 +41,10 @@
                     WELCOME, <span id="nav-user-name">USER</span> <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
                 </button>
                 <div id="dropdown" class="hidden absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
-                    <a href="#" onclick="openSettings('profile')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition">
-                        <i class="fa-solid fa-gear w-6 text-[#A78BFA]"></i> Profile Settings
-                    </a>
-                    <a href="#" onclick="openSettings('password')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition">
-                        <i class="fa-solid fa-lock w-6 text-[#FBBF24]"></i> Change Password
-                    </a>
+                    <a href="#" onclick="openSettings('profile')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-gear w-6 text-[#A78BFA]"></i> Profile Settings</a>
+                    <a href="#" onclick="openSettings('password')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-lock w-6 text-[#FBBF24]"></i> Change Password</a>
                     <div class="border-t border-gray-100 my-1"></div>
-                    <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-sm font-medium text-[#C53030] hover:bg-red-50 transition">
-                        <i class="fa-solid fa-door-open w-6 text-[#D97706]"></i> Logout
-                    </a>
+                    <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-sm font-medium text-[#C53030] hover:bg-red-50 transition"><i class="fa-solid fa-door-open w-6 text-[#D97706]"></i> Logout</a>
                 </div>
             </div>
         </div>
@@ -70,25 +60,15 @@
             <!-- Login Form -->
             <form id="login-form" class="space-y-4">
                 <h2 class="text-lg font-semibold text-gray-700 border-b pb-2">Welcome Back</h2>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Email or Mobile</label>
-                    <input type="text" id="login-id" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all">
-                </div>
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Password</label>
-                    <input type="password" id="login-password" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all pr-10">
-                    <button type="button" class="absolute right-3 top-[34px] text-slate-500 hover:text-slate-700 transition" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
-                </div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Email or Mobile</label><input type="text" id="login-id" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all"></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Password</label><input type="password" id="login-password" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all pr-10"><button type="button" class="absolute right-3 top-[34px] text-slate-500 hover:text-slate-700 transition" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button></div>
                 <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm mt-2">Log In</button>
                 <p class="text-sm text-center text-gray-600 mt-4">New here? <a href="#" onclick="toggleAuth('register')" class="text-blue-600 font-semibold hover:underline">Create an account</a></p>
             </form>
             <!-- Register Form -->
             <form id="register-form" class="space-y-4 hidden">
                 <h2 class="text-lg font-semibold text-gray-700 border-b pb-2">Create Account</h2>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Full Name</label>
-                    <input type="text" id="reg-name" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all">
-                </div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Full Name</label><input type="text" id="reg-name" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all"></div>
                 <div class="grid grid-cols-2 gap-4">
                     <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Age</label><input type="number" id="reg-age" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all"></div>
                     <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Mobile</label><input type="text" id="reg-mobile" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all"></div>
@@ -103,32 +83,21 @@
 
     <!-- ================= 2. HOME DASHBOARD ================= -->
     <div id="home-view" class="hidden flex-col h-full flex-grow p-8 max-w-6xl mx-auto w-full gap-8">
-        <!-- Module Selection -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Sign to Text Box -->
             <div onclick="openWorkspace('Sign2Text')" class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 cursor-pointer hover:shadow-md hover:border-blue-300 transition group flex flex-col items-center justify-center text-center h-48">
-                <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                    <i class="fa-solid fa-video text-2xl text-blue-600"></i>
-                </div>
+                <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition"><i class="fa-solid fa-video text-2xl text-blue-600"></i></div>
                 <h3 class="text-xl font-bold text-gray-800">Sign to Speech / Text</h3>
                 <p class="text-sm text-gray-500 mt-2">Activate camera for live ASL gesture translation.</p>
             </div>
-            
-            <!-- Text to Sign Box -->
             <div onclick="openWorkspace('Text2Sign')" class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 cursor-pointer hover:shadow-md hover:border-purple-300 transition group flex flex-col items-center justify-center text-center h-48">
-                <div class="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                    <i class="fa-solid fa-keyboard text-2xl text-purple-600"></i>
-                </div>
+                <div class="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition"><i class="fa-solid fa-keyboard text-2xl text-purple-600"></i></div>
                 <h3 class="text-xl font-bold text-gray-800">Speech / Text to Sign</h3>
                 <p class="text-sm text-gray-500 mt-2">Type or speak to generate 3D Sign Language avatars.</p>
             </div>
         </div>
-
-        <!-- Full Master History -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col flex-grow min-h-[300px]">
             <div class="border-b border-gray-100 px-6 py-4 flex justify-between items-center bg-gray-50 rounded-t-xl">
                 <h3 class="text-sm font-bold text-gray-600 tracking-wider uppercase"><i class="fa-solid fa-database mr-2 text-yellow-500"></i>Master Conversation History</h3>
-                <!-- History Filters -->
                 <div class="flex gap-2">
                     <button onclick="renderDashboardHistory('All')" id="tab-All" class="hist-tab text-xs font-bold px-3 py-1.5 rounded-md bg-blue-600 text-white transition">All</button>
                     <button onclick="renderDashboardHistory('Sign to Text')" id="tab-Sign2Text" class="hist-tab text-xs font-bold px-3 py-1.5 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 transition">Sign → Text</button>
@@ -143,8 +112,6 @@
 
     <!-- ================= 3. WORKSPACE VIEWS ================= -->
     <div id="workspace-view" class="hidden flex-grow p-6 gap-6 max-w-7xl mx-auto w-full">
-        
-        <!-- Main Application Area (Dynamic based on mode) -->
         <div class="flex-grow flex flex-col gap-4">
             
             <!-- MODULE 1: Sign to Text (Camera) -->
@@ -162,8 +129,6 @@
                     <div class="flex justify-between items-center mb-2 border-b pb-3 border-gray-100">
                         <span class="text-xs font-bold text-gray-400 tracking-wider uppercase">Live ASL Translation</span>
                         <div class="flex items-center gap-6">
-                            
-                            <!-- Auto-Save Toggle -->
                             <div class="flex items-center gap-3">
                                 <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Auto-Save</span>
                                 <div class="relative inline-block w-12 align-middle select-none transition duration-200 ease-in">
@@ -171,8 +136,7 @@
                                     <label for="autosave-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                                 </div>
                             </div>
-
-                            <button onclick="saveChatManual()" class="text-sm bg-blue-50 text-blue-600 px-4 py-1.5 rounded-md hover:bg-blue-100 transition font-medium border border-blue-100">
+                            <button id="btn-save-manual" onclick="saveChatManual()" class="text-sm bg-blue-50 text-blue-600 px-4 py-1.5 rounded-md hover:bg-blue-100 transition font-medium border border-blue-100">
                                 <i class="fa-solid fa-bookmark mr-1"></i> Save Now
                             </button>
                         </div>
@@ -184,40 +148,27 @@
             <!-- MODULE 2: Text to Sign (Avatar Placeholder) -->
             <div id="module-text2sign" class="hidden flex-col h-full gap-4">
                 <div class="bg-slate-900 rounded-xl overflow-hidden shadow-lg relative h-[450px] flex items-center justify-center border-4 border-gray-200">
-                    <div class="text-center p-8">
-                        <i class="fa-solid fa-cube text-6xl text-purple-400 mb-4 animate-pulse"></i>
-                        <h3 class="text-2xl font-bold text-white mb-2">3D Avatar Engine</h3>
-                        <p class="text-slate-400">Sign Language generation pipeline initializing...<br>Enter text below to simulate generation.</p>
-                    </div>
+                    <div class="text-center p-8"><i class="fa-solid fa-cube text-6xl text-purple-400 mb-4 animate-pulse"></i><h3 class="text-2xl font-bold text-white mb-2">3D Avatar Engine</h3><p class="text-slate-400">Sign Language generation pipeline initializing...<br>Enter text below to simulate generation.</p></div>
                 </div>
-                
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col justify-between">
                     <div class="flex justify-between items-center mb-2 border-b pb-3 border-gray-100">
                         <span class="text-xs font-bold text-gray-400 tracking-wider uppercase">Text Input</span>
-                        <button onclick="saveTextToSignChat()" class="text-sm bg-purple-50 text-purple-600 px-4 py-1.5 rounded-md hover:bg-purple-100 transition font-medium border border-purple-100">
+                        <button id="btn-save-t2s" onclick="saveTextToSignChat()" class="text-sm bg-purple-50 text-purple-600 px-4 py-1.5 rounded-md hover:bg-purple-100 transition font-medium border border-purple-100">
                             <i class="fa-solid fa-paper-plane mr-1"></i> Generate & Save
                         </button>
                     </div>
                     <textarea id="text-to-sign-input" rows="2" class="w-full mt-2 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-400 outline-none resize-none" placeholder="Type a sentence to translate into sign language..."></textarea>
                 </div>
             </div>
-
         </div>
 
-        <!-- Mode-Specific History Sidebar -->
         <div class="w-[350px] bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col h-[600px]">
-            <div class="bg-gray-50 border-b border-gray-100 p-4 rounded-t-xl">
-                <h3 class="text-xs font-bold text-gray-600 tracking-wider uppercase"><i class="fa-solid fa-folder-open mr-2 text-yellow-500"></i><span id="sidebar-title">Saved</span></h3>
-            </div>
-            <div id="sidebar-history-list" class="overflow-y-auto flex-grow space-y-3 p-4 pr-2">
-                <p class="text-sm text-gray-400 italic text-center mt-10">No saved history for this mode.</p>
-            </div>
+            <div class="bg-gray-50 border-b border-gray-100 p-4 rounded-t-xl"><h3 class="text-xs font-bold text-gray-600 tracking-wider uppercase"><i class="fa-solid fa-folder-open mr-2 text-yellow-500"></i><span id="sidebar-title">Saved</span></h3></div>
+            <div id="sidebar-history-list" class="overflow-y-auto flex-grow space-y-3 p-4 pr-2"><p class="text-sm text-gray-400 italic text-center mt-10">No saved history for this mode.</p></div>
         </div>
     </div>
 
-    <!-- Hidden Settings & Canvas Overlays -->
-    <canvas id="captureCanvas" class="hidden"></canvas>
-    
+    <!-- Hidden Settings Modal -->
     <div id="settings-view" class="hidden fixed inset-0 bg-slate-800 bg-opacity-50 z-40 flex items-center justify-center p-4 backdrop-blur-sm">
         <div id="profile-card" class="bg-white rounded-xl shadow-lg border border-slate-200 w-full max-w-md p-8 hidden relative">
             <div class="flex justify-between items-center mb-6">
@@ -235,7 +186,7 @@
                     <label class="block text-[11px] font-bold text-[#B91C1C] uppercase mb-1">Current Password (Required)</label>
                     <input type="password" id="set-current-pwd" required class="w-full px-4 py-2 bg-white border border-[#FCA5A5] rounded-lg outline-none">
                 </div>
-                <button type="submit" class="w-full mt-4 bg-[#4A9084] text-white py-3 rounded-lg font-bold">Verify & Save</button>
+                <button type="submit" class="w-full mt-4 bg-[#4A9084] text-white py-3 rounded-lg font-bold disabled:opacity-75">Verify & Save</button>
             </form>
         </div>
         <div id="password-card" class="bg-white rounded-xl shadow-lg border border-slate-200 w-full max-w-md p-8 hidden relative">
@@ -247,10 +198,13 @@
                 <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Current Password</label><input type="password" id="pwd-current" required class="w-full px-4 py-2 border rounded-lg"></div>
                 <div><label class="block text-[11px] font-bold text-slate-500 uppercase">New Password</label><input type="password" id="pwd-new" required class="w-full px-4 py-2 border rounded-lg"></div>
                 <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Confirm Password</label><input type="password" id="pwd-confirm" required class="w-full px-4 py-2 border rounded-lg"></div>
-                <button type="submit" class="w-full mt-4 bg-[#1A1F36] text-white py-3 rounded-lg font-bold">Update Password</button>
+                <button type="submit" class="w-full mt-4 bg-[#1A1F36] text-white py-3 rounded-lg font-bold disabled:opacity-75">Update Password</button>
             </form>
         </div>
     </div>
+
+    <!-- Hidden Canvas -->
+    <canvas id="captureCanvas" class="hidden"></canvas>
 
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
@@ -262,10 +216,9 @@
         let isConnected = false;
         let isProcessingFrame = false;
         
-        let currentMode = ""; // 'Sign2Text' or 'Text2Sign'
+        let currentMode = ""; 
         let fullHistoryData = [];
         
-        // Auto-Save State
         let isAutoSaveEnabled = false;
         let lastAutoSavedText = "";
         let autoSaveTimer = null;
@@ -284,12 +237,23 @@
         const translationOutput = document.getElementById('translation-output');
 
         window.onload = () => {
-            if (currentUser.token && currentUser.email) {
-                goHome();
-            } else {
-                showAuth();
-            }
+            if (currentUser.token && currentUser.email) goHome();
+            else showAuth();
         };
+
+        // --- BUTTON LOADING STATE UTILITY ---
+        function setBtnLoading(btn, isLoading, text="Processing...") {
+            if(isLoading) {
+                btn.dataset.original = btn.innerText;
+                btn.innerText = text;
+                btn.disabled = true;
+                btn.classList.add('cursor-not-allowed');
+            } else {
+                btn.innerText = btn.dataset.original || btn.innerText;
+                btn.disabled = false;
+                btn.classList.remove('cursor-not-allowed');
+            }
+        }
 
         // --- NAVIGATION & VIEWS ---
         function showAuth() {
@@ -303,27 +267,22 @@
             stopCamera();
             if(ws) ws.close();
             currentMode = "";
-            
             document.getElementById('auth-view').classList.add('hidden');
             document.getElementById('workspace-view').classList.add('hidden');
             document.getElementById('home-view').classList.remove('hidden');
             document.getElementById('global-nav').classList.remove('hidden');
-            
             document.getElementById('nav-user-name').innerText = currentUser.name;
             document.getElementById('btn-back-home').classList.add('hidden');
             document.getElementById('status-container').classList.add('hidden');
-
-            fetchAllHistory(); // Load dashboard history
+            fetchAllHistory(); 
         }
 
         function openWorkspace(mode) {
             currentMode = mode;
             document.getElementById('home-view').classList.add('hidden');
             document.getElementById('workspace-view').classList.remove('hidden');
-            
             document.getElementById('btn-back-home').classList.remove('hidden');
             
-            // Toggle UI based on mode
             if (mode === 'Sign2Text') {
                 document.getElementById('module-sign2text').classList.remove('hidden');
                 document.getElementById('module-text2sign').classList.add('hidden');
@@ -337,8 +296,7 @@
                 document.getElementById('sidebar-title').innerText = "Text to Sign History";
                 document.getElementById('text-to-sign-input').value = '';
             }
-            
-            renderWorkspaceHistory(); // Update sidebar
+            renderWorkspaceHistory();
         }
 
         function togglePwd(btn) {
@@ -349,13 +307,8 @@
         }
 
         function toggleAuth(type) {
-            if (type === 'register') {
-                document.getElementById('login-form').classList.add('hidden');
-                document.getElementById('register-form').classList.remove('hidden');
-            } else {
-                document.getElementById('register-form').classList.add('hidden');
-                document.getElementById('login-form').classList.remove('hidden');
-            }
+            if (type === 'register') { document.getElementById('login-form').classList.add('hidden'); document.getElementById('register-form').classList.remove('hidden'); }
+            else { document.getElementById('register-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden'); }
         }
 
         function logout() {
@@ -365,128 +318,167 @@
             document.getElementById('dropdown').classList.add('hidden');
         }
 
-        // --- CAMERA & FAST WEBSOCKET ---
+        // --- FORMS & SETTINGS WITH LOADING ---
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            setBtnLoading(btn, true, "Logging in...");
+            const identifier = document.getElementById('login-id').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                const res = await fetch(`${API_BASE_URL}/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ identifier, password }) });
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem("token", data.token); localStorage.setItem("userEmail", data.email); localStorage.setItem("userName", data.name);
+                    currentUser = { email: data.email, name: data.name, token: data.token }; goHome();
+                } else alert(data.detail || "Login failed");
+            } catch (err) { alert("Server timeout. If this persists, verify MongoDB IP Whitelist (0.0.0.0/0)."); }
+            finally { setBtnLoading(btn, false); }
+        });
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            setBtnLoading(btn, true, "Registering...");
+            const payload = { name: document.getElementById('reg-name').value, age: parseInt(document.getElementById('reg-age').value), mobile: document.getElementById('reg-mobile').value, email: document.getElementById('reg-email').value, password: document.getElementById('reg-password').value };
+            try {
+                const res = await fetch(`${API_BASE_URL}/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (res.ok) { alert("Registration successful! Please log in."); toggleAuth('login'); }
+                else { const data = await res.json(); alert(data.detail || "Registration failed"); }
+            } catch (err) { alert("Server error. Check MongoDB connection."); }
+            finally { setBtnLoading(btn, false); }
+        });
+
+        async function openSettings(viewType) {
+            document.getElementById('dropdown').classList.add('hidden');
+            document.getElementById('settings-view').classList.remove('hidden');
+            if (viewType === 'profile') {
+                document.getElementById('profile-card').classList.remove('hidden');
+                document.getElementById('password-card').classList.add('hidden');
+                document.getElementById('set-name').value = "Loading...";
+                try {
+                    const res = await fetch(`${API_BASE_URL}/user/${currentUser.email}`);
+                    const data = await res.json();
+                    if (res.ok) {
+                        document.getElementById('set-name').value = data.name; document.getElementById('set-age').value = data.age; document.getElementById('set-mobile').value = data.mobile; document.getElementById('set-email').value = data.email; document.getElementById('set-current-pwd').value = ''; 
+                    } else { alert("Failed to fetch profile"); closeSettings(); }
+                } catch (e) { alert("Network Error fetching profile."); closeSettings(); }
+            } else if (viewType === 'password') {
+                document.getElementById('password-card').classList.remove('hidden'); document.getElementById('profile-card').classList.add('hidden');
+                document.getElementById('pwd-current').value = ''; document.getElementById('pwd-new').value = ''; document.getElementById('pwd-confirm').value = '';
+            }
+        }
+        function closeSettings() { document.getElementById('settings-view').classList.add('hidden'); }
+
+        document.getElementById('update-profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            setBtnLoading(btn, true, "Saving...");
+            const payload = { original_email: currentUser.email, name: document.getElementById('set-name').value, age: parseInt(document.getElementById('set-age').value), mobile: document.getElementById('set-mobile').value, email: document.getElementById('set-email').value, current_password: document.getElementById('set-current-pwd').value };
+            try {
+                const res = await fetch(`${API_BASE_URL}/update_user`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const data = await res.json();
+                if (res.ok) {
+                    alert("Profile updated successfully!");
+                    currentUser.email = data.new_email; currentUser.name = data.new_name;
+                    localStorage.setItem("userEmail", data.new_email); localStorage.setItem("userName", data.new_name);
+                    document.getElementById('nav-user-name').innerText = data.new_name; closeSettings();
+                } else alert(data.detail || "Update failed");
+            } catch (e) { alert("Network timeout. Check backend."); }
+            finally { setBtnLoading(btn, false); }
+        });
+
+        document.getElementById('change-password-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            if (document.getElementById('pwd-new').value !== document.getElementById('pwd-confirm').value) { alert("New passwords do not match!"); return; }
+            setBtnLoading(btn, true, "Updating...");
+            const payload = { email: currentUser.email, current_password: document.getElementById('pwd-current').value, new_password: document.getElementById('pwd-new').value };
+            try {
+                const res = await fetch(`${API_BASE_URL}/change_password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (res.ok) { alert("Password updated successfully!"); closeSettings(); } else { const data = await res.json(); alert(data.detail || "Password update failed"); }
+            } catch (e) { alert("Network timeout."); }
+            finally { setBtnLoading(btn, false); }
+        });
+
+        // --- CAMERA & WEBSOCKET ---
         async function startCamera() {
             try {
                 cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
                 video.srcObject = cameraStream;
                 video.classList.remove('hidden');
                 document.getElementById('camera-loading').classList.add('hidden');
-                
                 video.onloadedmetadata = () => {
-                    captureCanvas.width = 320; 
-                    captureCanvas.height = 240;
-                    overlayCanvas.width = video.videoWidth;
-                    overlayCanvas.height = video.videoHeight;
+                    captureCanvas.width = 320; captureCanvas.height = 240;
+                    overlayCanvas.width = video.videoWidth; overlayCanvas.height = video.videoHeight;
                     connectWebSocket();
                 };
-            } catch (err) {
-                document.getElementById('camera-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl mb-3"></i><p class="text-gray-300">Camera access denied.</p>`;
-            }
+            } catch (err) { document.getElementById('camera-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl mb-3"></i><p class="text-gray-300">Camera access denied.</p>`; }
         }
 
         function stopCamera() {
-            if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
+            if (cameraStream) { cameraStream.getTracks().forEach(track => track.stop()); cameraStream = null; }
             isProcessingFrame = false;
         }
 
         function sendFrame() {
             if (!isConnected || isProcessingFrame || ws.readyState !== WebSocket.OPEN || currentMode !== 'Sign2Text') return;
-            
             isProcessingFrame = true;
             captureCtx.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
-            const frameData = captureCanvas.toDataURL('image/jpeg', 0.3);
-            ws.send(frameData);
+            ws.send(captureCanvas.toDataURL('image/jpeg', 0.3));
         }
 
         function connectWebSocket() {
             ws = new WebSocket(RENDER_URL);
             ws.onopen = () => {
-                isConnected = true;
-                isProcessingFrame = false;
-                updateStatus(true);
-                translationOutput.innerText = "Waiting for gesture...";
-                sendFrame(); 
+                isConnected = true; isProcessingFrame = false; updateStatus(true);
+                translationOutput.innerText = "Waiting for gesture..."; sendFrame(); 
             };
-
             ws.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 translationOutput.innerText = data.translation;
                 drawLandmarks(data.landmarks);
-                
-                // --- AUTO-SAVE LOGIC ENFORCEMENT ---
                 handleAutoSave(data.translation);
-                
                 isProcessingFrame = false;
                 if(currentMode === 'Sign2Text') requestAnimationFrame(sendFrame);
             };
-
             ws.onclose = () => {
-                isConnected = false;
-                isProcessingFrame = false;
-                updateStatus(false);
+                isConnected = false; isProcessingFrame = false; updateStatus(false);
                 translationOutput.innerText = "Connection lost. Reconnecting...";
                 if (currentMode === 'Sign2Text') setTimeout(connectWebSocket, 3000);
             };
         }
 
         function updateStatus(connected) {
-            const dot = document.getElementById('status-dot');
-            const text = document.getElementById('status-text');
-            if (connected) {
-                dot.classList.replace('bg-red-500', 'bg-green-500');
-                text.innerText = 'CONNECTED';
-                text.classList.replace('text-gray-600', 'text-green-600');
-            } else {
-                dot.classList.replace('bg-green-500', 'bg-red-500');
-                text.innerText = 'OFFLINE';
-                text.classList.replace('text-green-600', 'text-gray-600');
-            }
+            const dot = document.getElementById('status-dot'); const text = document.getElementById('status-text');
+            if (connected) { dot.classList.replace('bg-red-500', 'bg-green-500'); text.innerText = 'CONNECTED'; text.classList.replace('text-gray-600', 'text-green-600'); } 
+            else { dot.classList.replace('bg-green-500', 'bg-red-500'); text.innerText = 'OFFLINE'; text.classList.replace('text-green-600', 'text-gray-600'); }
         }
 
         function drawLandmarks(landmarks) {
             overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
             if (!landmarks || landmarks.length === 0) return;
-
             const HAND_CONNECTIONS = [[0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [5, 6], [6, 7], [7, 8], [5, 9], [9, 10], [10, 11], [11, 12], [9, 13], [13, 14], [14, 15], [15, 16], [13, 17], [0, 17], [17, 18], [18, 19], [19, 20]];
             overlayCtx.lineWidth = 2.5; overlayCtx.strokeStyle = '#00FFFF';
-            HAND_CONNECTIONS.forEach(connection => {
-                const startIdx = connection[0], endIdx = connection[1];
-                if(landmarks[startIdx] && landmarks[endIdx]) {
-                    overlayCtx.beginPath();
-                    overlayCtx.moveTo(landmarks[startIdx].x * overlayCanvas.width, landmarks[startIdx].y * overlayCanvas.height);
-                    overlayCtx.lineTo(landmarks[endIdx].x * overlayCanvas.width, landmarks[endIdx].y * overlayCanvas.height);
-                    overlayCtx.stroke();
+            HAND_CONNECTIONS.forEach(c => {
+                if(landmarks[c[0]] && landmarks[c[1]]) {
+                    overlayCtx.beginPath(); overlayCtx.moveTo(landmarks[c[0]].x * overlayCanvas.width, landmarks[c[0]].y * overlayCanvas.height);
+                    overlayCtx.lineTo(landmarks[c[1]].x * overlayCanvas.width, landmarks[c[1]].y * overlayCanvas.height); overlayCtx.stroke();
                 }
             });
-            landmarks.forEach(lm => {
-                overlayCtx.beginPath();
-                overlayCtx.arc(lm.x * overlayCanvas.width, lm.y * overlayCanvas.height, 4.5, 0, 2 * Math.PI);
-                overlayCtx.fillStyle = '#EF4444'; overlayCtx.fill();
-            });
+            landmarks.forEach(lm => { overlayCtx.beginPath(); overlayCtx.arc(lm.x * overlayCanvas.width, lm.y * overlayCanvas.height, 4.5, 0, 2 * Math.PI); overlayCtx.fillStyle = '#EF4444'; overlayCtx.fill(); });
         }
 
         // --- DATABASE & HISTORY LOGIC ---
-        
-        function toggleAutoSave(checkbox) {
-            isAutoSaveEnabled = checkbox.checked;
-            if(!isAutoSaveEnabled) lastAutoSavedText = ""; // Reset memory when toggled off
-        }
-
+        function toggleAutoSave(checkbox) { isAutoSaveEnabled = checkbox.checked; if(!isAutoSaveEnabled) lastAutoSavedText = ""; }
         function handleAutoSave(text) {
             if (!isAutoSaveEnabled) return;
             const invalidStrings = ["Waiting for gesture...", "No hand detected", "Sign not recognized..."];
             if (invalidStrings.includes(text) || text === "") return;
-            
-            // Only auto-save if it's a NEW distinct gesture to prevent database spam
             if (text !== lastAutoSavedText) {
                 lastAutoSavedText = text;
-                
-                // Debounce timer: Require holding sign for 1.5 seconds to save
                 if(autoSaveTimer) clearTimeout(autoSaveTimer);
-                autoSaveTimer = setTimeout(() => {
-                    executeSaveChat(text, "Sign to Text");
-                }, 1500); 
+                autoSaveTimer = setTimeout(() => { executeSaveChat(text, "Sign to Text"); }, 1500); 
             }
         }
 
@@ -500,18 +492,13 @@
         function saveTextToSignChat() {
             const text = document.getElementById('text-to-sign-input').value.trim();
             if (text === "") { alert("Please enter text to simulate generation."); return; }
-            executeSaveChat(text, "Text to Sign");
-            document.getElementById('text-to-sign-input').value = ""; // clear after save
+            executeSaveChat(text, "Text to Sign"); document.getElementById('text-to-sign-input').value = ""; 
         }
 
         async function executeSaveChat(transcript, modeName) {
             try {
-                await fetch(`${API_BASE_URL}/save_chat`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: currentUser.email, mode_used: modeName, transcript: transcript })
-                });
-                fetchAllHistory(); // Background refresh
+                await fetch(`${API_BASE_URL}/save_chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentUser.email, mode_used: modeName, transcript: transcript }) });
+                fetchAllHistory();
             } catch (err) { console.error("Failed to save", err); }
         }
 
@@ -520,42 +507,22 @@
                 const res = await fetch(`${API_BASE_URL}/history/${currentUser.email}`);
                 const data = await res.json();
                 fullHistoryData = data.history || [];
-                
-                // Refresh visible UI based on where the user is
-                if (!document.getElementById('home-view').classList.contains('hidden')) {
-                    renderDashboardHistory('All'); // Default tab on home
-                } else {
-                    renderWorkspaceHistory();
-                }
+                if (!document.getElementById('home-view').classList.contains('hidden')) { renderDashboardHistory('All'); } 
+                else { renderWorkspaceHistory(); }
             } catch (err) { console.error("Failed to load history"); }
         }
 
         function renderDashboardHistory(filterMode) {
-            // Update Tab UI
-            ['All', 'Sign2Text', 'Text2Sign'].forEach(id => {
-                const tab = document.getElementById('tab-' + id);
-                if(tab) tab.className = "hist-tab text-xs font-bold px-3 py-1.5 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 transition";
-            });
-            
+            ['All', 'Sign2Text', 'Text2Sign'].forEach(id => { const tab = document.getElementById('tab-' + id); if(tab) tab.className = "hist-tab text-xs font-bold px-3 py-1.5 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 transition"; });
             const activeId = filterMode === 'All' ? 'All' : (filterMode === 'Sign to Text' ? 'Sign2Text' : 'Text2Sign');
             document.getElementById('tab-' + activeId).className = "hist-tab text-xs font-bold px-3 py-1.5 rounded-md bg-blue-600 text-white transition";
-
-            // Filter Data
-            let filtered = fullHistoryData;
-            if (filterMode !== 'All') {
-                filtered = fullHistoryData.filter(item => item.mode_used === filterMode);
-            }
-            
-            // Render
-            const list = document.getElementById('master-history-list');
-            buildHistoryHTML(list, filtered, true);
+            let filtered = filterMode !== 'All' ? fullHistoryData.filter(item => item.mode_used === filterMode) : fullHistoryData;
+            buildHistoryHTML(document.getElementById('master-history-list'), filtered, true);
         }
 
         function renderWorkspaceHistory() {
-            const list = document.getElementById('sidebar-history-list');
             const expectedModeStr = currentMode === 'Sign2Text' ? "Sign to Text" : "Text to Sign";
-            const filtered = fullHistoryData.filter(item => item.mode_used === expectedModeStr);
-            buildHistoryHTML(list, filtered, false);
+            buildHistoryHTML(document.getElementById('sidebar-history-list'), fullHistoryData.filter(item => item.mode_used === expectedModeStr), false);
         }
 
         function buildHistoryHTML(container, dataArray, showModeTag) {
@@ -563,55 +530,10 @@
                 container.innerHTML = dataArray.map(item => {
                     const iconColor = item.mode_used === "Sign to Text" ? "text-blue-500" : "text-purple-500";
                     const tag = showModeTag ? `<span class="text-[10px] font-bold ${iconColor} bg-gray-100 px-2 py-0.5 rounded">${item.mode_used}</span>` : '';
-                    
-                    return `
-                    <div class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition">
-                        <div class="flex justify-between items-start mb-2">
-                            ${tag}
-                            <span class="text-[10px] text-gray-400 font-medium ${!showModeTag ? 'w-full text-right' : ''}">${item.timestamp}</span>
-                        </div>
-                        <p class="text-sm text-gray-800 font-semibold">${item.transcript}</p>
-                    </div>
-                `}).join('');
-            } else {
-                container.innerHTML = `<p class="text-sm text-gray-400 italic text-center mt-10">No history found.</p>`;
-            }
+                    return `<div class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition"><div class="flex justify-between items-start mb-2">${tag}<span class="text-[10px] text-gray-400 font-medium ${!showModeTag ? 'w-full text-right' : ''}">${item.timestamp}</span></div><p class="text-sm text-gray-800 font-semibold">${item.transcript}</p></div>`;
+                }).join('');
+            } else { container.innerHTML = `<p class="text-sm text-gray-400 italic text-center mt-10">No history found.</p>`; }
         }
-
-        // --- SETTINGS API OVERLAYS ---
-        // (Settings logic remains completely intact from your previous implementation)
-        document.getElementById('update-profile-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const payload = {
-                original_email: currentUser.email,
-                name: document.getElementById('set-name').value,
-                age: parseInt(document.getElementById('set-age').value),
-                mobile: document.getElementById('set-mobile').value,
-                email: document.getElementById('set-email').value,
-                current_password: document.getElementById('set-current-pwd').value
-            };
-            try {
-                const res = await fetch(`${API_BASE_URL}/update_user`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                const data = await res.json();
-                if (res.ok) {
-                    alert("Profile updated successfully!");
-                    currentUser.email = data.new_email; currentUser.name = data.new_name;
-                    localStorage.setItem("userEmail", data.new_email); localStorage.setItem("userName", data.new_name);
-                    document.getElementById('nav-user-name').innerText = data.new_name;
-                    closeSettings();
-                } else alert(data.detail || "Update failed");
-            } catch (e) { alert("Error connecting to server"); }
-        });
-
-        document.getElementById('change-password-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (document.getElementById('pwd-new').value !== document.getElementById('pwd-confirm').value) { alert("New passwords do not match!"); return; }
-            const payload = { email: currentUser.email, current_password: document.getElementById('pwd-current').value, new_password: document.getElementById('pwd-new').value };
-            try {
-                const res = await fetch(`${API_BASE_URL}/change_password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (res.ok) { alert("Password updated successfully!"); closeSettings(); } else { const data = await res.json(); alert(data.detail || "Password update failed"); }
-            } catch (e) { alert("Error connecting to server"); }
-        });
     </script>
 </body>
 </html>
