@@ -220,3 +220,4 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_json(response)
     except WebSocketDisconnect:
         pass
+    
