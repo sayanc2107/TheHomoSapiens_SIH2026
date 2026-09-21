@@ -1,6 +1,8 @@
 fastapi
 uvicorn
-websockets
-mediapipe
+motor
+bcrypt
+PyJWT
+pydantic
 opencv-python-headless
-numpy
+mediapipe
