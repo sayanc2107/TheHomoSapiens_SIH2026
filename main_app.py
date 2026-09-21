@@ -1,104 +1,125 @@
+import os
 import cv2
-import mediapipe as mp
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
 import numpy as np
 import base64
 import urllib.request
-import os
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+import mediapipe as mp
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
 
-# 1. Auto-download the pre-trained Google Gesture Recognizer model
-MODEL_PATH = 'gesture_recognizer.task'
+# 1. Download the pre-trained model if it doesn't exist
+MODEL_URL = "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task"
+MODEL_PATH = "gesture_recognizer.task"
+
 if not os.path.exists(MODEL_PATH):
     print("Downloading pre-trained gesture model from Google...")
-    url = "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task"
-    urllib.request.urlretrieve(url, MODEL_PATH)
+    urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
+    print("Download complete.")
 
+# 2. Initialize the Gesture Recognizer API with STRICTER thresholds (85%)
+base_options = python.BaseOptions(model_asset_path=MODEL_PATH)
+
+options = vision.GestureRecognizerOptions(
+    base_options=base_options, 
+    num_hands=1,
+    min_hand_detection_confidence=0.85,   # Must be 85% sure it's a hand (fixes pink pillow issue)
+    min_hand_presence_confidence=0.85,    # Must be 85% sure the hand is still there
+    min_tracking_confidence=0.85          # Stricter skeleton tracking
+)
+recognizer = vision.GestureRecognizer.create_from_options(options)
+
+# 3. Expanded Gesture Dictionary
+# Note: MediaPipe's default model recognizes 7 basic shapes. 
+# We are adding your requested custom signs here so the backend is ready 
+# for when you load your custom .h5/.onnx model later!
+gesture_map = {
+    "Thumb_Up": "👍 Good / Yes",
+    "Thumb_Down": "👎 Bad / No",
+    "Victory": "✌️ Victory / Two",
+    "Open_Palm": "✋ Wait / Stop",
+    "Closed_Fist": "✊ Solid / Fist",
+    "ILoveYou": "🤟 I Love You",
+    "Pointing_Up": "☝️ Up / One",
+    "PointingAtUser": "🫵🏻 Pointing at You",
+    "Call_Me": "🤙 Call Me",
+    "Rock_On": "🤘 Rock On",
+    "Fist_Bump": "👊🏻 Fist Bump",
+    "High_Five": "🖐 High Five",
+    "PinchedHand": "🤌🏻 Pinched Hand",
+    "Pinching": "🤏 Pinching",
+    "PinchedFingers": "🫰🏻 Pinched Fingers",
+    "None": "Sign not recognized..."
+}
+
+# 4. FastAPI Setup
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 2. Initialize the Gesture Recognizer API (It handles both landmarks AND gestures)
-# Force the AI to be 85% sure before drawing a skeleton
-options = vision.GestureRecognizerOptions(
-    base_options=base_options, 
-    num_hands=1,
-    min_hand_detection_confidence=0.85,   
-    min_hand_presence_confidence=0.85,    
-    min_tracking_confidence=0.85          
-)
-# 3. Helper to format Google's raw category names into SIH presentation strings
-def format_gesture(category_name):
-    gesture_map = {
-        "Closed_Fist": "✊ Closed Fist",
-        "Open_Palm": "✋ Wait / Stop",
-        "Pointing_Up": "☝️ Pointing Up",
-        "Thumb_Down": "👎 Bad / No",
-        "Thumb_Up": "👍 Good / Yes",
-        "Victory": "✌️ Victory / Peace",
-        "ILoveYou": "🤟 I Love You",
-        "PointingAtUser": "🫵🏻 Pointing at You",
-        "Call_Me": "🤙 Call Me",
-        "Rock_On": "🤘 Rock On",
-        "Fist_Bump": "👊🏻 Fist Bump",
-        "High_Five": "🖐 High Five",
-        "PinchedHand": "🤌🏻 Pinched Hand",
-        "Pinching": "🤏 Pinching",
-        "PinchedFingers": "🫰🏻 Pinched Fingers",
-        "None": "Sign not recognized..."
-    }
-    return gesture_map.get(category_name, category_name)
+# Keep-Alive Route for UptimeRobot (Prevents cold starts)
+@app.get("/")
+def read_root():
+    return {"status": "Active", "message": "TheHomoSapiens SIH 2026 Backend is running."}
 
-    
-
-# 4. WebSocket Endpoint for live video frames
+# 5. WebSocket Endpoint for Real-Time Video Processing
 @app.websocket("/ws/translate")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
-            # Receive and decode the frame
+            # Receive base64 frame from frontend
             data = await websocket.receive_text()
-            img_data = base64.b64decode(data.split(',')[1])
-            np_arr = np.frombuffer(img_data, np.uint8)
-            img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
             
-            # Format for the Tasks API
-            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=img_rgb)
+            # Decode the base64 image
+            header, encoded = data.split(",", 1)
+            img_bytes = base64.b64decode(encoded)
+            np_arr = np.frombuffer(img_bytes, np.uint8)
+            frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
             
-            # Process the frame for gestures and landmarks
+            if frame is None:
+                continue
+
+            # Convert to MediaPipe Image format
+            mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
+            
+            # Process the image
             recognition_result = recognizer.recognize(mp_image)
             
-            translation = "No hand detected"
-            landmarks_data = []
+            response = {
+                "translation": "No hand detected",
+                "landmarks": []
+            }
             
-            # If a hand is on screen and the model analyzed it
-            if recognition_result.gestures and recognition_result.hand_landmarks:
-                # 1. Get the translation
-                top_gesture = recognition_result.gestures[0][0].category_name
-                translation = format_gesture(top_gesture)
+            # If a hand is found, extract landmarks and gesture
+            if recognition_result.hand_landmarks:
+                # Extract coordinates for frontend canvas drawing
+                landmarks = recognition_result.hand_landmarks[0]
+                response["landmarks"] = [{"x": lm.x, "y": lm.y, "z": lm.z} for lm in landmarks]
                 
-                # 2. Get the X/Y coordinates for the frontend skeleton overlay
-                landmarks_data = [{"x": lm.x, "y": lm.y} for lm in recognition_result.hand_landmarks[0]]
+                # Extract gesture classification
+                if recognition_result.gestures and len(recognition_result.gestures[0]) > 0:
+                    top_gesture = recognition_result.gestures[0][0].category_name
                     
-            await websocket.send_json({
-                "translation": translation, 
-                "landmarks": landmarks_data
-            })
+                    # Map to our dictionary, default to "None" if not found
+                    if top_gesture == "" or top_gesture == "None":
+                        response["translation"] = "Sign not recognized..."
+                    else:
+                        response["translation"] = gesture_map.get(top_gesture, "Sign not recognized...")
+                else:
+                    response["translation"] = "Sign not recognized..."
+            
+            # Send the JSON payload back to the frontend
+            await websocket.send_json(response)
             
     except WebSocketDisconnect:
-        print("Client disconnected")
-
-# Keep-Alive route for UptimeRobot
-@app.get("/")
-def keep_alive():
-    return {"status": "The Homo Sapiens backend is awake 24/7!"}
+        print("Client disconnected.")
+    except Exception as e:
+        print(f"WebSocket Error: {e}")
