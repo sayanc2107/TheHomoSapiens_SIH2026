@@ -18,14 +18,12 @@ from mediapipe.tasks.python import vision
 # ==========================================
 # 1. MONGODB & AUTHENTICATION SETUP
 # ==========================================
-# Cloud Database Connection
 MONGO_URL = "mongodb+srv://sayan2008c_db_user:IoeLEYRREtrqTnmS@cluster0.njngnoe.mongodb.net/?appName=Cluster0"
 client = AsyncIOMotorClient(MONGO_URL)
 db = client.sih_database 
 
 SECRET_KEY = "sih2026_super_secret_key" 
 
-# Pydantic Models
 class UserRegister(BaseModel):
     name: str
     age: int
@@ -99,13 +97,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- SYSTEM ENDPOINTS ---
-
 @app.get("/")
 async def root():
     return {"status": "Active", "message": "TheHomoSapiens API is running securely!"}
-
-# --- USER ACCOUNTS ---
 
 @app.post("/api/register")
 async def register_user(user: UserRegister):
@@ -132,8 +126,6 @@ async def login_user(user: UserLogin):
     
     token = jwt.encode({"email": db_user["email"], "name": db_user["name"]}, SECRET_KEY, algorithm="HS256")
     return {"token": token, "name": db_user["name"], "email": db_user["email"]}
-
-# --- PROFILE & PASSWORD MANAGEMENT ---
 
 @app.get("/api/user/{email}")
 async def get_user_details(email: str):
@@ -180,8 +172,6 @@ async def change_password(data: PasswordChange):
     await db.users.update_one({"email": data.email}, {"$set": {"password": hashed_new_password}})
     return {"message": "Password updated successfully!"}
 
-# --- SAVING & LOADING DATA ---
-
 @app.post("/api/save_chat")
 async def save_chat(chat: ChatSave):
     chat_dict = chat.dict()
@@ -199,8 +189,6 @@ async def get_history(email: str):
             item["timestamp"] = item["timestamp"].strftime("%Y-%m-%d %H:%M:%S")
     return {"history": history}
 
-# --- WEBSOCKET ---
-
 @app.websocket("/ws/translate")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -213,6 +201,9 @@ async def websocket_endpoint(websocket: WebSocket):
             frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
             
             if frame is None: continue
+
+            # ---> CRITICAL FIX: Convert OpenCV BGR format to MediaPipe RGB format <---
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
             mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
             recognition_result = recognizer.recognize(mp_image)
