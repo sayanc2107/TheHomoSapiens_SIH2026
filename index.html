@@ -3,435 +3,434 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Homo Sapiens - SIH 2026</title>
+    <title>The Homo Sapiens - Sign Translator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(20, 184, 166, 0.3); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(20, 184, 166, 0.6); }
-    </style>
-</head>
-<body class="min-h-screen bg-gradient-to-br from-gray-950 via-slate-900 to-teal-950 text-gray-100 flex flex-col font-sans selection:bg-teal-500/30">
     
-    <!-- Navbar -->
-    <nav class="sticky top-0 z-50 backdrop-blur-md bg-gray-950/50 border-b border-white/10 p-4 flex justify-between items-center shadow-lg">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-teal-500/20 rounded-xl flex items-center justify-center border border-teal-500/50 shadow-[0_0_15px_rgba(20,184,166,0.3)]">
-               <span class="text-xl">🤟</span>
-            </div>
-            <div class="font-bold text-xl tracking-wider text-white">
-                TheHomoSapiens <span class="text-teal-400 font-medium opacity-80">| SIH 2026</span>
-            </div>
-        </div>
-        <div class="flex items-center gap-2 bg-black/40 px-4 py-2 rounded-full border border-white/10 shadow-inner">
-            <span id="connection-dot" class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
-            <span id="connection-status" class="text-sm font-medium text-gray-300">Connecting...</span>
-        </div>
-    </nav>
-
-    <!-- Main Workspace -->
-    <main class="flex-grow flex flex-col items-center p-4 md:p-8 max-w-7xl mx-auto w-full gap-6">
-        
-        <!-- Mode Toggle Tabs -->
-        <div class="flex bg-black/40 border border-white/10 rounded-full p-1.5 shadow-inner backdrop-blur-sm z-10 w-full max-w-md mx-auto">
-            <button id="tab-sign-to-text" onclick="switchMode('sign-to-text')" class="flex-1 px-6 py-2.5 rounded-full bg-white/10 text-teal-300 shadow-sm font-semibold transition-all flex items-center justify-center gap-2 border border-white/5">
-                <span>📷</span> Sign → Text
-            </button>
-            <button id="tab-text-to-sign" onclick="switchMode('text-to-sign')" class="flex-1 px-6 py-2.5 rounded-full text-gray-400 hover:text-gray-200 font-semibold transition-all flex items-center justify-center gap-2">
-                <span>🎙️</span> Text/Speech → Sign
-            </button>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- MODE 1: SIGN TO TEXT (Camera & Translation) -->
-        <!-- ========================================== -->
-        <div id="mode-sign-to-text" class="flex flex-col lg:flex-row gap-6 w-full fade-in block">
-            <!-- Left Column: Camera -->
-            <div class="flex-1 flex flex-col gap-6">
-                <div class="relative bg-black/50 rounded-3xl overflow-hidden aspect-square md:aspect-video shadow-[0_8px_32px_0_rgba(0,0,0,0.5)] border border-white/10 backdrop-blur-sm group">
-                    <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform scale-x-[-1]"></video>
-                    <canvas id="overlay" class="absolute inset-0 w-full h-full z-10 transform scale-x-[-1] pointer-events-none object-cover"></canvas>
-                    
-                    <div class="absolute inset-0 border-2 border-teal-500/20 rounded-3xl pointer-events-none z-20 transition-all duration-300 group-hover:border-teal-500/50"></div>
-                    
-                    <div class="absolute top-4 left-4 z-20 flex gap-2">
-                        <div class="bg-red-500/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase shadow-lg flex items-center gap-2 border border-red-400/50">
-                            <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
-                        </div>
-                        <div class="bg-black/60 backdrop-blur-md text-teal-400 px-3 py-1 rounded-full text-xs font-mono font-medium border border-white/10 shadow-lg">
-                            <span id="fps-counter">0</span> FPS
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 to-blue-500"></div>
-                    <h3 class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">Live Translation Output</h3>
-                    
-                    <div class="min-h-[80px] flex items-center">
-                        <p id="translated-text" class="text-3xl md:text-4xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 drop-shadow-sm">
-                            Waiting for gesture...
-                        </p>
-                    </div>
-                    
-                    <div class="mt-6 flex gap-3 border-t border-white/10 pt-5">
-                        <button id="btn-auto-speak" onclick="toggleAutoSpeak()" class="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10 py-3 rounded-xl font-medium transition-all flex justify-center items-center gap-2 shadow-inner">
-                            <span id="auto-speak-icon">🔇</span> <span id="auto-speak-text">Auto-Speak: OFF</span>
-                        </button>
-                        <button onclick="copyText()" class="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10 py-3 rounded-xl font-medium transition-all flex justify-center items-center gap-2 shadow-inner">
-                            <span>📋</span> Copy Text
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Dictionary Panel -->
-            <div class="w-full lg:w-80 flex flex-col gap-4">
-                <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] h-full flex flex-col max-h-[500px] lg:max-h-full">
-                    <h3 class="text-sm text-gray-300 font-bold uppercase tracking-widest mb-4 flex items-center gap-2">📚 Supported Signs</h3>
-                    
-                    <!-- Fixed vertical stack container -->
-                    <div class="flex-1 overflow-y-auto pr-2 flex flex-col gap-3 custom-scrollbar">
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">👍</div><div class="font-medium text-gray-200">Good / Yes</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">👎</div><div class="font-medium text-gray-200">Bad / No</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">✌️</div><div class="font-medium text-gray-200">Victory / Two</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">✋</div><div class="font-medium text-gray-200">Wait / Stop</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">🤟</div><div class="font-medium text-gray-200">I Love You</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">🫵🏻</div><div class="font-medium text-gray-200">Pointing at You</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">🤙</div><div class="font-medium text-gray-200">Call Me</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">🤘</div><div class="font-medium text-gray-200">Rock On</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">👊🏻</div><div class="font-medium text-gray-200">Fist Bump</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">🖐</div><div class="font-medium text-gray-200">High Five</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">🤌🏻</div><div class="font-medium text-gray-200">Pinched Hand</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">🤏</div><div class="font-medium text-gray-200">Pinching</div>
-                        </div>
-                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                            <div class="text-2xl">🫰🏻</div><div class="font-medium text-gray-200">Pinched Fingers</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- MODE 2: TEXT/SPEECH TO SIGN (Avatar Mode)  -->
-        <!-- ========================================== -->
-        <div id="mode-text-to-sign" class="hidden flex-col gap-6 w-full max-w-4xl">
-            <div class="bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-3xl shadow-lg flex flex-col md:flex-row items-center gap-4">
-                <div class="flex-grow flex w-full relative">
-                    <input type="text" id="input-text-sign" placeholder="Type or speak to translate into sign language..." class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 pl-5 pr-14 text-lg focus:ring-2 focus:ring-teal-500/50 outline-none text-white placeholder-gray-500 transition-all">
-                    <button id="btn-mic" onclick="startSpeechRecognition()" class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2.5 bg-white/5 hover:bg-teal-500/20 text-gray-400 hover:text-teal-300 rounded-xl transition-all border border-transparent hover:border-teal-500/30" title="Click to Speak">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8h-1a6 6 0 11-12 0H3a7.001 7.001 0 006 6.93V17H6v1h8v-1h-3v-2.07z" clip-rule="evenodd"></path></svg>
-                    </button>
-                </div>
-                <button onclick="simulateAvatarTranslation()" class="w-full md:w-auto bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white px-8 py-4 rounded-2xl font-bold shadow-[0_0_15px_rgba(20,184,166,0.4)] transition-all flex justify-center items-center gap-2">
-                    Generate Sign
-                </button>
-            </div>
-            
-            <div class="relative bg-black/60 border border-white/10 rounded-3xl aspect-video md:aspect-[21/9] flex flex-col items-center justify-center shadow-inner overflow-hidden">
-                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                <div id="avatar-status" class="text-center z-10 w-full px-6">
-                    <span class="text-7xl block mb-4 animate-bounce">🧍‍♂️</span>
-                    <h2 class="text-2xl font-bold text-gray-200">3D Avatar Engine</h2>
-                    <p class="text-teal-400/80 mt-2">Ready to convert speech/text to ISL animations.</p>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="mt-auto backdrop-blur-md bg-black/40 border-t border-white/5 py-6 z-50">
-        <div class="text-center text-sm text-gray-400">
-            Developed by <span class="text-teal-400 font-bold tracking-wide">Sayan Chakraborty @ Team theHomoSapiens</span>
-        </div>
-    </footer>
-
     <script>
-        function switchMode(mode) {
-            const modeSignToText = document.getElementById('mode-sign-to-text');
-            const modeTextToSign = document.getElementById('mode-text-to-sign');
-            const tabSignToText = document.getElementById('tab-sign-to-text');
-            const tabTextToSign = document.getElementById('tab-text-to-sign');
-
-            if (mode === 'sign-to-text') {
-                modeSignToText.classList.remove('hidden');
-                modeSignToText.classList.add('flex');
-                modeTextToSign.classList.add('hidden');
-                modeTextToSign.classList.remove('flex');
-                
-                tabSignToText.className = "flex-1 px-6 py-2.5 rounded-full bg-white/10 text-teal-300 shadow-sm font-semibold transition-all flex items-center justify-center gap-2 border border-white/5";
-                tabTextToSign.className = "flex-1 px-6 py-2.5 rounded-full text-gray-400 hover:text-gray-200 font-semibold transition-all flex items-center justify-center gap-2";
-            } else {
-                modeTextToSign.classList.remove('hidden');
-                modeTextToSign.classList.add('flex');
-                modeSignToText.classList.add('hidden');
-                modeSignToText.classList.remove('flex');
-                
-                tabTextToSign.className = "flex-1 px-6 py-2.5 rounded-full bg-white/10 text-teal-300 shadow-sm font-semibold transition-all flex items-center justify-center gap-2 border border-white/5";
-                tabSignToText.className = "flex-1 px-6 py-2.5 rounded-full text-gray-400 hover:text-gray-200 font-semibold transition-all flex items-center justify-center gap-2";
-            }
-        }
-
-        function startSpeechRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Your browser does not support Speech Recognition. Try using Google Chrome.");
-                return;
-            }
-
-            const recognition = new SpeechRecognition();
-            const micBtn = document.getElementById('btn-mic');
-            const inputField = document.getElementById('input-text-sign');
-
-            micBtn.classList.add('animate-pulse', 'bg-red-500/20', 'text-red-400', 'border-red-500/50');
-            inputField.placeholder = "Listening...";
-
-            recognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript;
-                inputField.value = transcript;
-            };
-
-            recognition.onend = function() {
-                micBtn.classList.remove('animate-pulse', 'bg-red-500/20', 'text-red-400', 'border-red-500/50');
-                inputField.placeholder = "Type or speak to translate into sign language...";
-            };
-
-            recognition.start();
-        }
-
-        function simulateAvatarTranslation() {
-            const input = document.getElementById('input-text-sign').value.trim().toLowerCase();
-            const statusDiv = document.getElementById('avatar-status');
-            
-            if(!input) return alert("Please enter or speak some text first.");
-
-            const signMap = {
-                "hello": "👋", "hi": "👋", "hey": "👋",
-                "good": "👍", "yes": "👍", "great": "👍",
-                "bad": "👎", "no": "👎",
-                "victory": "✌️", "two": "✌️", "peace": "✌️",
-                "wait": "✋", "stop": "✋", "five": "🖐",
-                "solid": "✊", "fist": "✊", "bump": "👊🏻",
-                "love": "🤟", 
-                "water": "💧",
-                "me": "🧍", "i": "🧍",
-                "up": "☝️", "one": "☝️",
-                "you": "🫵🏻", "point": "🫵🏻",
-                "call": "🤙", "phone": "🤙",
-                "rock": "🤘",
-                "pinched": "🤌🏻", "what": "🤌🏻",
-                "pinching": "🤏", "little": "🤏", "small": "🤏",
-                "heart": "🫰🏻", "snap": "🫰🏻"
-            };
-
-            const words = input.replace(/[.,!?]/g, '').split(' ');
-            let emojis = [];
-            let hasUnknown = false;
-
-            words.forEach(word => {
-                if (signMap[word]) {
-                    emojis.push(signMap[word]);
-                } else if (word !== "") {
-                    emojis.push("👐"); 
-                    hasUnknown = true;
-                }
-            });
-
-            const emojiString = emojis.join(" ");
-
-            statusDiv.innerHTML = `
-                <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-500 mb-4 mx-auto"></div>
-                <h2 class="text-xl font-bold text-teal-300">Rendering ISL Sequence...</h2>
-                <p class="text-gray-400 mt-2">Parsing: "${input}"</p>
-            `;
-            
-            setTimeout(() => {
-                statusDiv.innerHTML = `
-                    <div class="flex gap-4 justify-center flex-wrap mb-4 px-4">
-                        <span class="text-7xl md:text-8xl block animate-bounce drop-shadow-[0_0_15px_rgba(20,184,166,0.5)]">${emojiString}</span>
-                    </div>
-                    <h2 class="text-xl font-bold text-gray-200">Translation Complete</h2>
-                    <p class="text-teal-400 mt-2">Signs for: <span class="text-white font-medium">"${input}"</span></p>
-                    ${hasUnknown ? `<p class="text-xs text-gray-500 mt-2">(Unknown words displayed as 👐)</p>` : ''}
-                `;
-            }, 1000); 
-        }
-
-        let autoSpeakEnabled = false;
-        let lastSpokenText = ""; 
-
-        function toggleAutoSpeak() {
-            autoSpeakEnabled = !autoSpeakEnabled;
-            const btn = document.getElementById('btn-auto-speak');
-            const icon = document.getElementById('auto-speak-icon');
-            const text = document.getElementById('auto-speak-text');
-            
-            if (autoSpeakEnabled) {
-                btn.classList.replace('bg-white/5', 'bg-teal-500/20');
-                btn.classList.replace('text-gray-300', 'text-teal-300');
-                btn.classList.replace('border-white/10', 'border-teal-500/50');
-                icon.innerText = "🔊";
-                text.innerText = "Auto-Speak: ON";
-                window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
-            } else {
-                btn.classList.replace('bg-teal-500/20', 'bg-white/5');
-                btn.classList.replace('text-teal-300', 'text-gray-300');
-                btn.classList.replace('border-teal-500/50', 'border-white/10');
-                icon.innerText = "🔇";
-                text.innerText = "Auto-Speak: OFF";
-                window.speechSynthesis.cancel();
-            }
-        }
-
-        function copyText() {
-            const text = document.getElementById('translated-text').innerText;
-            navigator.clipboard.writeText(text).then(() => alert("Translation copied to clipboard!"));
-        }
-
-        const RENDER_URL = "wss://thehomosapiens-sih2026.onrender.com/ws/translate"; 
-        let ws;
-        const videoElement = document.getElementById('webcam');
-        const outputElement = document.getElementById('translated-text');
-        const canvasOverlay = document.getElementById('overlay');
-        const ctx = canvasOverlay.getContext('2d');
-        const statusDot = document.getElementById('connection-dot');
-        const statusText = document.getElementById('connection-status');
-        const fpsCounter = document.getElementById('fps-counter');
-
-        let isProcessing = false;
-        let framesProcessed = 0;
-        let lastFpsTime = performance.now();
-
-        const HAND_CONNECTIONS = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[0,17],[17,18],[18,19],[19,20]];
-
-        function connectWebSocket() {
-            ws = new WebSocket(RENDER_URL);
-            ws.onopen = () => {
-                statusDot.classList.replace('bg-red-500', 'bg-green-500');
-                statusText.innerText = "Live Server Connected";
-                outputElement.innerText = "Waiting for gesture...";
-            };
-
-            ws.onmessage = (event) => {
-                isProcessing = false; 
-                framesProcessed++;
-                const now = performance.now();
-                if (now - lastFpsTime >= 1000) {
-                    fpsCounter.innerText = framesProcessed;
-                    framesProcessed = 0; lastFpsTime = now;
-                }
-
-                const response = JSON.parse(event.data);
-                const currentText = response.translation;
-                
-                if (outputElement) outputElement.innerText = currentText;
-                
-                if (autoSpeakEnabled && currentText && currentText !== "No hand detected" && currentText !== "Sign not recognized..." && currentText !== "Waiting for gesture...") {
-                    if (currentText !== lastSpokenText) {
-                        window.speechSynthesis.cancel(); 
-                        const cleanText = currentText.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').trim();
-                        window.speechSynthesis.speak(new SpeechSynthesisUtterance(cleanText));
-                        lastSpokenText = currentText;
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0D9488', // Teal 600
+                        primaryDark: '#0F766E', // Teal 700
+                        surface: '#FFFFFF',
+                        background: '#F9FAFB', // Gray 50
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
                     }
                 }
-                
-                if (currentText === "No hand detected") lastSpokenText = ""; 
-                
-                if (response.landmarks && response.landmarks.length > 0) {
-                    drawLandmarks(response.landmarks);
-                } else {
-                    ctx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
-                }
-            };
-
-            ws.onerror = () => {
-                statusDot.classList.replace('bg-green-500', 'bg-red-500');
-                statusText.innerText = "Connection Error";
-                isProcessing = false;
-            };
-
-            ws.onclose = () => {
-                statusDot.classList.replace('bg-green-500', 'bg-red-500');
-                statusText.innerText = "Reconnecting...";
-                setTimeout(connectWebSocket, 3000);
-            };
-        }
-
-        function drawLandmarks(landmarks) {
-            canvasOverlay.width = videoElement.videoWidth; canvasOverlay.height = videoElement.videoHeight;
-            ctx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
-            if (!landmarks || landmarks.length === 0) return;
-            
-            ctx.strokeStyle = '#0D9488'; ctx.lineWidth = 3;
-            HAND_CONNECTIONS.forEach(connection => {
-                const startPoint = landmarks[connection[0]], endPoint = landmarks[connection[1]];
-                ctx.beginPath();
-                ctx.moveTo(startPoint.x * canvasOverlay.width, startPoint.y * canvasOverlay.height);
-                ctx.lineTo(endPoint.x * canvasOverlay.width, endPoint.y * canvasOverlay.height);
-                ctx.stroke();
-            });
-
-            ctx.fillStyle = '#ef4444'; 
-            landmarks.forEach(point => {
-                ctx.beginPath();
-                ctx.arc(point.x * canvasOverlay.width, point.y * canvasOverlay.height, 5, 0, 2 * Math.PI);
-                ctx.fill();
-            });
-        }
-
-        async function startCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: "user" } });
-                videoElement.srcObject = stream;
-                videoElement.onloadedmetadata = () => {
-                    canvasOverlay.width = videoElement.videoWidth; canvasOverlay.height = videoElement.videoHeight;
-                    connectWebSocket(); startVideoStreaming();
-                };
-            } catch (err) {
-                outputElement.innerText = "Camera access required.";
             }
         }
-
-        function startVideoStreaming() {
-            const hiddenCanvas = document.createElement("canvas"), hiddenCtx = hiddenCanvas.getContext("2d");
-            setInterval(() => {
-                if (isProcessing) return;
-                if (ws && ws.readyState === WebSocket.OPEN && videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
-                    isProcessing = true; 
-                    hiddenCanvas.width = 320; hiddenCanvas.height = 240; 
-                    hiddenCtx.drawImage(videoElement, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-                    ws.send(hiddenCanvas.toDataURL("image/jpeg", 0.3));
-                }
-            }, 30);
+    </script>
+    <style>
+        /* CSS SECTION */
+        body {
+            background-color: #F9FAFB;
+            color: #111827;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Flat UI specific utilities */
+        .flat-card {
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .flat-button {
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .flat-button:active {
+            transform: translateY(1px);
         }
 
-        window.addEventListener('load', startCamera);
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #F3F4F6; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+        /* Hide elements by default for routing */
+        .view-hidden { display: none !important; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- HTML SECTION -->
+
+    <!-- VIEW 1: AUTHENTICATION -->
+    <div id="view-auth" class="flex-grow flex items-center justify-center p-4">
+        <div class="flat-card w-full max-w-md p-8">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-teal-50 text-primary text-3xl rounded-full flex items-center justify-center mx-auto mb-4 border border-teal-100">
+                    🤟
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900">Welcome Back</h1>
+                <p class="text-sm text-gray-500 mt-2">Sign in to your account</p>
+            </div>
+            
+            <form id="login-form" class="space-y-5" onsubmit="event.preventDefault(); handleLogin();">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" id="email-input" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="you@example.com" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password-input" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="flat-button w-full bg-primary hover:bg-primaryDark text-white font-semibold py-3 px-4 rounded-md shadow-sm mt-4">
+                    Sign In
+                </button>
+                <div class="text-center text-sm text-gray-500 mt-4">
+                    Don't have an account? <a href="#" class="text-primary font-medium hover:underline">Register here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIEW 2: DASHBOARD -->
+    <div id="view-dashboard" class="view-hidden flex-grow flex flex-col">
+        <!-- Top Navbar -->
+        <header class="bg-surface border-b border-gray-200 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🤟</span>
+                    <span class="font-bold text-lg text-gray-900 tracking-tight">TheHomoSapiens</span>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="relative">
+                    <button id="user-menu-btn" class="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md transition-colors border border-transparent hover:border-gray-200">
+                        <div class="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                            <span id="user-initial">S</span>
+                        </div>
+                        <span id="user-welcome-text" class="text-sm font-medium text-gray-700 hidden md:block">Welcome, User</span>
+                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    
+                    <!-- Dropdown (Hidden by default) -->
+                    <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Account Settings</a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <a href="#" onclick="handleLogout()" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
+            
+            <!-- Quick Actions -->
+            <section>
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Start Translation</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Action 1 -->
+                    <button onclick="openTranslation('sign-to-text')" class="flat-card hover:border-primary hover:shadow-md transition-all p-6 flex flex-col items-center justify-center gap-4 group text-left w-full">
+                        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl group-hover:bg-blue-100 transition-colors">
+                            📷
+                        </div>
+                        <div class="text-center">
+                            <h3 class="font-bold text-gray-900 text-lg">Sign → Text / Audio</h3>
+                            <p class="text-sm text-gray-500 mt-1">Use your camera to translate ISL gestures into readable text and speech.</p>
+                        </div>
+                    </button>
+                    
+                    <!-- Action 2 -->
+                    <button onclick="openTranslation('text-to-sign')" class="flat-card hover:border-primary hover:shadow-md transition-all p-6 flex flex-col items-center justify-center gap-4 group text-left w-full">
+                        <div class="w-16 h-16 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center text-2xl group-hover:bg-teal-100 transition-colors">
+                            🤖
+                        </div>
+                        <div class="text-center">
+                            <h3 class="font-bold text-gray-900 text-lg">Text / Audio → Sign</h3>
+                            <p class="text-sm text-gray-500 mt-1">Speak or type to generate 3D avatar sign language animations.</p>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Chat History -->
+            <section class="flex-grow flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Recent Conversations</h2>
+                    <span class="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded">Cloud Synced</span>
+                </div>
+                
+                <div class="flat-card flex-grow flex flex-col overflow-hidden bg-white">
+                    <!-- Header Row -->
+                    <div class="bg-gray-50 border-b border-gray-200 px-6 py-3 grid grid-cols-12 gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <div class="col-span-3">Date & Time</div>
+                        <div class="col-span-2">Mode</div>
+                        <div class="col-span-7">Transcript / Data</div>
+                    </div>
+                    
+                    <!-- History List Container -->
+                    <div id="history-list" class="flex-grow overflow-y-auto custom-scrollbar max-h-[400px]">
+                        <!-- Populated by JS -->
+                        <div class="p-8 text-center text-gray-500">Loading history...</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- VIEW 3: TRANSLATION WORKSPACE -->
+    <div id="view-translation" class="view-hidden flex-grow flex flex-col h-screen bg-gray-900">
+        <!-- Workspace Navbar -->
+        <header class="bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center text-white shadow-md">
+            <div class="flex items-center gap-4">
+                <button onclick="switchView('dashboard')" class="hover:bg-gray-700 p-2 rounded-md transition-colors flex items-center gap-2 text-sm font-medium">
+                    ← Back to Dashboard
+                </button>
+                <div class="h-6 w-px bg-gray-600"></div>
+                <span id="workspace-title" class="font-bold">Translation Mode</span>
+            </div>
+            
+            <!-- Save Conversation Toggle -->
+            <div class="flex items-center gap-3 bg-gray-700 px-4 py-2 rounded-md border border-gray-600">
+                <span class="text-sm font-medium">Save to History</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="save-toggle" class="sr-only peer" checked>
+                    <div class="w-9 h-5 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-500"></div>
+                </label>
+            </div>
+        </header>
+
+        <!-- Workspace Content -->
+        <main class="flex-grow flex flex-col md:flex-row p-4 gap-4 overflow-hidden">
+            <!-- Media Area (Camera or Avatar) -->
+            <div class="flex-1 bg-black rounded-lg border border-gray-700 flex items-center justify-center relative overflow-hidden shadow-inner">
+                <div id="media-placeholder" class="text-center text-gray-500">
+                    <span class="text-6xl mb-4 block" id="media-icon">📷</span>
+                    <p class="font-medium">Media Feed Active</p>
+                    <p class="text-sm">(Simulation)</p>
+                </div>
+                <!-- Mock Record indicator -->
+                <div class="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded shadow-lg flex items-center gap-2">
+                    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
+                </div>
+            </div>
+
+            <!-- Interaction & Transcript Area -->
+            <div class="w-full md:w-96 bg-gray-800 rounded-lg border border-gray-700 flex flex-col p-4 shadow-lg">
+                <h3 class="text-gray-300 text-sm font-bold uppercase tracking-wider mb-4">Live Transcript</h3>
+                
+                <div class="flex-grow bg-gray-900 rounded-md border border-gray-700 p-4 mb-4 text-gray-200 font-medium overflow-y-auto custom-scrollbar" id="live-transcript">
+                    Waiting for input...
+                </div>
+
+                <!-- Input area for simulation -->
+                <div class="mt-auto flex flex-col gap-2">
+                    <input type="text" id="mock-input" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white placeholder-gray-400 focus:outline-none focus:border-teal-500" placeholder="Type a sentence to translate...">
+                    <button onclick="processMockTranslation()" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3 rounded-md transition-colors">
+                        Process Translation
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT SECTION -->
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // 1. Setup Firebase Configuration using environment variables
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-sih-app';
+        let firebaseConfig = {};
+        try {
+            firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        } catch (e) {
+            console.error("Error parsing firebase config:", e);
+        }
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Global State
+        let currentUser = null;
+        let currentMode = '';
+        let historyUnsubscribe = null;
+
+        // 2. Authentication Flow
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                // Update UI with user info (Mocking name based on email input or default)
+                const emailInput = document.getElementById('email-input').value;
+                const displayName = emailInput ? emailInput.split('@')[0] : 'Sayan';
+                
+                document.getElementById('user-welcome-text').innerText = `Welcome, ${displayName}`;
+                document.getElementById('user-initial').innerText = displayName.charAt(0).toUpperCase();
+                
+                switchView('dashboard');
+                loadChatHistory();
+            } else {
+                currentUser = null;
+                switchView('auth');
+            }
+        });
+
+        // Attach to window so HTML inline onclick can access it
+        window.handleLogin = async () => {
+            const btn = document.querySelector('#login-form button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Authenticating...';
+            btn.disabled = true;
+
+            try {
+                // In this collaborative environment, we use the provided token or fallback to anonymous
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                // onAuthStateChanged will handle the redirect
+            } catch (error) {
+                console.error("Login Error:", error);
+                alert("Authentication failed. Please try again.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        window.handleLogout = async () => {
+            if(historyUnsubscribe) historyUnsubscribe();
+            await signOut(auth);
+            document.getElementById('user-dropdown').classList.add('hidden');
+        };
+
+        // 3. UI Routing & General Interactions
+        window.switchView = (viewName) => {
+            document.getElementById('view-auth').classList.add('view-hidden');
+            document.getElementById('view-dashboard').classList.add('view-hidden');
+            document.getElementById('view-translation').classList.add('view-hidden');
+            
+            document.getElementById(`view-${viewName}`).classList.remove('view-hidden');
+        };
+
+        // Dropdown toggle logic
+        document.getElementById('user-menu-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdown = document.getElementById('user-dropdown');
+            dropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', () => {
+            document.getElementById('user-dropdown').classList.add('hidden');
+        });
+
+        window.openTranslation = (mode) => {
+            currentMode = mode;
+            const title = mode === 'sign-to-text' ? 'Sign → Text / Audio' : 'Text / Audio → Sign';
+            const icon = mode === 'sign-to-text' ? '📷' : '🤖';
+            
+            document.getElementById('workspace-title').innerText = title;
+            document.getElementById('media-icon').innerText = icon;
+            document.getElementById('live-transcript').innerText = 'Waiting for input...';
+            document.getElementById('mock-input').value = '';
+            
+            switchView('translation');
+        };
+
+        // 4. Database Logic (History)
+        
+        // Save conversation to Firestore
+        window.processMockTranslation = async () => {
+            const input = document.getElementById('mock-input').value.trim();
+            if(!input) return;
+
+            const transcriptArea = document.getElementById('live-transcript');
+            transcriptArea.innerText = input;
+
+            const shouldSave = document.getElementById('save-toggle').checked;
+            
+            if (shouldSave && currentUser) {
+                try {
+                    // CRITICAL RULE 1: Strict Paths -> /artifacts/{appId}/users/{userId}/history
+                    const historyRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'history');
+                    
+                    const now = new Date();
+                    await addDoc(historyRef, {
+                        mode: currentMode,
+                        content: input,
+                        timestamp: now.getTime(),
+                        dateString: now.toLocaleString()
+                    });
+                    
+                    // Clear input after processing
+                    document.getElementById('mock-input').value = '';
+                    
+                } catch (error) {
+                    console.error("Error saving history:", error);
+                }
+            } else {
+                document.getElementById('mock-input').value = '';
+            }
+        };
+
+        // Load conversation history from Firestore
+        function loadChatHistory() {
+            if (!currentUser) return;
+
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '<div class="p-8 text-center text-gray-500">Loading history...</div>';
+
+            // CRITICAL RULE 1: Strict Paths
+            const historyRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'history');
+
+            // CRITICAL RULE 2: No Complex Queries. Fetch all, sort in memory.
+            // CRITICAL RULE 3: Error callbacks required for onSnapshot.
+            historyUnsubscribe = onSnapshot(historyRef, (snapshot) => {
+                let records = [];
+                snapshot.forEach((doc) => {
+                    records.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Sort descending by timestamp in memory
+                records.sort((a, b) => b.timestamp - a.timestamp);
+
+                if (records.length === 0) {
+                    historyList.innerHTML = `
+                        <div class="p-12 flex flex-col items-center justify-center text-gray-400">
+                            <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                            <p>No translation history yet.</p>
+                            <p class="text-sm mt-1">Saved conversations will appear here.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Render list
+                historyList.innerHTML = records.map(record => `
+                    <div class="border-b border-gray-100 px-6 py-4 grid grid-cols-12 gap-4 items-center hover:bg-gray-50 transition-colors">
+                        <div class="col-span-3 text-sm text-gray-500 flex flex-col">
+                            <span class="font-medium text-gray-700">${record.dateString.split(',')[0]}</span>
+                            <span class="text-xs">${record.dateString.split(',')[1]}</span>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${record.mode === 'sign-to-text' ? 'bg-blue-100 text-blue-800' : 'bg-teal-100 text-teal-800'}">
+                                ${record.mode === 'sign-to-text' ? 'Sign → Text' : 'Text → Sign'}
+                            </span>
+                        </div>
+                        <div class="col-span-7 text-sm text-gray-900 font-medium truncate pr-4" title="${record.content}">
+                            "${record.content}"
+                        </div>
+                    </div>
+                `).join('');
+
+            }, (error) => {
+                console.error("Error fetching history:", error);
+                historyList.innerHTML = '<div class="p-8 text-center text-red-500">Error loading history. Check permissions.</div>';
+            });
+        }
     </script>
 </body>
 </html>
