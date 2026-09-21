@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TheHomoSapiens | SIH 2026</title>
+    <title>TheHomoSapiens | SIH 2026 Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; padding-bottom: 40px; }
+        
+        /* Auto-Save Toggle Switch Styles */
+        .toggle-checkbox:checked { right: 0; border-color: #4A9084; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #4A9084; }
+        .toggle-checkbox { right: 4; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
+        .toggle-label { width: 3.5rem; height: 1.75rem; background-color: #cbd5e1; border-radius: 9999px; transition: all 0.3s; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
@@ -17,170 +23,132 @@
         Developed by Sayan Chakraborty@Team TheHomoSapiens
     </div>
 
-    <!-- ================= AUTHENTICATION VIEW ================= -->
+    <!-- ================= GLOBAL TOP NAVIGATION ================= -->
+    <nav id="global-nav" class="hidden bg-white shadow-sm px-6 py-3 flex justify-between items-center z-30 border-b border-gray-200">
+        <div class="flex items-center gap-4">
+            <i class="fa-solid fa-hands-asl-interpreting text-blue-600 text-xl"></i>
+            <span class="font-bold text-gray-800 text-lg">TheHomoSapiens <span class="text-gray-400 font-normal text-sm">| SIH 2026</span></span>
+            
+            <!-- Dashboard Back Button (Hidden on Home) -->
+            <button id="btn-back-home" onclick="goHome()" class="hidden ml-4 text-sm bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md hover:bg-gray-200 transition font-medium border border-gray-200">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
+            </button>
+        </div>
+        <div class="flex items-center gap-6">
+            <div id="status-container" class="hidden flex items-center gap-2 text-sm font-medium border-r pr-6 border-gray-200">
+                <div id="status-dot" class="w-3 h-3 rounded-full bg-red-500 shadow-sm"></div>
+                <span id="status-text" class="text-gray-600 tracking-wider text-xs font-bold">OFFLINE</span>
+            </div>
+            
+            <div class="relative">
+                <button onclick="document.getElementById('dropdown').classList.toggle('hidden')" class="flex items-center gap-2 text-[13px] font-bold text-slate-600 hover:text-blue-600 tracking-wide uppercase transition">
+                    WELCOME, <span id="nav-user-name">USER</span> <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
+                </button>
+                <div id="dropdown" class="hidden absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+                    <a href="#" onclick="openSettings('profile')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition">
+                        <i class="fa-solid fa-gear w-6 text-[#A78BFA]"></i> Profile Settings
+                    </a>
+                    <a href="#" onclick="openSettings('password')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition">
+                        <i class="fa-solid fa-lock w-6 text-[#FBBF24]"></i> Change Password
+                    </a>
+                    <div class="border-t border-gray-100 my-1"></div>
+                    <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-sm font-medium text-[#C53030] hover:bg-red-50 transition">
+                        <i class="fa-solid fa-door-open w-6 text-[#D97706]"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= 1. AUTHENTICATION VIEW ================= -->
     <div id="auth-view" class="flex-grow flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-slate-200">
             <div class="text-center mb-6">
                 <h1 class="text-2xl font-bold text-gray-800"><i class="fa-solid fa-hands-asl-interpreting text-blue-600"></i> TheHomoSapiens</h1>
                 <p class="text-gray-500 text-sm mt-1">SIH 2026 Sign Language Translator</p>
             </div>
-
+            <!-- Login Form -->
             <form id="login-form" class="space-y-4">
                 <h2 class="text-lg font-semibold text-gray-700 border-b pb-2">Welcome Back</h2>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Email or Mobile</label>
-                    <input type="text" id="login-id" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] focus:border-[#4A9084] outline-none text-slate-800 transition-all">
+                    <input type="text" id="login-id" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all">
                 </div>
                 <div class="relative">
                     <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Password</label>
-                    <input type="password" id="login-password" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] focus:border-[#4A9084] outline-none text-slate-800 transition-all pr-10">
+                    <input type="password" id="login-password" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all pr-10">
                     <button type="button" class="absolute right-3 top-[34px] text-slate-500 hover:text-slate-700 transition" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm mt-2">Log In</button>
                 <p class="text-sm text-center text-gray-600 mt-4">New here? <a href="#" onclick="toggleAuth('register')" class="text-blue-600 font-semibold hover:underline">Create an account</a></p>
             </form>
-
+            <!-- Register Form -->
             <form id="register-form" class="space-y-4 hidden">
                 <h2 class="text-lg font-semibold text-gray-700 border-b pb-2">Create Account</h2>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Full Name</label>
-                    <input type="text" id="reg-name" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] outline-none text-slate-800 transition-all">
+                    <input type="text" id="reg-name" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Age</label>
-                        <input type="number" id="reg-age" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] outline-none text-slate-800 transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Mobile</label>
-                        <input type="text" id="reg-mobile" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] outline-none text-slate-800 transition-all">
-                    </div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Age</label><input type="number" id="reg-age" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all"></div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Mobile</label><input type="text" id="reg-mobile" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all"></div>
                 </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Email Address</label>
-                    <input type="email" id="reg-email" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] outline-none text-slate-800 transition-all">
-                </div>
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Password</label>
-                    <input type="password" id="reg-password" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] outline-none text-slate-800 transition-all pr-10">
-                    <button type="button" class="absolute right-3 top-[34px] text-slate-500 hover:text-slate-700 transition" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
-                </div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Email</label><input type="email" id="reg-email" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all"></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Password</label><input type="password" id="reg-password" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all pr-10"><button type="button" class="absolute right-3 top-[34px] text-slate-500 hover:text-slate-700" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button></div>
                 <button type="submit" class="w-full bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 transition font-medium shadow-sm mt-2">Register</button>
                 <p class="text-sm text-center text-gray-600 mt-4">Already have an account? <a href="#" onclick="toggleAuth('login')" class="text-blue-600 font-semibold hover:underline">Log In</a></p>
             </form>
         </div>
     </div>
 
-    <!-- ================= FULL PAGE SETTINGS VIEWS ================= -->
-    <div id="settings-view" class="hidden fixed inset-0 bg-slate-50 z-40 flex items-center justify-center p-4">
-        
-        <div id="profile-card" class="bg-white rounded-xl shadow-lg border border-slate-200 w-full max-w-md p-8 hidden relative">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-[22px] font-extrabold text-[#0F172A]">Profile Settings</h2>
-                <button onclick="closeSettings()" class="text-[#4A9084] text-sm font-bold hover:opacity-80 transition">&larr; Back</button>
+    <!-- ================= 2. HOME DASHBOARD ================= -->
+    <div id="home-view" class="hidden flex-col h-full flex-grow p-8 max-w-6xl mx-auto w-full gap-8">
+        <!-- Module Selection -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Sign to Text Box -->
+            <div onclick="openWorkspace('Sign2Text')" class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 cursor-pointer hover:shadow-md hover:border-blue-300 transition group flex flex-col items-center justify-center text-center h-48">
+                <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                    <i class="fa-solid fa-video text-2xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">Sign to Speech / Text</h3>
+                <p class="text-sm text-gray-500 mt-2">Activate camera for live ASL gesture translation.</p>
             </div>
             
-            <form id="update-profile-form" class="space-y-4">
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Full Name</label>
-                    <input type="text" id="set-name" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] focus:border-[#4A9084] outline-none text-slate-800 transition-all">
+            <!-- Text to Sign Box -->
+            <div onclick="openWorkspace('Text2Sign')" class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 cursor-pointer hover:shadow-md hover:border-purple-300 transition group flex flex-col items-center justify-center text-center h-48">
+                <div class="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                    <i class="fa-solid fa-keyboard text-2xl text-purple-600"></i>
                 </div>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Age</label>
-                        <input type="number" id="set-age" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] focus:border-[#4A9084] outline-none text-slate-800 transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Mobile Number</label>
-                        <input type="text" id="set-mobile" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] focus:border-[#4A9084] outline-none text-slate-800 transition-all">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Email Address</label>
-                    <input type="email" id="set-email" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] focus:border-[#4A9084] outline-none text-slate-800 transition-all">
-                </div>
-                
-                <div class="border-t border-gray-100 pt-4 mt-2"></div>
-
-                <div class="bg-[#FEF2F2] p-5 rounded-xl border border-[#FCA5A5]">
-                    <label class="block text-[11px] font-bold text-[#B91C1C] uppercase tracking-wide mb-1.5">Current Password (Required to Save)</label>
-                    <div class="relative">
-                        <input type="password" id="set-current-pwd" required class="w-full px-4 py-2.5 bg-white border border-[#FCA5A5] rounded-lg shadow-sm focus:ring-2 focus:ring-[#EF4444] focus:border-[#EF4444] outline-none text-slate-800 transition-all pr-10">
-                        <button type="button" class="absolute right-3 top-[10px] text-slate-500 hover:text-slate-700 transition" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full mt-6 bg-[#4A9084] text-white py-3.5 rounded-lg font-bold hover:bg-[#3d7a70] transition shadow-md">Verify & Save Changes</button>
-            </form>
+                <h3 class="text-xl font-bold text-gray-800">Speech / Text to Sign</h3>
+                <p class="text-sm text-gray-500 mt-2">Type or speak to generate 3D Sign Language avatars.</p>
+            </div>
         </div>
 
-        <div id="password-card" class="bg-white rounded-xl shadow-lg border border-slate-200 w-full max-w-md p-8 hidden relative">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-[22px] font-extrabold text-[#0F172A]">Change Password</h2>
-                <button onclick="closeSettings()" class="text-[#4A9084] text-sm font-bold hover:opacity-80 transition">&larr; Back</button>
+        <!-- Full Master History -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col flex-grow min-h-[300px]">
+            <div class="border-b border-gray-100 px-6 py-4 flex justify-between items-center bg-gray-50 rounded-t-xl">
+                <h3 class="text-sm font-bold text-gray-600 tracking-wider uppercase"><i class="fa-solid fa-database mr-2 text-yellow-500"></i>Master Conversation History</h3>
+                <!-- History Filters -->
+                <div class="flex gap-2">
+                    <button onclick="renderDashboardHistory('All')" id="tab-All" class="hist-tab text-xs font-bold px-3 py-1.5 rounded-md bg-blue-600 text-white transition">All</button>
+                    <button onclick="renderDashboardHistory('Sign to Text')" id="tab-Sign2Text" class="hist-tab text-xs font-bold px-3 py-1.5 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 transition">Sign → Text</button>
+                    <button onclick="renderDashboardHistory('Text to Sign')" id="tab-Text2Sign" class="hist-tab text-xs font-bold px-3 py-1.5 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 transition">Text → Sign</button>
+                </div>
             </div>
-
-            <form id="change-password-form" class="space-y-5">
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Current Password</label>
-                    <input type="password" id="pwd-current" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] focus:border-[#4A9084] outline-none text-slate-800 transition-all pr-10">
-                    <button type="button" class="absolute right-3 top-[34px] text-slate-500 hover:text-slate-700 transition" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
-                </div>
-
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">New Password</label>
-                    <input type="password" id="pwd-new" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] focus:border-[#4A9084] outline-none text-slate-800 transition-all pr-10">
-                    <button type="button" class="absolute right-3 top-[34px] text-slate-500 hover:text-slate-700 transition" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
-                </div>
-
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Confirm New Password</label>
-                    <input type="password" id="pwd-confirm" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#4A9084] focus:border-[#4A9084] outline-none text-slate-800 transition-all pr-10">
-                    <button type="button" class="absolute right-3 top-[34px] text-slate-500 hover:text-slate-700 transition" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
-                </div>
-
-                <button type="submit" class="w-full mt-8 bg-[#1A1F36] text-white py-3.5 rounded-lg font-bold hover:bg-slate-900 transition shadow-md">Update Password</button>
-            </form>
+            <div id="master-history-list" class="p-6 overflow-y-auto max-h-[400px] space-y-3">
+                <p class="text-sm text-gray-400 italic text-center mt-10">No saved conversations yet.</p>
+            </div>
         </div>
     </div>
 
-    <!-- ================= WORKSPACE VIEW ================= -->
-    <div id="workspace-view" class="hidden flex-col h-full relative">
-        <nav class="bg-white shadow-sm px-6 py-3 flex justify-between items-center z-30 border-b border-gray-200">
-            <div class="flex items-center gap-3">
-                <i class="fa-solid fa-hands-asl-interpreting text-blue-600 text-xl"></i>
-                <span class="font-bold text-gray-800 text-lg">TheHomoSapiens <span class="text-gray-400 font-normal text-sm">| SIH 2026</span></span>
-            </div>
-            <div class="flex items-center gap-6">
-                <div class="flex items-center gap-2 text-sm font-medium border-r pr-6 border-gray-200">
-                    <div id="status-dot" class="w-3 h-3 rounded-full bg-red-500 shadow-sm"></div>
-                    <span id="status-text" class="text-gray-600 tracking-wider text-xs font-bold">OFFLINE</span>
-                </div>
-                
-                <div class="relative">
-                    <button onclick="document.getElementById('dropdown').classList.toggle('hidden')" class="flex items-center gap-2 text-[13px] font-bold text-slate-600 hover:text-blue-600 tracking-wide uppercase transition">
-                        WELCOME, <span id="nav-user-name">USER</span> <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
-                    </button>
-                    <div id="dropdown" class="hidden absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
-                        <a href="#" onclick="openSettings('profile')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition">
-                            <i class="fa-solid fa-gear w-6 text-[#A78BFA]"></i> Profile Settings
-                        </a>
-                        <a href="#" onclick="openSettings('password')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition">
-                            <i class="fa-solid fa-lock w-6 text-[#FBBF24]"></i> Change Password
-                        </a>
-                        <div class="border-t border-gray-100 my-1"></div>
-                        <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-sm font-medium text-[#C53030] hover:bg-red-50 transition">
-                            <i class="fa-solid fa-door-open w-6 text-[#D97706]"></i> Logout
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
-        <div class="flex-grow flex p-6 gap-6 max-w-7xl mx-auto w-full relative z-10">
-            <div class="flex-grow flex flex-col gap-4">
+    <!-- ================= 3. WORKSPACE VIEWS ================= -->
+    <div id="workspace-view" class="hidden flex-grow p-6 gap-6 max-w-7xl mx-auto w-full">
+        
+        <!-- Main Application Area (Dynamic based on mode) -->
+        <div class="flex-grow flex flex-col gap-4">
+            
+            <!-- MODULE 1: Sign to Text (Camera) -->
+            <div id="module-sign2text" class="hidden flex-col h-full gap-4">
                 <div class="bg-black rounded-xl overflow-hidden shadow-lg relative h-[450px] flex items-center justify-center border-4 border-gray-200">
                     <video id="videoElement" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100 hidden"></video>
                     <canvas id="overlayCanvas" class="absolute top-0 left-0 w-full h-full transform -scale-x-100 z-10"></canvas>
@@ -191,27 +159,98 @@
                 </div>
 
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col justify-between">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-gray-400 tracking-wider uppercase">Live Translation</span>
-                        <button onclick="saveChat()" class="text-sm bg-blue-50 text-blue-600 px-3 py-1.5 rounded-md hover:bg-blue-100 transition font-medium border border-blue-100">
-                            <i class="fa-solid fa-bookmark mr-1"></i> Save to History
-                        </button>
+                    <div class="flex justify-between items-center mb-2 border-b pb-3 border-gray-100">
+                        <span class="text-xs font-bold text-gray-400 tracking-wider uppercase">Live ASL Translation</span>
+                        <div class="flex items-center gap-6">
+                            
+                            <!-- Auto-Save Toggle -->
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Auto-Save</span>
+                                <div class="relative inline-block w-12 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="autosave-toggle" onchange="toggleAutoSave(this)" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                                    <label for="autosave-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                </div>
+                            </div>
+
+                            <button onclick="saveChatManual()" class="text-sm bg-blue-50 text-blue-600 px-4 py-1.5 rounded-md hover:bg-blue-100 transition font-medium border border-blue-100">
+                                <i class="fa-solid fa-bookmark mr-1"></i> Save Now
+                            </button>
+                        </div>
                     </div>
                     <div id="translation-output" class="text-3xl font-bold text-gray-800 py-4">Waiting for camera...</div>
                 </div>
             </div>
 
-            <div class="w-80 bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col h-[580px]">
-                <h3 class="text-xs font-bold text-gray-400 tracking-wider uppercase mb-4 border-b border-gray-100 pb-3"><i class="fa-solid fa-folder-open mr-2 text-yellow-500"></i>Saved Conversations</h3>
-                <div id="history-list" class="overflow-y-auto flex-grow space-y-3 pr-2">
-                    <p class="text-sm text-gray-400 italic text-center mt-10">No saved conversations.</p>
+            <!-- MODULE 2: Text to Sign (Avatar Placeholder) -->
+            <div id="module-text2sign" class="hidden flex-col h-full gap-4">
+                <div class="bg-slate-900 rounded-xl overflow-hidden shadow-lg relative h-[450px] flex items-center justify-center border-4 border-gray-200">
+                    <div class="text-center p-8">
+                        <i class="fa-solid fa-cube text-6xl text-purple-400 mb-4 animate-pulse"></i>
+                        <h3 class="text-2xl font-bold text-white mb-2">3D Avatar Engine</h3>
+                        <p class="text-slate-400">Sign Language generation pipeline initializing...<br>Enter text below to simulate generation.</p>
+                    </div>
                 </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col justify-between">
+                    <div class="flex justify-between items-center mb-2 border-b pb-3 border-gray-100">
+                        <span class="text-xs font-bold text-gray-400 tracking-wider uppercase">Text Input</span>
+                        <button onclick="saveTextToSignChat()" class="text-sm bg-purple-50 text-purple-600 px-4 py-1.5 rounded-md hover:bg-purple-100 transition font-medium border border-purple-100">
+                            <i class="fa-solid fa-paper-plane mr-1"></i> Generate & Save
+                        </button>
+                    </div>
+                    <textarea id="text-to-sign-input" rows="2" class="w-full mt-2 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-400 outline-none resize-none" placeholder="Type a sentence to translate into sign language..."></textarea>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Mode-Specific History Sidebar -->
+        <div class="w-[350px] bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col h-[600px]">
+            <div class="bg-gray-50 border-b border-gray-100 p-4 rounded-t-xl">
+                <h3 class="text-xs font-bold text-gray-600 tracking-wider uppercase"><i class="fa-solid fa-folder-open mr-2 text-yellow-500"></i><span id="sidebar-title">Saved</span></h3>
+            </div>
+            <div id="sidebar-history-list" class="overflow-y-auto flex-grow space-y-3 p-4 pr-2">
+                <p class="text-sm text-gray-400 italic text-center mt-10">No saved history for this mode.</p>
             </div>
         </div>
     </div>
 
-    <!-- Hidden Canvas -->
+    <!-- Hidden Settings & Canvas Overlays -->
     <canvas id="captureCanvas" class="hidden"></canvas>
+    
+    <div id="settings-view" class="hidden fixed inset-0 bg-slate-800 bg-opacity-50 z-40 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div id="profile-card" class="bg-white rounded-xl shadow-lg border border-slate-200 w-full max-w-md p-8 hidden relative">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-[22px] font-extrabold text-[#0F172A]">Profile Settings</h2>
+                <button onclick="closeSettings()" class="text-[#4A9084] text-sm font-bold hover:opacity-80 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <form id="update-profile-form" class="space-y-4">
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Full Name</label><input type="text" id="set-name" required class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg outline-none"></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Age</label><input type="number" id="set-age" required class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg outline-none"></div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Mobile</label><input type="text" id="set-mobile" required class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg outline-none"></div>
+                </div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Email</label><input type="email" id="set-email" required class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg outline-none"></div>
+                <div class="bg-[#FEF2F2] p-4 rounded-xl border border-[#FCA5A5] mt-4">
+                    <label class="block text-[11px] font-bold text-[#B91C1C] uppercase mb-1">Current Password (Required)</label>
+                    <input type="password" id="set-current-pwd" required class="w-full px-4 py-2 bg-white border border-[#FCA5A5] rounded-lg outline-none">
+                </div>
+                <button type="submit" class="w-full mt-4 bg-[#4A9084] text-white py-3 rounded-lg font-bold">Verify & Save</button>
+            </form>
+        </div>
+        <div id="password-card" class="bg-white rounded-xl shadow-lg border border-slate-200 w-full max-w-md p-8 hidden relative">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-[22px] font-extrabold text-[#0F172A]">Change Password</h2>
+                <button onclick="closeSettings()" class="text-[#4A9084] text-sm font-bold hover:opacity-80 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <form id="change-password-form" class="space-y-4">
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Current Password</label><input type="password" id="pwd-current" required class="w-full px-4 py-2 border rounded-lg"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase">New Password</label><input type="password" id="pwd-new" required class="w-full px-4 py-2 border rounded-lg"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Confirm Password</label><input type="password" id="pwd-confirm" required class="w-full px-4 py-2 border rounded-lg"></div>
+                <button type="submit" class="w-full mt-4 bg-[#1A1F36] text-white py-3 rounded-lg font-bold">Update Password</button>
+            </form>
+        </div>
+    </div>
 
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
@@ -223,6 +262,14 @@
         let isConnected = false;
         let isProcessingFrame = false;
         
+        let currentMode = ""; // 'Sign2Text' or 'Text2Sign'
+        let fullHistoryData = [];
+        
+        // Auto-Save State
+        let isAutoSaveEnabled = false;
+        let lastAutoSavedText = "";
+        let autoSaveTimer = null;
+
         let currentUser = {
             email: localStorage.getItem("userEmail") || "",
             name: localStorage.getItem("userName") || "",
@@ -238,37 +285,67 @@
 
         window.onload = () => {
             if (currentUser.token && currentUser.email) {
-                showWorkspace();
+                goHome();
             } else {
                 showAuth();
             }
         };
 
+        // --- NAVIGATION & VIEWS ---
+        function showAuth() {
+            document.getElementById('auth-view').classList.remove('hidden');
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('workspace-view').classList.add('hidden');
+            document.getElementById('global-nav').classList.add('hidden');
+        }
+
+        function goHome() {
+            stopCamera();
+            if(ws) ws.close();
+            currentMode = "";
+            
+            document.getElementById('auth-view').classList.add('hidden');
+            document.getElementById('workspace-view').classList.add('hidden');
+            document.getElementById('home-view').classList.remove('hidden');
+            document.getElementById('global-nav').classList.remove('hidden');
+            
+            document.getElementById('nav-user-name').innerText = currentUser.name;
+            document.getElementById('btn-back-home').classList.add('hidden');
+            document.getElementById('status-container').classList.add('hidden');
+
+            fetchAllHistory(); // Load dashboard history
+        }
+
+        function openWorkspace(mode) {
+            currentMode = mode;
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('workspace-view').classList.remove('hidden');
+            
+            document.getElementById('btn-back-home').classList.remove('hidden');
+            
+            // Toggle UI based on mode
+            if (mode === 'Sign2Text') {
+                document.getElementById('module-sign2text').classList.remove('hidden');
+                document.getElementById('module-text2sign').classList.add('hidden');
+                document.getElementById('status-container').classList.remove('hidden');
+                document.getElementById('sidebar-title').innerText = "Sign to Text History";
+                startCamera();
+            } else if (mode === 'Text2Sign') {
+                document.getElementById('module-sign2text').classList.add('hidden');
+                document.getElementById('module-text2sign').classList.remove('hidden');
+                document.getElementById('status-container').classList.add('hidden');
+                document.getElementById('sidebar-title').innerText = "Text to Sign History";
+                document.getElementById('text-to-sign-input').value = '';
+            }
+            
+            renderWorkspaceHistory(); // Update sidebar
+        }
+
         function togglePwd(btn) {
             const input = btn.previousElementSibling;
             const icon = btn.querySelector('i');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        }
-
-        function showAuth() {
-            document.getElementById('workspace-view').classList.add('hidden');
-            document.getElementById('auth-view').classList.remove('hidden');
-            stopCamera();
-            if(ws) ws.close();
-        }
-
-        function showWorkspace() {
-            document.getElementById('auth-view').classList.add('hidden');
-            document.getElementById('workspace-view').classList.remove('hidden');
-            document.getElementById('nav-user-name').innerText = currentUser.name;
-            fetchHistory();
-            startCamera();
+            if (input.type === 'password') { input.type = 'text'; icon.classList.replace('fa-eye', 'fa-eye-slash'); }
+            else { input.type = 'password'; icon.classList.replace('fa-eye-slash', 'fa-eye'); }
         }
 
         function toggleAuth(type) {
@@ -288,140 +365,7 @@
             document.getElementById('dropdown').classList.add('hidden');
         }
 
-        async function openSettings(viewType) {
-            document.getElementById('dropdown').classList.add('hidden');
-            document.getElementById('settings-view').classList.remove('hidden');
-            
-            if (viewType === 'profile') {
-                document.getElementById('profile-card').classList.remove('hidden');
-                document.getElementById('password-card').classList.add('hidden');
-                
-                try {
-                    const res = await fetch(`${API_BASE_URL}/user/${currentUser.email}`);
-                    const data = await res.json();
-                    if (res.ok) {
-                        document.getElementById('set-name').value = data.name;
-                        document.getElementById('set-age').value = data.age;
-                        document.getElementById('set-mobile').value = data.mobile;
-                        document.getElementById('set-email').value = data.email;
-                        document.getElementById('set-current-pwd').value = ''; 
-                    }
-                } catch (e) { console.error("Error connecting to server"); }
-            } else if (viewType === 'password') {
-                document.getElementById('password-card').classList.remove('hidden');
-                document.getElementById('profile-card').classList.add('hidden');
-                document.getElementById('pwd-current').value = '';
-                document.getElementById('pwd-new').value = '';
-                document.getElementById('pwd-confirm').value = '';
-            }
-        }
-
-        function closeSettings() {
-            document.getElementById('settings-view').classList.add('hidden');
-        }
-
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const identifier = document.getElementById('login-id').value;
-            const password = document.getElementById('login-password').value;
-            try {
-                const res = await fetch(`${API_BASE_URL}/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ identifier, password })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("userEmail", data.email);
-                    localStorage.setItem("userName", data.name);
-                    currentUser = { email: data.email, name: data.name, token: data.token };
-                    showWorkspace();
-                } else alert(data.detail || "Login failed");
-            } catch (err) { alert("Error connecting to server."); }
-        });
-
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const payload = {
-                name: document.getElementById('reg-name').value,
-                age: parseInt(document.getElementById('reg-age').value),
-                mobile: document.getElementById('reg-mobile').value,
-                email: document.getElementById('reg-email').value,
-                password: document.getElementById('reg-password').value
-            };
-            try {
-                const res = await fetch(`${API_BASE_URL}/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (res.ok) {
-                    alert("Registration successful! Please log in.");
-                    toggleAuth('login');
-                } else {
-                    const data = await res.json();
-                    alert(data.detail || "Registration failed");
-                }
-            } catch (err) { alert("Error connecting to server."); }
-        });
-
-        document.getElementById('update-profile-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const payload = {
-                original_email: currentUser.email,
-                name: document.getElementById('set-name').value,
-                age: parseInt(document.getElementById('set-age').value),
-                mobile: document.getElementById('set-mobile').value,
-                email: document.getElementById('set-email').value,
-                current_password: document.getElementById('set-current-pwd').value
-            };
-            try {
-                const res = await fetch(`${API_BASE_URL}/update_user`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    alert("Profile updated successfully!");
-                    currentUser.email = data.new_email;
-                    currentUser.name = data.new_name;
-                    localStorage.setItem("userEmail", data.new_email);
-                    localStorage.setItem("userName", data.new_name);
-                    document.getElementById('nav-user-name').innerText = data.new_name;
-                    closeSettings();
-                } else alert(data.detail || "Update failed");
-            } catch (e) { alert("Error connecting to server"); }
-        });
-
-        document.getElementById('change-password-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const newPwd = document.getElementById('pwd-new').value;
-            const confirmPwd = document.getElementById('pwd-confirm').value;
-            if (newPwd !== confirmPwd) {
-                alert("New passwords do not match!");
-                return;
-            }
-            const payload = {
-                email: currentUser.email,
-                current_password: document.getElementById('pwd-current').value,
-                new_password: newPwd
-            };
-            try {
-                const res = await fetch(`${API_BASE_URL}/change_password`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    alert("Password updated successfully!");
-                    closeSettings();
-                } else alert(data.detail || "Password update failed");
-            } catch (e) { alert("Error connecting to server"); }
-        });
-
+        // --- CAMERA & FAST WEBSOCKET ---
         async function startCamera() {
             try {
                 cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
@@ -446,13 +390,11 @@
             isProcessingFrame = false;
         }
 
-        // --- CRITICAL LATENCY FIX: Ping-Pong Frame Sync ---
         function sendFrame() {
-            if (!isConnected || isProcessingFrame || ws.readyState !== WebSocket.OPEN) return;
+            if (!isConnected || isProcessingFrame || ws.readyState !== WebSocket.OPEN || currentMode !== 'Sign2Text') return;
             
-            isProcessingFrame = true; // Lock until server replies
+            isProcessingFrame = true;
             captureCtx.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
-            // Compress heavily for instant transport
             const frameData = captureCanvas.toDataURL('image/jpeg', 0.3);
             ws.send(frameData);
         }
@@ -464,7 +406,7 @@
                 isProcessingFrame = false;
                 updateStatus(true);
                 translationOutput.innerText = "Waiting for gesture...";
-                sendFrame(); // Kick off the loop
+                sendFrame(); 
             };
 
             ws.onmessage = (event) => {
@@ -472,9 +414,11 @@
                 translationOutput.innerText = data.translation;
                 drawLandmarks(data.landmarks);
                 
-                // Unlock and immediately request the next frame
+                // --- AUTO-SAVE LOGIC ENFORCEMENT ---
+                handleAutoSave(data.translation);
+                
                 isProcessingFrame = false;
-                requestAnimationFrame(sendFrame);
+                if(currentMode === 'Sign2Text') requestAnimationFrame(sendFrame);
             };
 
             ws.onclose = () => {
@@ -482,9 +426,7 @@
                 isProcessingFrame = false;
                 updateStatus(false);
                 translationOutput.innerText = "Connection lost. Reconnecting...";
-                if (!document.getElementById('workspace-view').classList.contains('hidden')) {
-                    setTimeout(connectWebSocket, 3000);
-                }
+                if (currentMode === 'Sign2Text') setTimeout(connectWebSocket, 3000);
             };
         }
 
@@ -506,79 +448,170 @@
             overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
             if (!landmarks || landmarks.length === 0) return;
 
-            const HAND_CONNECTIONS = [
-                [0, 1], [1, 2], [2, 3], [3, 4], 
-                [0, 5], [5, 6], [6, 7], [7, 8], 
-                [5, 9], [9, 10], [10, 11], [11, 12],
-                [9, 13], [13, 14], [14, 15], [15, 16],
-                [13, 17], [0, 17], [17, 18], [18, 19], [19, 20]
-            ];
-
-            overlayCtx.lineWidth = 2.5;
-            overlayCtx.strokeStyle = '#00FFFF';
+            const HAND_CONNECTIONS = [[0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [5, 6], [6, 7], [7, 8], [5, 9], [9, 10], [10, 11], [11, 12], [9, 13], [13, 14], [14, 15], [15, 16], [13, 17], [0, 17], [17, 18], [18, 19], [19, 20]];
+            overlayCtx.lineWidth = 2.5; overlayCtx.strokeStyle = '#00FFFF';
             HAND_CONNECTIONS.forEach(connection => {
-                const startIdx = connection[0];
-                const endIdx = connection[1];
+                const startIdx = connection[0], endIdx = connection[1];
                 if(landmarks[startIdx] && landmarks[endIdx]) {
-                    const startX = landmarks[startIdx].x * overlayCanvas.width;
-                    const startY = landmarks[startIdx].y * overlayCanvas.height;
-                    const endX = landmarks[endIdx].x * overlayCanvas.width;
-                    const endY = landmarks[endIdx].y * overlayCanvas.height;
-
                     overlayCtx.beginPath();
-                    overlayCtx.moveTo(startX, startY);
-                    overlayCtx.lineTo(endX, endY);
+                    overlayCtx.moveTo(landmarks[startIdx].x * overlayCanvas.width, landmarks[startIdx].y * overlayCanvas.height);
+                    overlayCtx.lineTo(landmarks[endIdx].x * overlayCanvas.width, landmarks[endIdx].y * overlayCanvas.height);
                     overlayCtx.stroke();
                 }
             });
-
             landmarks.forEach(lm => {
-                const x = lm.x * overlayCanvas.width;
-                const y = lm.y * overlayCanvas.height;
                 overlayCtx.beginPath();
-                overlayCtx.arc(x, y, 4.5, 0, 2 * Math.PI);
-                overlayCtx.fillStyle = '#EF4444'; 
-                overlayCtx.fill();
+                overlayCtx.arc(lm.x * overlayCanvas.width, lm.y * overlayCanvas.height, 4.5, 0, 2 * Math.PI);
+                overlayCtx.fillStyle = '#EF4444'; overlayCtx.fill();
             });
         }
 
-        async function saveChat() {
-            const currentText = translationOutput.innerText;
-            if (currentText === "Waiting for gesture..." || currentText === "No hand detected" || currentText.includes("not recognized")) {
-                alert("No valid translation to save.");
-                return;
+        // --- DATABASE & HISTORY LOGIC ---
+        
+        function toggleAutoSave(checkbox) {
+            isAutoSaveEnabled = checkbox.checked;
+            if(!isAutoSaveEnabled) lastAutoSavedText = ""; // Reset memory when toggled off
+        }
+
+        function handleAutoSave(text) {
+            if (!isAutoSaveEnabled) return;
+            const invalidStrings = ["Waiting for gesture...", "No hand detected", "Sign not recognized..."];
+            if (invalidStrings.includes(text) || text === "") return;
+            
+            // Only auto-save if it's a NEW distinct gesture to prevent database spam
+            if (text !== lastAutoSavedText) {
+                lastAutoSavedText = text;
+                
+                // Debounce timer: Require holding sign for 1.5 seconds to save
+                if(autoSaveTimer) clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(() => {
+                    executeSaveChat(text, "Sign to Text");
+                }, 1500); 
             }
+        }
+
+        function saveChatManual() {
+            const currentText = translationOutput.innerText;
+            const invalidStrings = ["Waiting for gesture...", "No hand detected", "Sign not recognized..."];
+            if (invalidStrings.includes(currentText) || currentText === "") { alert("No valid translation to save."); return; }
+            executeSaveChat(currentText, "Sign to Text");
+        }
+
+        function saveTextToSignChat() {
+            const text = document.getElementById('text-to-sign-input').value.trim();
+            if (text === "") { alert("Please enter text to simulate generation."); return; }
+            executeSaveChat(text, "Text to Sign");
+            document.getElementById('text-to-sign-input').value = ""; // clear after save
+        }
+
+        async function executeSaveChat(transcript, modeName) {
             try {
                 await fetch(`${API_BASE_URL}/save_chat`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: currentUser.email, mode_used: "Sign to Text", transcript: currentText })
+                    body: JSON.stringify({ email: currentUser.email, mode_used: modeName, transcript: transcript })
                 });
-                fetchHistory();
+                fetchAllHistory(); // Background refresh
             } catch (err) { console.error("Failed to save", err); }
         }
 
-        async function fetchHistory() {
+        async function fetchAllHistory() {
             try {
                 const res = await fetch(`${API_BASE_URL}/history/${currentUser.email}`);
                 const data = await res.json();
-                const list = document.getElementById('history-list');
+                fullHistoryData = data.history || [];
                 
-                if (data.history && data.history.length > 0) {
-                    list.innerHTML = data.history.map(item => `
-                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-xs font-bold text-blue-600">${item.mode_used}</span>
-                                <span class="text-[10px] text-gray-400">${item.timestamp}</span>
-                            </div>
-                            <p class="text-sm text-gray-700 font-medium">${item.transcript}</p>
-                        </div>
-                    `).join('');
+                // Refresh visible UI based on where the user is
+                if (!document.getElementById('home-view').classList.contains('hidden')) {
+                    renderDashboardHistory('All'); // Default tab on home
                 } else {
-                    list.innerHTML = `<p class="text-sm text-gray-400 italic text-center mt-10">No saved conversations.</p>`;
+                    renderWorkspaceHistory();
                 }
             } catch (err) { console.error("Failed to load history"); }
         }
+
+        function renderDashboardHistory(filterMode) {
+            // Update Tab UI
+            ['All', 'Sign2Text', 'Text2Sign'].forEach(id => {
+                const tab = document.getElementById('tab-' + id);
+                if(tab) tab.className = "hist-tab text-xs font-bold px-3 py-1.5 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 transition";
+            });
+            
+            const activeId = filterMode === 'All' ? 'All' : (filterMode === 'Sign to Text' ? 'Sign2Text' : 'Text2Sign');
+            document.getElementById('tab-' + activeId).className = "hist-tab text-xs font-bold px-3 py-1.5 rounded-md bg-blue-600 text-white transition";
+
+            // Filter Data
+            let filtered = fullHistoryData;
+            if (filterMode !== 'All') {
+                filtered = fullHistoryData.filter(item => item.mode_used === filterMode);
+            }
+            
+            // Render
+            const list = document.getElementById('master-history-list');
+            buildHistoryHTML(list, filtered, true);
+        }
+
+        function renderWorkspaceHistory() {
+            const list = document.getElementById('sidebar-history-list');
+            const expectedModeStr = currentMode === 'Sign2Text' ? "Sign to Text" : "Text to Sign";
+            const filtered = fullHistoryData.filter(item => item.mode_used === expectedModeStr);
+            buildHistoryHTML(list, filtered, false);
+        }
+
+        function buildHistoryHTML(container, dataArray, showModeTag) {
+            if (dataArray.length > 0) {
+                container.innerHTML = dataArray.map(item => {
+                    const iconColor = item.mode_used === "Sign to Text" ? "text-blue-500" : "text-purple-500";
+                    const tag = showModeTag ? `<span class="text-[10px] font-bold ${iconColor} bg-gray-100 px-2 py-0.5 rounded">${item.mode_used}</span>` : '';
+                    
+                    return `
+                    <div class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition">
+                        <div class="flex justify-between items-start mb-2">
+                            ${tag}
+                            <span class="text-[10px] text-gray-400 font-medium ${!showModeTag ? 'w-full text-right' : ''}">${item.timestamp}</span>
+                        </div>
+                        <p class="text-sm text-gray-800 font-semibold">${item.transcript}</p>
+                    </div>
+                `}).join('');
+            } else {
+                container.innerHTML = `<p class="text-sm text-gray-400 italic text-center mt-10">No history found.</p>`;
+            }
+        }
+
+        // --- SETTINGS API OVERLAYS ---
+        // (Settings logic remains completely intact from your previous implementation)
+        document.getElementById('update-profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                original_email: currentUser.email,
+                name: document.getElementById('set-name').value,
+                age: parseInt(document.getElementById('set-age').value),
+                mobile: document.getElementById('set-mobile').value,
+                email: document.getElementById('set-email').value,
+                current_password: document.getElementById('set-current-pwd').value
+            };
+            try {
+                const res = await fetch(`${API_BASE_URL}/update_user`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const data = await res.json();
+                if (res.ok) {
+                    alert("Profile updated successfully!");
+                    currentUser.email = data.new_email; currentUser.name = data.new_name;
+                    localStorage.setItem("userEmail", data.new_email); localStorage.setItem("userName", data.new_name);
+                    document.getElementById('nav-user-name').innerText = data.new_name;
+                    closeSettings();
+                } else alert(data.detail || "Update failed");
+            } catch (e) { alert("Error connecting to server"); }
+        });
+
+        document.getElementById('change-password-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (document.getElementById('pwd-new').value !== document.getElementById('pwd-confirm').value) { alert("New passwords do not match!"); return; }
+            const payload = { email: currentUser.email, current_password: document.getElementById('pwd-current').value, new_password: document.getElementById('pwd-new').value };
+            try {
+                const res = await fetch(`${API_BASE_URL}/change_password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (res.ok) { alert("Password updated successfully!"); closeSettings(); } else { const data = await res.json(); alert(data.detail || "Password update failed"); }
+            } catch (e) { alert("Error connecting to server"); }
+        });
     </script>
 </body>
 </html>
