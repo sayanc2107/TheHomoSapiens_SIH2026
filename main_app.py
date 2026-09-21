@@ -27,16 +27,14 @@ app.add_middleware(
 )
 
 # 2. Initialize the Gesture Recognizer API (It handles both landmarks AND gestures)
-# 2. Initialize the Gesture Recognizer API with STRICTER thresholds
-base_options = python.BaseOptions(model_asset_path=MODEL_PATH)
+# Force the AI to be 85% sure before drawing a skeleton
 options = vision.GestureRecognizerOptions(
     base_options=base_options, 
     num_hands=1,
-    min_hand_detection_confidence=0.7,   # Must be 70% sure it's a hand
-    min_hand_presence_confidence=0.7,    # Must be 70% sure the hand is still there
-    min_tracking_confidence=0.7          # Stricter skeleton tracking
+    min_hand_detection_confidence=0.85,   
+    min_hand_presence_confidence=0.85,    
+    min_tracking_confidence=0.85          
 )
-recognizer = vision.GestureRecognizer.create_from_options(options)
 # 3. Helper to format Google's raw category names into SIH presentation strings
 def format_gesture(category_name):
     gesture_map = {
