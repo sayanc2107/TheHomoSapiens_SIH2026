@@ -45,6 +45,14 @@ def format_gesture(category_name):
         "Thumb_Up": "👍 Good / Yes",
         "Victory": "✌️ Victory / Peace",
         "ILoveYou": "🤟 I Love You",
+        "PointingAtUser": "🫵🏻 Pointing at You",
+        "Call_Me": "🤙 Call Me",
+        "Rock_On": "🤘 Rock On",
+        "Fist_Bump": "👊🏻 Fist Bump",
+        "High_Five": "🖐 High Five",
+        "PinchedHand": "🤌🏻 Pinched Hand",
+        "Pinching": "🤏 Pinching",
+        "PinchedFingers": "🫰🏻 Pinched Fingers",
         "None": "Sign not recognized..."
     }
     return gesture_map.get(category_name, category_name)
