@@ -504,19 +504,47 @@
             }
         }
 
+        // --- NEW LINE-BASED LANDMARK TRACKER ---
         function drawLandmarks(landmarks) {
             overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
             if (!landmarks || landmarks.length === 0) return;
+
+            // Definition of the 21 joints that make up a hand skeletal structure
+            const HAND_CONNECTIONS = [
+                [0, 1], [1, 2], [2, 3], [3, 4], // Thumb
+                [0, 5], [5, 6], [6, 7], [7, 8], // Index
+                [5, 9], [9, 10], [10, 11], [11, 12], // Middle
+                [9, 13], [13, 14], [14, 15], [15, 16], // Ring
+                [13, 17], [0, 17], [17, 18], [18, 19], [19, 20] // Pinky & Palm
+            ];
+
+            // 1. Draw connecting lines (Teal/Cyan matching the image)
+            overlayCtx.lineWidth = 2.5;
+            overlayCtx.strokeStyle = '#00FFFF';
+            HAND_CONNECTIONS.forEach(connection => {
+                const startIdx = connection[0];
+                const endIdx = connection[1];
+                if(landmarks[startIdx] && landmarks[endIdx]) {
+                    const startX = landmarks[startIdx].x * overlayCanvas.width;
+                    const startY = landmarks[startIdx].y * overlayCanvas.height;
+                    const endX = landmarks[endIdx].x * overlayCanvas.width;
+                    const endY = landmarks[endIdx].y * overlayCanvas.height;
+
+                    overlayCtx.beginPath();
+                    overlayCtx.moveTo(startX, startY);
+                    overlayCtx.lineTo(endX, endY);
+                    overlayCtx.stroke();
+                }
+            });
+
+            // 2. Draw joints (Red dots matching the image)
             landmarks.forEach(lm => {
                 const x = lm.x * overlayCanvas.width;
                 const y = lm.y * overlayCanvas.height;
                 overlayCtx.beginPath();
-                overlayCtx.arc(x, y, 5, 0, 2 * Math.PI);
-                overlayCtx.fillStyle = '#FFFFFF';
+                overlayCtx.arc(x, y, 4, 0, 2 * Math.PI);
+                overlayCtx.fillStyle = '#EF4444'; 
                 overlayCtx.fill();
-                overlayCtx.lineWidth = 2;
-                overlayCtx.strokeStyle = '#000000';
-                overlayCtx.stroke();
             });
         }
 
