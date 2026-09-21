@@ -99,6 +99,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# --- SYSTEM ENDPOINTS ---
+
+@app.get("/")
+async def root():
+    return {"status": "Active", "message": "TheHomoSapiens API is running securely!"}
+
 # --- USER ACCOUNTS ---
 
 @app.post("/api/register")
