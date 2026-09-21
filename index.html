@@ -74,7 +74,6 @@
     <!-- ================= FULL PAGE SETTINGS VIEWS ================= -->
     <div id="settings-view" class="hidden fixed inset-0 bg-slate-50 z-40 flex items-center justify-center p-4">
         
-        <!-- Profile Settings Card -->
         <div id="profile-card" class="bg-white rounded-xl shadow-lg border border-slate-200 w-full max-w-md p-8 hidden relative">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-[22px] font-extrabold text-[#0F172A]">Profile Settings</h2>
@@ -105,7 +104,6 @@
                 
                 <div class="border-t border-gray-100 pt-4 mt-2"></div>
 
-                <!-- Red Confirmation Box -->
                 <div class="bg-[#FEF2F2] p-5 rounded-xl border border-[#FCA5A5]">
                     <label class="block text-[11px] font-bold text-[#B91C1C] uppercase tracking-wide mb-1.5">Current Password (Required to Save)</label>
                     <div class="relative">
@@ -118,7 +116,6 @@
             </form>
         </div>
 
-        <!-- Change Password Card -->
         <div id="password-card" class="bg-white rounded-xl shadow-lg border border-slate-200 w-full max-w-md p-8 hidden relative">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-[22px] font-extrabold text-[#0F172A]">Change Password</h2>
@@ -223,8 +220,8 @@
 
         let ws;
         let cameraStream;
-        let captureInterval;
         let isConnected = false;
+        let isProcessingFrame = false;
         
         let currentUser = {
             email: localStorage.getItem("userEmail") || "",
@@ -247,7 +244,6 @@
             }
         };
 
-        // --- UI UTILS ---
         function togglePwd(btn) {
             const input = btn.previousElementSibling;
             const icon = btn.querySelector('i');
@@ -260,7 +256,6 @@
             }
         }
 
-        // --- NAVIGATION ---
         function showAuth() {
             document.getElementById('workspace-view').classList.add('hidden');
             document.getElementById('auth-view').classList.remove('hidden');
@@ -293,7 +288,6 @@
             document.getElementById('dropdown').classList.add('hidden');
         }
 
-        // --- SETTINGS OVERLAYS ---
         async function openSettings(viewType) {
             document.getElementById('dropdown').classList.add('hidden');
             document.getElementById('settings-view').classList.remove('hidden');
@@ -326,7 +320,6 @@
             document.getElementById('settings-view').classList.add('hidden');
         }
 
-        // --- AUTH API CALLS ---
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const identifier = document.getElementById('login-id').value;
@@ -373,7 +366,6 @@
             } catch (err) { alert("Error connecting to server."); }
         });
 
-        // --- UPDATE API CALLS ---
         document.getElementById('update-profile-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = {
@@ -407,12 +399,10 @@
             e.preventDefault();
             const newPwd = document.getElementById('pwd-new').value;
             const confirmPwd = document.getElementById('pwd-confirm').value;
-
             if (newPwd !== confirmPwd) {
                 alert("New passwords do not match!");
                 return;
             }
-
             const payload = {
                 email: currentUser.email,
                 current_password: document.getElementById('pwd-current').value,
@@ -432,7 +422,6 @@
             } catch (e) { alert("Error connecting to server"); }
         });
 
-        // --- CAMERA & FAST WEBSOCKET ---
         async function startCamera() {
             try {
                 cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
@@ -454,36 +443,45 @@
 
         function stopCamera() {
             if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
-            if (captureInterval) clearInterval(captureInterval);
+            isProcessingFrame = false;
+        }
+
+        // --- CRITICAL LATENCY FIX: Ping-Pong Frame Sync ---
+        function sendFrame() {
+            if (!isConnected || isProcessingFrame || ws.readyState !== WebSocket.OPEN) return;
+            
+            isProcessingFrame = true; // Lock until server replies
+            captureCtx.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
+            // Compress heavily for instant transport
+            const frameData = captureCanvas.toDataURL('image/jpeg', 0.3);
+            ws.send(frameData);
         }
 
         function connectWebSocket() {
             ws = new WebSocket(RENDER_URL);
             ws.onopen = () => {
                 isConnected = true;
+                isProcessingFrame = false;
                 updateStatus(true);
                 translationOutput.innerText = "Waiting for gesture...";
-                
-                captureInterval = setInterval(() => {
-                    if (ws.readyState === WebSocket.OPEN) {
-                        captureCtx.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
-                        const frameData = captureCanvas.toDataURL('image/jpeg', 0.4);
-                        ws.send(frameData);
-                    }
-                }, 100); 
+                sendFrame(); // Kick off the loop
             };
 
             ws.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 translationOutput.innerText = data.translation;
                 drawLandmarks(data.landmarks);
+                
+                // Unlock and immediately request the next frame
+                isProcessingFrame = false;
+                requestAnimationFrame(sendFrame);
             };
 
             ws.onclose = () => {
                 isConnected = false;
+                isProcessingFrame = false;
                 updateStatus(false);
                 translationOutput.innerText = "Connection lost. Reconnecting...";
-                if (captureInterval) clearInterval(captureInterval);
                 if (!document.getElementById('workspace-view').classList.contains('hidden')) {
                     setTimeout(connectWebSocket, 3000);
                 }
@@ -504,21 +502,18 @@
             }
         }
 
-        // --- NEW LINE-BASED LANDMARK TRACKER ---
         function drawLandmarks(landmarks) {
             overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
             if (!landmarks || landmarks.length === 0) return;
 
-            // Definition of the 21 joints that make up a hand skeletal structure
             const HAND_CONNECTIONS = [
-                [0, 1], [1, 2], [2, 3], [3, 4], // Thumb
-                [0, 5], [5, 6], [6, 7], [7, 8], // Index
-                [5, 9], [9, 10], [10, 11], [11, 12], // Middle
-                [9, 13], [13, 14], [14, 15], [15, 16], // Ring
-                [13, 17], [0, 17], [17, 18], [18, 19], [19, 20] // Pinky & Palm
+                [0, 1], [1, 2], [2, 3], [3, 4], 
+                [0, 5], [5, 6], [6, 7], [7, 8], 
+                [5, 9], [9, 10], [10, 11], [11, 12],
+                [9, 13], [13, 14], [14, 15], [15, 16],
+                [13, 17], [0, 17], [17, 18], [18, 19], [19, 20]
             ];
 
-            // 1. Draw connecting lines (Teal/Cyan matching the image)
             overlayCtx.lineWidth = 2.5;
             overlayCtx.strokeStyle = '#00FFFF';
             HAND_CONNECTIONS.forEach(connection => {
@@ -537,18 +532,16 @@
                 }
             });
 
-            // 2. Draw joints (Red dots matching the image)
             landmarks.forEach(lm => {
                 const x = lm.x * overlayCanvas.width;
                 const y = lm.y * overlayCanvas.height;
                 overlayCtx.beginPath();
-                overlayCtx.arc(x, y, 4, 0, 2 * Math.PI);
+                overlayCtx.arc(x, y, 4.5, 0, 2 * Math.PI);
                 overlayCtx.fillStyle = '#EF4444'; 
                 overlayCtx.fill();
             });
         }
 
-        // --- DATABASE HISTORY ---
         async function saveChat() {
             const currentText = translationOutput.innerText;
             if (currentText === "Waiting for gesture..." || currentText === "No hand detected" || currentText.includes("not recognized")) {

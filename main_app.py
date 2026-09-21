@@ -6,6 +6,7 @@ import urllib.request
 import datetime
 import jwt
 import bcrypt
+import asyncio
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -202,11 +203,11 @@ async def websocket_endpoint(websocket: WebSocket):
             
             if frame is None: continue
 
-            # ---> CRITICAL FIX: Convert OpenCV BGR format to MediaPipe RGB format <---
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
             mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
-            recognition_result = recognizer.recognize(mp_image)
+            
+            # --- CRITICAL LATENCY FIX: Offload heavy AI to background thread ---
+            recognition_result = await asyncio.to_thread(recognizer.recognize, mp_image)
             
             response = {"translation": "No hand detected", "landmarks": []}
             
@@ -220,4 +221,3 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_json(response)
     except WebSocketDisconnect:
         pass
-    
