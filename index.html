@@ -8,6 +8,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; padding-bottom: 40px; }
+        .form-label { @apply block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1; }
+        .form-input { @apply w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-slate-800; }
+        .pwd-btn { @apply absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 transition; }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
@@ -28,12 +31,13 @@
             <form id="login-form" class="space-y-4">
                 <h2 class="text-lg font-semibold text-gray-700 border-b pb-2">Welcome Back</h2>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Email or Mobile</label>
-                    <input type="text" id="login-id" required class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="form-label">Email or Mobile</label>
+                    <input type="text" id="login-id" required class="form-input">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="login-password" required class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                <div class="relative">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="login-password" required class="form-input">
+                    <button type="button" class="pwd-btn top-7" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-medium">Log In</button>
                 <p class="text-sm text-center text-gray-600 mt-4">New here? <a href="#" onclick="toggleAuth('register')" class="text-blue-600 font-semibold hover:underline">Create an account</a></p>
@@ -42,26 +46,27 @@
             <form id="register-form" class="space-y-4 hidden">
                 <h2 class="text-lg font-semibold text-gray-700 border-b pb-2">Create Account</h2>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input type="text" id="reg-name" required class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="reg-name" required class="form-input">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Age</label>
-                        <input type="number" id="reg-age" required class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="form-label">Age</label>
+                        <input type="number" id="reg-age" required class="form-input">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Mobile</label>
-                        <input type="text" id="reg-mobile" required class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="form-label">Mobile</label>
+                        <input type="text" id="reg-mobile" required class="form-input">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="reg-email" required class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="reg-email" required class="form-input">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="reg-password" required class="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                <div class="relative">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="reg-password" required class="form-input">
+                    <button type="button" class="pwd-btn top-7" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
                 </div>
                 <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-medium">Register</button>
                 <p class="text-sm text-center text-gray-600 mt-4">Already have an account? <a href="#" onclick="toggleAuth('login')" class="text-blue-600 font-semibold hover:underline">Log In</a></p>
@@ -69,58 +74,125 @@
         </div>
     </div>
 
-    <!-- ================= SETTINGS MODAL ================= -->
-    <div id="settings-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto p-6">
-            <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h2 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-user-gear mr-2 text-blue-600"></i>Profile Settings</h2>
-                <button onclick="closeSettings()" class="text-gray-500 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+    <!-- ================= FULL PAGE SETTINGS VIEWS ================= -->
+    <div id="settings-view" class="hidden fixed inset-0 bg-slate-50 z-40 flex items-center justify-center p-4">
+        
+        <!-- Profile Settings Card -->
+        <div id="profile-card" class="bg-white rounded-xl shadow-sm border border-gray-100 w-full max-w-md p-8 hidden relative">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-[22px] font-bold text-slate-800">Profile Settings</h2>
+                <button onclick="closeSettings()" class="text-[#4A9084] text-sm font-semibold hover:opacity-80 transition">&larr; Back</button>
             </div>
             
-            <form id="update-profile-form" class="space-y-3 mb-6">
-                <h3 class="font-semibold text-gray-700 text-sm uppercase tracking-wide">Update Information</h3>
-                <input type="text" id="set-name" required placeholder="Name" class="w-full px-3 py-2 border rounded-lg">
-                <input type="number" id="set-age" required placeholder="Age" class="w-full px-3 py-2 border rounded-lg">
-                <input type="text" id="set-mobile" required placeholder="Mobile" class="w-full px-3 py-2 border rounded-lg">
-                <input type="email" id="set-email" required placeholder="Email" class="w-full px-3 py-2 border rounded-lg">
-                <input type="password" id="set-current-pwd" required placeholder="Current Password (Required)" class="w-full px-3 py-2 border rounded-lg bg-gray-50">
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700">Save Profile</button>
-            </form>
+            <form id="update-profile-form" class="space-y-4">
+                <div>
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="set-name" required class="form-input bg-gray-50/50">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Age</label>
+                        <input type="number" id="set-age" required class="form-input bg-gray-50/50">
+                    </div>
+                    <div>
+                        <label class="form-label">Mobile Number</label>
+                        <input type="text" id="set-mobile" required class="form-input bg-gray-50/50">
+                    </div>
+                </div>
 
-            <form id="change-password-form" class="space-y-3 border-t pt-4">
-                <h3 class="font-semibold text-gray-700 text-sm uppercase tracking-wide">Change Password</h3>
-                <input type="password" id="pwd-current" required placeholder="Current Password" class="w-full px-3 py-2 border rounded-lg">
-                <input type="password" id="pwd-new" required placeholder="New Password" class="w-full px-3 py-2 border rounded-lg">
-                <button type="submit" class="w-full bg-gray-800 text-white py-2 rounded-lg font-medium hover:bg-gray-900">Update Password</button>
+                <div>
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="set-email" required class="form-input bg-gray-50/50">
+                </div>
+                
+                <div class="border-t pt-4 mt-2"></div>
+
+                <!-- Red Confirmation Box -->
+                <div class="bg-[#FFF5F5] p-4 rounded-lg border border-red-100">
+                    <label class="block text-[11px] font-bold text-[#C53030] uppercase tracking-wide mb-2">Current Password (Required to Save)</label>
+                    <div class="relative">
+                        <input type="password" id="set-current-pwd" required class="form-input border-red-200 bg-white">
+                        <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full mt-6 bg-[#4A9084] text-white py-3 rounded-lg font-medium hover:bg-teal-700 transition">Verify & Save Changes</button>
+            </form>
+        </div>
+
+        <!-- Change Password Card -->
+        <div id="password-card" class="bg-white rounded-xl shadow-sm border border-gray-100 w-full max-w-md p-8 hidden relative">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-[22px] font-bold text-slate-800">Change Password</h2>
+                <button onclick="closeSettings()" class="text-[#4A9084] text-sm font-semibold hover:opacity-80 transition">&larr; Back</button>
+            </div>
+
+            <form id="change-password-form" class="space-y-5">
+                <div>
+                    <label class="form-label">Current Password</label>
+                    <div class="relative">
+                        <input type="password" id="pwd-current" required class="form-input bg-gray-50/50">
+                        <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">New Password</label>
+                    <div class="relative">
+                        <input type="password" id="pwd-new" required class="form-input bg-gray-50/50">
+                        <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">Confirm New Password</label>
+                    <div class="relative">
+                        <input type="password" id="pwd-confirm" required class="form-input bg-gray-50/50">
+                        <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full mt-8 bg-[#1A1F36] text-white py-3 rounded-lg font-medium hover:bg-slate-800 transition">Update Password</button>
             </form>
         </div>
     </div>
 
     <!-- ================= WORKSPACE VIEW ================= -->
-    <div id="workspace-view" class="hidden flex-col h-full">
-        <nav class="bg-white shadow-sm px-6 py-3 flex justify-between items-center">
+    <div id="workspace-view" class="hidden flex-col h-full relative">
+        <nav class="bg-white shadow-sm px-6 py-3 flex justify-between items-center z-30">
             <div class="flex items-center gap-3">
                 <i class="fa-solid fa-hands-asl-interpreting text-blue-600 text-xl"></i>
                 <span class="font-bold text-gray-800 text-lg">TheHomoSapiens <span class="text-gray-400 font-normal text-sm">| SIH 2026</span></span>
             </div>
             <div class="flex items-center gap-6">
-                <div class="flex items-center gap-2 text-sm font-medium">
+                <div class="flex items-center gap-2 text-sm font-medium border-r pr-6 border-gray-200">
                     <div id="status-dot" class="w-3 h-3 rounded-full bg-red-500"></div>
                     <span id="status-text" class="text-gray-600 tracking-wider text-xs">OFFLINE</span>
                 </div>
+                
+                <!-- Redesigned Dropdown -->
                 <div class="relative">
-                    <button onclick="document.getElementById('dropdown').classList.toggle('hidden')" class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-blue-600">
-                        WELCOME, <span id="nav-user-name" class="uppercase">USER</span> <i class="fa-solid fa-chevron-down text-xs"></i>
+                    <button onclick="document.getElementById('dropdown').classList.toggle('hidden')" class="flex items-center gap-2 text-[13px] font-bold text-slate-600 hover:text-blue-600 tracking-wide uppercase transition">
+                        WELCOME, <span id="nav-user-name">USER</span> <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
                     </button>
-                    <div id="dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border z-50">
-                        <a href="#" onclick="openSettings(); document.getElementById('dropdown').classList.add('hidden')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"><i class="fa-solid fa-gear mr-2"></i>Settings</a>
-                        <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-50 rounded-b-md"><i class="fa-solid fa-right-from-bracket mr-2"></i>Logout</a>
+                    <div id="dropdown" class="hidden absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
+                        <a href="#" onclick="openSettings('profile')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-gray-50 transition">
+                            <i class="fa-solid fa-gear w-6 text-[#A78BFA]"></i> Profile Settings
+                        </a>
+                        <a href="#" onclick="openSettings('password')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-gray-50 transition">
+                            <i class="fa-solid fa-lock w-6 text-[#FBBF24]"></i> Change Password
+                        </a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-sm font-medium text-[#C53030] hover:bg-red-50 transition">
+                            <i class="fa-solid fa-door-open w-6 text-[#D97706]"></i> Logout
+                        </a>
                     </div>
                 </div>
             </div>
         </nav>
 
-        <div class="flex-grow flex p-6 gap-6 max-w-7xl mx-auto w-full">
+        <div class="flex-grow flex p-6 gap-6 max-w-7xl mx-auto w-full relative z-10">
             <div class="flex-grow flex flex-col gap-4">
                 <div class="bg-black rounded-xl overflow-hidden shadow-lg relative h-[450px] flex items-center justify-center border-4 border-gray-200">
                     <video id="videoElement" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100 hidden"></video>
@@ -185,6 +257,20 @@
             }
         };
 
+        // --- UI UTILS ---
+        function togglePwd(btn) {
+            const input = btn.previousElementSibling;
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // --- NAVIGATION ---
         function showAuth() {
             document.getElementById('workspace-view').classList.add('hidden');
             document.getElementById('auth-view').classList.remove('hidden');
@@ -217,7 +303,40 @@
             document.getElementById('dropdown').classList.add('hidden');
         }
 
-        // --- AUTH & SETTINGS API CALLS ---
+        // --- SETTINGS OVERLAYS ---
+        async function openSettings(viewType) {
+            document.getElementById('dropdown').classList.add('hidden');
+            document.getElementById('settings-view').classList.remove('hidden');
+            
+            if (viewType === 'profile') {
+                document.getElementById('profile-card').classList.remove('hidden');
+                document.getElementById('password-card').classList.add('hidden');
+                
+                try {
+                    const res = await fetch(`${API_BASE_URL}/user/${currentUser.email}`);
+                    const data = await res.json();
+                    if (res.ok) {
+                        document.getElementById('set-name').value = data.name;
+                        document.getElementById('set-age').value = data.age;
+                        document.getElementById('set-mobile').value = data.mobile;
+                        document.getElementById('set-email').value = data.email;
+                        document.getElementById('set-current-pwd').value = ''; 
+                    }
+                } catch (e) { console.error("Error connecting to server"); }
+            } else if (viewType === 'password') {
+                document.getElementById('password-card').classList.remove('hidden');
+                document.getElementById('profile-card').classList.add('hidden');
+                document.getElementById('pwd-current').value = '';
+                document.getElementById('pwd-new').value = '';
+                document.getElementById('pwd-confirm').value = '';
+            }
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-view').classList.add('hidden');
+        }
+
+        // --- AUTH API CALLS ---
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const identifier = document.getElementById('login-id').value;
@@ -264,25 +383,7 @@
             } catch (err) { alert("Error connecting to server."); }
         });
 
-        async function openSettings() {
-            try {
-                const res = await fetch(`${API_BASE_URL}/user/${currentUser.email}`);
-                const data = await res.json();
-                if (res.ok) {
-                    document.getElementById('set-name').value = data.name;
-                    document.getElementById('set-age').value = data.age;
-                    document.getElementById('set-mobile').value = data.mobile;
-                    document.getElementById('set-email').value = data.email;
-                    document.getElementById('set-current-pwd').value = ''; 
-                    document.getElementById('settings-modal').classList.remove('hidden');
-                } else alert("Failed to load profile");
-            } catch (e) { alert("Error connecting to server"); }
-        }
-
-        function closeSettings() {
-            document.getElementById('settings-modal').classList.add('hidden');
-        }
-
+        // --- UPDATE API CALLS ---
         document.getElementById('update-profile-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const payload = {
@@ -314,10 +415,18 @@
 
         document.getElementById('change-password-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const newPwd = document.getElementById('pwd-new').value;
+            const confirmPwd = document.getElementById('pwd-confirm').value;
+
+            if (newPwd !== confirmPwd) {
+                alert("New passwords do not match!");
+                return;
+            }
+
             const payload = {
                 email: currentUser.email,
                 current_password: document.getElementById('pwd-current').value,
-                new_password: document.getElementById('pwd-new').value
+                new_password: newPwd
             };
             try {
                 const res = await fetch(`${API_BASE_URL}/change_password`, {
@@ -328,8 +437,6 @@
                 const data = await res.json();
                 if (res.ok) {
                     alert("Password updated successfully!");
-                    document.getElementById('pwd-current').value = '';
-                    document.getElementById('pwd-new').value = '';
                     closeSettings();
                 } else alert(data.detail || "Password update failed");
             } catch (e) { alert("Error connecting to server"); }
@@ -344,10 +451,8 @@
                 document.getElementById('camera-loading').classList.add('hidden');
                 
                 video.onloadedmetadata = () => {
-                    // LAG FIX: Downscale the capture canvas heavily to shrink network payload
                     captureCanvas.width = 320; 
                     captureCanvas.height = 240;
-                    
                     overlayCanvas.width = video.videoWidth;
                     overlayCanvas.height = video.videoHeight;
                     connectWebSocket();
@@ -364,17 +469,14 @@
 
         function connectWebSocket() {
             ws = new WebSocket(RENDER_URL);
-
             ws.onopen = () => {
                 isConnected = true;
                 updateStatus(true);
                 translationOutput.innerText = "Waiting for gesture...";
                 
-                // LAG FIX: Send smaller images, faster interval (10 FPS)
                 captureInterval = setInterval(() => {
                     if (ws.readyState === WebSocket.OPEN) {
                         captureCtx.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
-                        // Heavy JPEG compression to guarantee instant network transport
                         const frameData = captureCanvas.toDataURL('image/jpeg', 0.4);
                         ws.send(frameData);
                     }
@@ -415,18 +517,15 @@
         function drawLandmarks(landmarks) {
             overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
             if (!landmarks || landmarks.length === 0) return;
-
             landmarks.forEach(lm => {
                 const x = lm.x * overlayCanvas.width;
                 const y = lm.y * overlayCanvas.height;
-                
-                // TRACKER STYLE: Black & White
                 overlayCtx.beginPath();
                 overlayCtx.arc(x, y, 5, 0, 2 * Math.PI);
-                overlayCtx.fillStyle = '#FFFFFF'; // White inside
+                overlayCtx.fillStyle = '#FFFFFF';
                 overlayCtx.fill();
                 overlayCtx.lineWidth = 2;
-                overlayCtx.strokeStyle = '#000000'; // Black border
+                overlayCtx.strokeStyle = '#000000';
                 overlayCtx.stroke();
             });
         }
@@ -438,7 +537,6 @@
                 alert("No valid translation to save.");
                 return;
             }
-
             try {
                 await fetch(`${API_BASE_URL}/save_chat`, {
                     method: 'POST',
