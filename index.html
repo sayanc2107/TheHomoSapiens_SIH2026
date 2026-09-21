@@ -3,508 +3,642 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Homo Sapiens - Sign Translator</title>
+    <title>The Homo Sapiens - SIH 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#0D9488', // Teal 600
-                        primaryDark: '#0F766E', // Teal 700
-                        surface: '#FFFFFF',
-                        background: '#F9FAFB', // Gray 50
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        body {
-            background-color: #F9FAFB;
-            color: #111827;
-            -webkit-font-smoothing: antialiased;
-        }
-        
-        .flat-card {
-            background-color: #FFFFFF;
-            border: 1px solid #E5E7EB;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        
-        .flat-button {
-            transition: background-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .flat-button:active {
-            transform: translateY(1px);
-        }
-
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #F3F4F6; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
-
-        .view-hidden { display: none !important; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .tab-active { background-color: #0f172a; color: white; border: 1px solid #0f172a; }
+        .tab-inactive { background-color: white; color: #64748b; border: 1px solid #e2e8f0; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
-
-    <!-- VIEW 1: LOGIN -->
-    <div id="view-login" class="flex-grow flex items-center justify-center p-4">
-        <div class="flat-card w-full max-w-md p-8">
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-teal-50 text-primary text-3xl rounded-full flex items-center justify-center mx-auto mb-4 border border-teal-100">
-                    🤟
-                </div>
-                <h1 class="text-2xl font-bold text-gray-900">Welcome Back</h1>
-                <p class="text-sm text-gray-500 mt-2">Sign in to your account</p>
+<body class="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-teal-200">
+    
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white border-b border-slate-200 p-4 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-teal-600 rounded flex items-center justify-center text-white text-xl">🤟</div>
+            <div class="font-bold text-xl tracking-tight text-slate-900 cursor-pointer" onclick="showDashboard()">
+                TheHomoSapiens <span class="text-teal-600 font-medium ml-1">| SIH 2026</span>
+            </div>
+        </div>
+        <div id="nav-user-controls" class="hidden items-center gap-4">
+            <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200 hidden md:flex">
+                <span id="connection-dot" class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                <span id="connection-status" class="text-xs font-bold text-slate-600 uppercase tracking-wider">Offline</span>
             </div>
             
-            <form id="login-form" class="space-y-5" onsubmit="event.preventDefault(); window.handleLogin();">
-                <div id="login-error" class="hidden bg-red-50 text-red-600 p-3 rounded-md text-sm border border-red-200"></div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <input type="email" id="login-email" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="you@example.com" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input type="password" id="login-password" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="••••••••" required>
-                </div>
-                <button type="submit" id="btn-login" class="flat-button w-full bg-primary hover:bg-primaryDark text-white font-semibold py-3 px-4 rounded-md shadow-sm mt-4">
-                    Sign In
+            <!-- User Dropdown Menu -->
+            <div class="relative inline-block text-left">
+                <button onclick="toggleDropdown()" class="flex items-center gap-2 font-medium text-slate-700 hover:text-teal-600 focus:outline-none transition-colors">
+                    <span id="user-greeting"></span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div class="text-center text-sm text-gray-500 mt-4">
-                    Don't have an account? <button type="button" onclick="switchView('register')" class="text-primary font-medium hover:underline">Register here</button>
+                <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50">
+                    <button onclick="openProfileSettings()" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-teal-600 flex items-center gap-2">
+                        ⚙️ Profile Settings
+                    </button>
+                    <button onclick="openChangePassword()" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-teal-600 flex items-center gap-2">
+                        🔐 Change Password
+                    </button>
+                    <hr class="my-1 border-slate-100">
+                    <button onclick="logout()" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium flex items-center gap-2">
+                        🚪 Logout
+                    </button>
                 </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- AUTHENTICATION VIEW                        -->
+    <!-- ========================================== -->
+    <div id="view-auth" class="flex-grow flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 w-full max-w-md">
+            
+            <!-- Login Form -->
+            <div id="form-login">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">Welcome Back</h2>
+                <form onsubmit="handleLogin(event)" class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Email or Mobile Number</label>
+                        <input type="text" id="login-identifier" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="login-password" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 pr-10 outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500">
+                            <button type="button" onclick="togglePasswordVisibility('login-password')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-teal-600">👁️</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-2 w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-lg shadow-sm transition-colors">Sign In</button>
+                </form>
+                <p class="text-center text-sm text-slate-600 mt-6">
+                    Don't have an account? <button onclick="toggleAuthMode()" class="text-teal-600 font-bold hover:underline">Create one</button>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="form-register" class="hidden">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">Create Account</h2>
+                <form onsubmit="handleRegistration(event)" class="flex flex-col gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Full Name</label>
+                        <input type="text" id="reg-name" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-teal-500">
+                    </div>
+                    <div class="flex gap-3">
+                        <div class="w-1/3">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Age</label>
+                            <input type="number" id="reg-age" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-teal-500">
+                        </div>
+                        <div class="w-2/3">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Mobile</label>
+                            <input type="tel" id="reg-mobile" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-teal-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Email</label>
+                        <input type="email" id="reg-email" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-teal-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="reg-password" required minlength="6" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 pr-10 outline-none focus:border-teal-500">
+                            <button type="button" onclick="togglePasswordVisibility('reg-password')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-teal-600">👁️</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Confirm Password</label>
+                        <div class="relative">
+                            <input type="password" id="reg-confirm" required minlength="6" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 pr-10 outline-none focus:border-teal-500">
+                            <button type="button" onclick="togglePasswordVisibility('reg-confirm')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-teal-600">👁️</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-4 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-lg shadow-sm transition-colors">Register</button>
+                </form>
+                <p class="text-center text-sm text-slate-600 mt-6">
+                    Already have an account? <button onclick="toggleAuthMode()" class="text-teal-600 font-bold hover:underline">Sign in</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PROFILE SETTINGS VIEW                      -->
+    <!-- ========================================== -->
+    <div id="view-profile" class="hidden flex-grow items-center justify-center p-4 w-full">
+        <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 w-full max-w-lg">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-900">Profile Settings</h2>
+                <button onclick="showDashboard()" class="text-sm font-bold text-teal-600 hover:underline">← Back</button>
+            </div>
+            
+            <form onsubmit="handleProfileUpdate(event)" class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name</label>
+                    <input type="text" id="prof-name" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-teal-500">
+                </div>
+                <div class="flex gap-3">
+                    <div class="w-1/3">
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Age</label>
+                        <input type="number" id="prof-age" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-teal-500">
+                    </div>
+                    <div class="w-2/3">
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Mobile Number</label>
+                        <input type="tel" id="prof-mobile" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-teal-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Email Address</label>
+                    <input type="email" id="prof-email" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-teal-500">
+                </div>
+                
+                <hr class="my-2 border-slate-200">
+                
+                <div class="bg-red-50 border border-red-100 p-4 rounded-lg">
+                    <label class="block text-xs font-bold text-red-700 uppercase mb-1">Current Password (Required to save)</label>
+                    <div class="relative">
+                        <input type="password" id="prof-password" required class="w-full bg-white border border-red-200 rounded-lg p-2.5 pr-10 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500">
+                        <button type="button" onclick="togglePasswordVisibility('prof-password')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-red-600">👁️</button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="mt-2 w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-lg shadow-sm transition-colors">Verify & Save Changes</button>
             </form>
         </div>
     </div>
 
-    <!-- VIEW 2: REGISTER -->
-    <div id="view-register" class="view-hidden flex-grow flex items-center justify-center p-4 py-12">
-        <div class="flat-card w-full max-w-lg p-8">
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-teal-50 text-primary text-3xl rounded-full flex items-center justify-center mx-auto mb-4 border border-teal-100">
-                    📝
-                </div>
-                <h1 class="text-2xl font-bold text-gray-900">Create an Account</h1>
-                <p class="text-sm text-gray-500 mt-2">Join TheHomoSapiens SIH 2026</p>
+    <!-- ========================================== -->
+    <!-- CHANGE PASSWORD VIEW                       -->
+    <!-- ========================================== -->
+    <div id="view-change-password" class="hidden flex-grow items-center justify-center p-4 w-full">
+        <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 w-full max-w-md">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-900">Change Password</h2>
+                <button onclick="showDashboard()" class="text-sm font-bold text-teal-600 hover:underline">← Back</button>
             </div>
             
-            <form id="register-form" class="space-y-4" onsubmit="event.preventDefault(); window.handleRegister();">
-                <div id="register-error" class="hidden bg-red-50 text-red-600 p-3 rounded-md text-sm border border-red-200"></div>
-                
+            <form onsubmit="handleChangePassword(event)" class="flex flex-col gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                    <input type="text" id="reg-name" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="John Doe" required>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
-                        <input type="number" id="reg-age" min="1" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="20" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
-                        <input type="tel" id="reg-mobile" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="+91 9876543210" required>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Current Password</label>
+                    <div class="relative">
+                        <input type="password" id="change-current-pw" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 pr-10 outline-none focus:border-teal-500">
+                        <button type="button" onclick="togglePasswordVisibility('change-current-pw')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-teal-600">👁️</button>
                     </div>
                 </div>
-
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <input type="email" id="reg-email" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="you@example.com" required>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">New Password</label>
+                    <div class="relative">
+                        <input type="password" id="change-new-pw" required minlength="6" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 pr-10 outline-none focus:border-teal-500">
+                        <button type="button" onclick="togglePasswordVisibility('change-new-pw')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-teal-600">👁️</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Confirm New Password</label>
+                    <div class="relative">
+                        <input type="password" id="change-confirm-pw" required minlength="6" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 pr-10 outline-none focus:border-teal-500">
+                        <button type="button" onclick="togglePasswordVisibility('change-confirm-pw')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-teal-600">👁️</button>
+                    </div>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input type="password" id="reg-password" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="••••••••" required minlength="6">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                        <input type="password" id="reg-confirm-password" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="••••••••" required minlength="6">
-                    </div>
-                </div>
-
-                <button type="submit" id="btn-register" class="flat-button w-full bg-primary hover:bg-primaryDark text-white font-semibold py-3 px-4 rounded-md shadow-sm mt-6">
-                    Register Account
-                </button>
-                <div class="text-center text-sm text-gray-500 mt-4">
-                    Already have an account? <button type="button" onclick="switchView('login')" class="text-primary font-medium hover:underline">Log in here</button>
-                </div>
+                <button type="submit" class="mt-4 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-lg shadow-sm transition-colors">Update Password</button>
             </form>
         </div>
     </div>
 
-    <!-- VIEW 3: DASHBOARD -->
-    <div id="view-dashboard" class="view-hidden flex-grow flex flex-col">
-        <header class="bg-surface border-b border-gray-200 sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="text-2xl">🤟</span>
-                    <span class="font-bold text-lg text-gray-900 tracking-tight">TheHomoSapiens</span>
-                </div>
-                
-                <div class="relative">
-                    <button id="user-menu-btn" class="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md transition-colors border border-transparent hover:border-gray-200">
-                        <div class="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
-                            <span id="user-initial">U</span>
-                        </div>
-                        <span id="user-welcome-text" class="text-sm font-medium text-gray-700 hidden md:block">Welcome, User</span>
-                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    
-                    <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Account Settings</a>
-                        <div class="border-t border-gray-100 my-1"></div>
-                        <a href="#" onclick="handleLogout()" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign Out</a>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
-            <section>
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">Start Translation</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <button onclick="openTranslation('sign-to-text')" class="flat-card hover:border-primary hover:shadow-md transition-all p-6 flex flex-col items-center justify-center gap-4 group text-left w-full">
-                        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl group-hover:bg-blue-100 transition-colors">
-                            📷
-                        </div>
-                        <div class="text-center">
-                            <h3 class="font-bold text-gray-900 text-lg">Sign → Text / Audio</h3>
-                            <p class="text-sm text-gray-500 mt-1">Use your camera to translate ISL gestures into readable text and speech.</p>
-                        </div>
-                    </button>
-                    
-                    <button onclick="openTranslation('text-to-sign')" class="flat-card hover:border-primary hover:shadow-md transition-all p-6 flex flex-col items-center justify-center gap-4 group text-left w-full">
-                        <div class="w-16 h-16 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center text-2xl group-hover:bg-teal-100 transition-colors">
-                            🤖
-                        </div>
-                        <div class="text-center">
-                            <h3 class="font-bold text-gray-900 text-lg">Text / Audio → Sign</h3>
-                            <p class="text-sm text-gray-500 mt-1">Speak or type to generate 3D avatar sign language animations.</p>
-                        </div>
-                    </button>
-                </div>
-            </section>
-
-            <section class="flex-grow flex flex-col">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-gray-900">Recent Conversations</h2>
-                    <span class="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded">Cloud Synced</span>
-                </div>
-                
-                <div class="flat-card flex-grow flex flex-col overflow-hidden bg-white">
-                    <div class="bg-gray-50 border-b border-gray-200 px-6 py-3 grid grid-cols-12 gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        <div class="col-span-3">Date & Time</div>
-                        <div class="col-span-2">Mode</div>
-                        <div class="col-span-7">Transcript / Data</div>
-                    </div>
-                    
-                    <div id="history-list" class="flex-grow overflow-y-auto custom-scrollbar max-h-[400px]">
-                        <div class="p-8 text-center text-gray-500">Loading history...</div>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- VIEW 4: TRANSLATION WORKSPACE -->
-    <div id="view-translation" class="view-hidden flex-grow flex flex-col h-screen bg-gray-900">
-        <header class="bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center text-white shadow-md">
-            <div class="flex items-center gap-4">
-                <button onclick="switchView('dashboard')" class="hover:bg-gray-700 p-2 rounded-md transition-colors flex items-center gap-2 text-sm font-medium">
-                    ← Back to Dashboard
-                </button>
-                <div class="h-6 w-px bg-gray-600"></div>
-                <span id="workspace-title" class="font-bold">Translation Mode</span>
-            </div>
-            
-            <div class="flex items-center gap-3 bg-gray-700 px-4 py-2 rounded-md border border-gray-600">
-                <span class="text-sm font-medium">Save Conversation</span>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="save-toggle" class="sr-only peer" checked>
-                    <div class="w-9 h-5 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-500"></div>
-                </label>
-            </div>
-        </header>
-
-        <main class="flex-grow flex flex-col md:flex-row p-4 gap-4 overflow-hidden">
-            <div class="flex-1 bg-black rounded-lg border border-gray-700 flex items-center justify-center relative overflow-hidden shadow-inner">
-                <div id="media-placeholder" class="text-center text-gray-500">
-                    <span class="text-6xl mb-4 block" id="media-icon">📷</span>
-                    <p class="font-medium">Media Feed Active</p>
-                    <p class="text-sm">(Simulation UI Placeholder)</p>
-                </div>
-                <div class="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded shadow-lg flex items-center gap-2">
-                    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
-                </div>
-            </div>
-
-            <div class="w-full md:w-96 bg-gray-800 rounded-lg border border-gray-700 flex flex-col p-4 shadow-lg">
-                <h3 class="text-gray-300 text-sm font-bold uppercase tracking-wider mb-4">Live Transcript</h3>
-                
-                <div class="flex-grow bg-gray-900 rounded-md border border-gray-700 p-4 mb-4 text-gray-200 font-medium overflow-y-auto custom-scrollbar" id="live-transcript">
-                    Waiting for input...
-                </div>
-
-                <div class="mt-auto flex flex-col gap-2">
-                    <input type="text" id="mock-input" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white placeholder-gray-400 focus:outline-none focus:border-teal-500" placeholder="Type a sentence to translate...">
-                    <button onclick="processMockTranslation()" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3 rounded-md transition-colors">
-                        Process & Translate
-                    </button>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Firebase Configuration
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-sih-app';
-        let firebaseConfig = {};
-        try {
-            firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        } catch (e) {
-            console.error("Error parsing firebase config:", e);
-        }
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // State variables
-        let currentUser = null;
-        let currentMode = '';
-        let historyUnsubscribe = null;
+    <!-- ========================================== -->
+    <!-- MAIN WORKSPACE (Hidden until login)        -->
+    <!-- ========================================== -->
+    <main id="view-workspace" class="hidden flex-grow flex-col items-center p-4 md:p-8 max-w-7xl mx-auto w-full gap-6">
         
-        // Initial check for environment auth tokens if they want to bypass manual login
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && !auth.currentUser) {
-             signInWithCustomToken(auth, __initial_auth_token).catch(console.error);
-        }
+        <div class="flex w-full max-w-md mx-auto gap-2">
+            <button id="tab-sign-to-text" onclick="switchMode('sign-to-text')" class="flex-1 px-4 py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 tab-active">
+                📷 Sign → Text
+            </button>
+            <button id="tab-text-to-sign" onclick="switchMode('text-to-sign')" class="flex-1 px-4 py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 tab-inactive hover:bg-slate-50">
+                🎙️ Text → Sign
+            </button>
+        </div>
 
-        // View Router
-        window.switchView = (viewName) => {
-            document.querySelectorAll('body > div').forEach(div => {
-                if(div.id.startsWith('view-')) div.classList.add('view-hidden');
+        <div id="mode-sign-to-text" class="flex flex-col lg:flex-row gap-6 w-full">
+            <div class="flex-1 flex flex-col gap-6">
+                <div class="relative bg-black rounded-xl overflow-hidden aspect-video shadow-md border border-slate-200">
+                    <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform scale-x-[-1]"></video>
+                    <canvas id="overlay" class="absolute inset-0 w-full h-full z-10 transform scale-x-[-1] pointer-events-none object-cover"></canvas>
+                </div>
+
+                <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm relative">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xs text-slate-500 font-bold uppercase tracking-widest">Live Translation</h3>
+                        <button onclick="saveConversation()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-1.5 px-3 rounded border border-slate-300 transition-colors">
+                            💾 Save to History
+                        </button>
+                    </div>
+                    <div class="min-h-[60px] flex items-center">
+                        <p id="translated-text" class="text-3xl font-bold text-slate-900">Waiting for camera...</p>
+                    </div>
+                    <div class="mt-6 flex gap-3 border-t border-slate-100 pt-4">
+                        <button id="btn-auto-speak" onclick="toggleAutoSpeak()" class="flex-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 py-2 rounded-lg font-medium transition-all text-sm">
+                            <span id="auto-speak-text">🔇 Auto-Speak: OFF</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-80 flex flex-col gap-4">
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm h-full flex flex-col max-h-[500px] lg:max-h-full">
+                    <h3 class="text-sm text-slate-900 font-bold uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">🗂️ Saved Conversations</h3>
+                    <div id="history-list" class="flex-1 overflow-y-auto pr-2 flex flex-col gap-3 custom-scrollbar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="mode-text-to-sign" class="hidden flex-col gap-6 w-full max-w-4xl">
+            <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm flex flex-col md:flex-row gap-4">
+                <div class="flex-grow">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Input Text or Speech</label>
+                    <div class="relative w-full">
+                        <input type="text" id="input-text-sign" placeholder="Type here..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 pr-12 outline-none focus:border-teal-500">
+                    </div>
+                </div>
+                <div class="flex items-end">
+                    <button onclick="simulateAvatarTranslation()" class="w-full md:w-auto bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-lg font-bold transition-colors">
+                        Translate
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bg-slate-100 border border-slate-200 rounded-xl aspect-video md:aspect-[21/9] flex flex-col items-center justify-center shadow-inner relative overflow-hidden">
+                <div id="avatar-status" class="text-center z-10 w-full px-6">
+                    <span class="text-7xl block mb-4">🧍‍♂️</span>
+                    <h2 class="text-xl font-bold text-slate-700">Avatar Engine Ready</h2>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE_URL = "http://localhost:8000/api";
+        const RENDER_URL = "ws://localhost:8000/ws/translate"; 
+
+        // ==========================================
+        // UI HELPERS & VIEW ROUTING
+        // ==========================================
+        function hideAllViews() {
+            const views = ['view-auth', 'view-workspace', 'view-profile', 'view-change-password'];
+            views.forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+                document.getElementById(id).classList.remove('flex');
             });
-            document.getElementById(`view-${viewName}`).classList.remove('view-hidden');
-            
-            // Clear errors when switching
-            document.getElementById('login-error').classList.add('hidden');
-            document.getElementById('register-error').classList.add('hidden');
-        };
+            document.getElementById('dropdown-menu').classList.add('hidden');
+        }
 
-        // User Dropdown Interaction
-        document.getElementById('user-menu-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            document.getElementById('user-dropdown').classList.toggle('hidden');
-        });
-        window.addEventListener('click', () => {
-            document.getElementById('user-dropdown').classList.add('hidden');
-        });
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.type = field.type === "password" ? "text" : "password";
+        }
 
-        
-        // Register Logic
-        window.handleRegister = async () => {
-            const errorDiv = document.getElementById('register-error');
-            errorDiv.classList.add('hidden');
-            
-            const name = document.getElementById('reg-name').value;
-            const age = document.getElementById('reg-age').value;
-            const mobile = document.getElementById('reg-mobile').value;
-            const email = document.getElementById('reg-email').value;
+        function toggleDropdown() {
+            document.getElementById('dropdown-menu').classList.toggle('hidden');
+        }
+
+        // Close dropdown if clicked outside
+        window.onclick = function(event) {
+            if (!event.target.closest('.relative')) {
+                const dropdowns = document.getElementById("dropdown-menu");
+                if (dropdowns && !dropdowns.classList.contains('hidden')) {
+                    dropdowns.classList.add('hidden');
+                }
+            }
+        }
+
+        function toggleAuthMode() {
+            document.getElementById('form-login').classList.toggle('hidden');
+            document.getElementById('form-register').classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // AUTHENTICATION & PROFILES
+        // ==========================================
+        async function handleRegistration(e) {
+            e.preventDefault();
             const password = document.getElementById('reg-password').value;
-            const confirm = document.getElementById('reg-confirm-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
 
             if (password !== confirm) {
-                errorDiv.innerText = "Passwords do not match.";
-                errorDiv.classList.remove('hidden');
-                return;
+                return alert("Passwords do not match. Please ensure both fields are identical.");
             }
 
-            const btn = document.getElementById('btn-register');
-            btn.innerText = 'Creating account...';
-            btn.disabled = true;
+            const payload = {
+                name: document.getElementById('reg-name').value,
+                age: parseInt(document.getElementById('reg-age').value),
+                mobile: document.getElementById('reg-mobile').value,
+                email: document.getElementById('reg-email').value,
+                password: password
+            };
 
             try {
-                // Create user
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                // Save extended profile data strictly to users/{userId}/profile
-                const profileRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data');
-                await setDoc(profileRef, {
-                    fullName: name,
-                    age: age,
-                    mobile: mobile,
-                    email: email,
-                    createdAt: new Date().getTime()
+                const response = await fetch(`${API_BASE_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
-
-                // onAuthStateChanged will handle the redirect
+                
+                const data = await response.json();
+                if (response.ok) {
+                    alert("Registration successful! Please login.");
+                    toggleAuthMode();
+                } else {
+                    alert("Error: " + data.detail);
+                }
             } catch (error) {
-                console.error("Registration Error:", error);
-                errorDiv.innerText = error.message;
-                errorDiv.classList.remove('hidden');
-            } finally {
-                btn.innerText = 'Register Account';
-                btn.disabled = false;
+                alert("Server connection failed.");
             }
-        };
+        }
 
-        // Login Logic
-        window.handleLogin = async () => {
-            const errorDiv = document.getElementById('login-error');
-            errorDiv.classList.add('hidden');
-            
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            const btn = document.getElementById('btn-login');
-            btn.innerText = 'Authenticating...';
-            btn.disabled = true;
+        async function handleLogin(e) {
+            e.preventDefault();
+            const payload = {
+                identifier: document.getElementById('login-identifier').value,
+                password: document.getElementById('login-password').value
+            };
 
             try {
-                await signInWithEmailAndPassword(auth, email, password);
-                // onAuthStateChanged will handle redirect
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('userEmail', data.email);
+                    localStorage.setItem('userName', data.name);
+                    showDashboard();
+                } else {
+                    alert("Login Failed: " + data.detail);
+                }
             } catch (error) {
-                console.error("Login Error:", error);
-                errorDiv.innerText = "Invalid email or password.";
-                errorDiv.classList.remove('hidden');
-            } finally {
-                btn.innerText = 'Sign In';
-                btn.disabled = false;
+                alert("Server connection failed.");
             }
-        };
+        }
 
-        // Logout Logic
-        window.handleLogout = async () => {
-            if(historyUnsubscribe) historyUnsubscribe();
-            await signOut(auth);
-        };
+        function showDashboard() {
+            hideAllViews();
+            document.getElementById('view-workspace').classList.remove('hidden');
+            document.getElementById('view-workspace').classList.add('flex');
+            
+            document.getElementById('nav-user-controls').classList.remove('hidden');
+            document.getElementById('nav-user-controls').classList.add('flex');
+            
+            // Format name in CAPS
+            const nameCaps = (localStorage.getItem('userName') || "").toUpperCase();
+            document.getElementById('user-greeting').innerText = `WELCOME, ${nameCaps}`;
+            
+            loadHistory();
+            startCamera(); 
+        }
 
+        async function openProfileSettings() {
+            hideAllViews();
+            document.getElementById('view-profile').classList.remove('hidden');
+            document.getElementById('view-profile').classList.add('flex');
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                let displayName = user.email ? user.email.split('@')[0] : 'User';
-                
-                // Attempt to fetch custom profile name
-                try {
-                    const profileRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data');
-                    const profileSnap = await getDoc(profileRef);
-                    if (profileSnap.exists() && profileSnap.data().fullName) {
-                        displayName = profileSnap.data().fullName;
-                    }
-                } catch(e) { console.error("Error fetching profile", e); }
-                
-                document.getElementById('user-welcome-text').innerText = `Welcome, ${displayName}`;
-                document.getElementById('user-initial').innerText = displayName.charAt(0).toUpperCase();
-                
-                switchView('dashboard');
-                loadChatHistory();
-            } else {
-                currentUser = null;
-                switchView('login');
+            try {
+                const response = await fetch(`${API_BASE_URL}/user/${localStorage.getItem('userEmail')}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('prof-name').value = data.name;
+                    document.getElementById('prof-age').value = data.age;
+                    document.getElementById('prof-mobile').value = data.mobile;
+                    document.getElementById('prof-email').value = data.email;
+                }
+            } catch (error) {
+                console.error("Could not fetch user details.");
             }
+        }
+
+        async function handleProfileUpdate(e) {
+            e.preventDefault();
+            const payload = {
+                original_email: localStorage.getItem('userEmail'),
+                current_password: document.getElementById('prof-password').value,
+                name: document.getElementById('prof-name').value,
+                age: parseInt(document.getElementById('prof-age').value),
+                mobile: document.getElementById('prof-mobile').value,
+                email: document.getElementById('prof-email').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/update_user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    alert("Profile updated securely.");
+                    localStorage.setItem('userEmail', data.new_email);
+                    localStorage.setItem('userName', data.new_name);
+                    
+                    document.getElementById('prof-password').value = ""; 
+                    showDashboard(); 
+                } else {
+                    alert("Verification Failed: " + data.detail);
+                }
+            } catch (error) {
+                alert("Server connection failed.");
+            }
+        }
+
+        function openChangePassword() {
+            hideAllViews();
+            document.getElementById('view-change-password').classList.remove('hidden');
+            document.getElementById('view-change-password').classList.add('flex');
+            
+            // Clear fields when opened
+            document.getElementById('change-current-pw').value = "";
+            document.getElementById('change-new-pw').value = "";
+            document.getElementById('change-confirm-pw').value = "";
+        }
+
+        async function handleChangePassword(e) {
+            e.preventDefault();
+            
+            const currentPw = document.getElementById('change-current-pw').value;
+            const newPw = document.getElementById('change-new-pw').value;
+            const confirmPw = document.getElementById('change-confirm-pw').value;
+
+            if (newPw.length < 6) {
+                return alert("New password must be at least 6 characters long.");
+            }
+            if (newPw !== confirmPw) {
+                return alert("The new passwords do not match. Please verify and try again.");
+            }
+
+            const payload = {
+                email: localStorage.getItem('userEmail'),
+                current_password: currentPw,
+                new_password: newPw
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/change_password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    alert("Password updated successfully!");
+                    showDashboard(); 
+                } else {
+                    alert("Update Failed: " + data.detail);
+                }
+            } catch (error) {
+                alert("Server connection failed.");
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            location.reload(); 
+        }
+
+        window.addEventListener('load', () => {
+            if (localStorage.getItem('userEmail')) showDashboard();
         });
 
-        
-        window.openTranslation = (mode) => {
-            currentMode = mode;
-            const title = mode === 'sign-to-text' ? 'Sign → Text / Audio' : 'Text / Audio → Sign';
-            const icon = mode === 'sign-to-text' ? '📷' : '🤖';
-            
-            document.getElementById('workspace-title').innerText = title;
-            document.getElementById('media-icon').innerText = icon;
-            document.getElementById('live-transcript').innerText = 'Waiting for input...';
-            document.getElementById('mock-input').value = '';
-            
-            switchView('translation');
-        };
+        // ==========================================
+        // DATABASE & WORKSPACE
+        // ==========================================
+        async function saveConversation() {
+            const text = document.getElementById('translated-text').innerText;
+            if (text === "Waiting for camera..." || text === "No hand detected" || text === "Sign not recognized...") return alert("No valid translation to save.");
 
-        window.processMockTranslation = async () => {
-            const input = document.getElementById('mock-input').value.trim();
-            if(!input) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/save_chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: localStorage.getItem('userEmail'), mode_used: "Sign-to-Text", transcript: text })
+                });
+                if (response.ok) loadHistory(); 
+            } catch (error) {}
+        }
 
-            document.getElementById('live-transcript').innerText = input;
-            const shouldSave = document.getElementById('save-toggle').checked;
-            
-            if (shouldSave && currentUser) {
-                try {
-                    // Strict Paths compliance
-                    const historyRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'history');
-                    const now = new Date();
-                    
-                    await addDoc(historyRef, {
-                        mode: currentMode,
-                        content: input,
-                        timestamp: now.getTime(),
-                        dateString: now.toLocaleString()
-                    });
-                    
-                } catch (error) {
-                    console.error("Error saving history:", error);
+        async function loadHistory() {
+            const email = localStorage.getItem('userEmail');
+            if (!email) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/history/${email}`);
+                const data = await response.json();
+                const historyList = document.getElementById('history-list');
+                if (data.history && data.history.length > 0) {
+                    historyList.innerHTML = data.history.map(item => `
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200 text-sm">
+                            <p class="font-bold text-slate-800">${item.transcript}</p>
+                            <p class="text-xs text-slate-400 mt-1">${item.timestamp}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    historyList.innerHTML = `<p class="text-sm text-slate-500 italic">No saved conversations.</p>`;
                 }
+            } catch (error) {}
+        }
+
+        function switchMode(mode) {
+            const st = document.getElementById('mode-sign-to-text'), ts = document.getElementById('mode-text-to-sign');
+            const tabSt = document.getElementById('tab-sign-to-text'), tabTs = document.getElementById('tab-text-to-sign');
+
+            if (mode === 'sign-to-text') {
+                st.classList.remove('hidden'); st.classList.add('flex');
+                ts.classList.add('hidden'); ts.classList.remove('flex');
+                tabSt.className = "flex-1 px-4 py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 tab-active";
+                tabTs.className = "flex-1 px-4 py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 tab-inactive hover:bg-slate-50";
+            } else {
+                ts.classList.remove('hidden'); ts.classList.add('flex');
+                st.classList.add('hidden'); st.classList.remove('flex');
+                tabTs.className = "flex-1 px-4 py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 tab-active";
+                tabSt.className = "flex-1 px-4 py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 tab-inactive hover:bg-slate-50";
             }
-            document.getElementById('mock-input').value = '';
-        };
+        }
 
-        function loadChatHistory() {
-            if (!currentUser) return;
-            const historyList = document.getElementById('history-list');
-            historyList.innerHTML = '<div class="p-8 text-center text-gray-500">Loading history...</div>';
+        // ==========================================
+        // WEBSOCKET (CAMERA) LOGIC
+        // ==========================================
+        let ws;
+        const videoElement = document.getElementById('webcam'), canvasOverlay = document.getElementById('overlay'), ctx = canvasOverlay.getContext('2d');
+        const outputElement = document.getElementById('translated-text'), statusDot = document.getElementById('connection-dot'), statusText = document.getElementById('connection-status');
+        let isProcessing = false, autoSpeakEnabled = false, lastSpokenText = "";
 
-            const historyRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'history');
+        const HAND_CONNECTIONS = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[0,17],[17,18],[18,19],[19,20]];
 
-            historyUnsubscribe = onSnapshot(historyRef, (snapshot) => {
-                let records = [];
-                snapshot.forEach((doc) => { records.push({ id: doc.id, ...doc.data() }); });
-
-                // Sort descending in memory
-                records.sort((a, b) => b.timestamp - a.timestamp);
-
-                if (records.length === 0) {
-                    historyList.innerHTML = `
-                        <div class="p-12 flex flex-col items-center justify-center text-gray-400">
-                            <p>No translation history yet.</p>
-                            <p class="text-sm mt-1">Saved conversations will appear here.</p>
-                        </div>`;
-                    return;
+        function connectWebSocket() {
+            ws = new WebSocket(RENDER_URL);
+            ws.onopen = () => { statusDot.classList.replace('bg-red-500', 'bg-teal-500'); statusText.innerText = "Connected"; outputElement.innerText = "Waiting for gesture..."; };
+            ws.onmessage = (event) => {
+                isProcessing = false; 
+                const response = JSON.parse(event.data);
+                const currentText = response.translation;
+                outputElement.innerText = currentText;
+                
+                if (autoSpeakEnabled && currentText && currentText !== "No hand detected" && currentText !== "Sign not recognized...") {
+                    if (currentText !== lastSpokenText) {
+                        window.speechSynthesis.cancel(); 
+                        window.speechSynthesis.speak(new SpeechSynthesisUtterance(currentText.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').trim()));
+                        lastSpokenText = currentText;
+                    }
                 }
+                if (currentText === "No hand detected") lastSpokenText = ""; 
+                if (response.landmarks && response.landmarks.length > 0) drawLandmarks(response.landmarks);
+                else ctx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
+            };
+            ws.onclose = () => { statusDot.classList.replace('bg-teal-500', 'bg-red-500'); statusText.innerText = "Offline"; setTimeout(connectWebSocket, 3000); };
+        }
 
-                historyList.innerHTML = records.map(record => `
-                    <div class="border-b border-gray-100 px-6 py-4 grid grid-cols-12 gap-4 items-center hover:bg-gray-50 transition-colors">
-                        <div class="col-span-3 text-sm text-gray-500 flex flex-col">
-                            <span class="font-medium text-gray-700">${record.dateString.split(',')[0]}</span>
-                            <span class="text-xs">${record.dateString.split(',')[1]}</span>
-                        </div>
-                        <div class="col-span-2">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${record.mode === 'sign-to-text' ? 'bg-blue-100 text-blue-800' : 'bg-teal-100 text-teal-800'}">
-                                ${record.mode === 'sign-to-text' ? 'Sign → Text' : 'Text → Sign'}
-                            </span>
-                        </div>
-                        <div class="col-span-7 text-sm text-gray-900 font-medium truncate pr-4">
-                            "${record.content}"
-                        </div>
-                    </div>
-                `).join('');
-
-            }, (error) => {
-                console.error("Error fetching history:", error);
-                historyList.innerHTML = '<div class="p-8 text-center text-red-500">Error loading history. Check database permissions.</div>';
+        function drawLandmarks(landmarks) {
+            canvasOverlay.width = videoElement.videoWidth; canvasOverlay.height = videoElement.videoHeight;
+            ctx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
+            if (!landmarks || landmarks.length === 0) return;
+            ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 3;
+            HAND_CONNECTIONS.forEach(connection => {
+                const startPoint = landmarks[connection[0]], endPoint = landmarks[connection[1]];
+                ctx.beginPath(); ctx.moveTo(startPoint.x * canvasOverlay.width, startPoint.y * canvasOverlay.height); ctx.lineTo(endPoint.x * canvasOverlay.width, endPoint.y * canvasOverlay.height); ctx.stroke();
             });
+            ctx.fillStyle = '#0d9488'; 
+            landmarks.forEach(point => { ctx.beginPath(); ctx.arc(point.x * canvasOverlay.width, point.y * canvasOverlay.height, 5, 0, 2 * Math.PI); ctx.fill(); });
+        }
+
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: "user" } });
+                videoElement.srcObject = stream;
+                videoElement.onloadedmetadata = () => {
+                    canvasOverlay.width = videoElement.videoWidth; canvasOverlay.height = videoElement.videoHeight;
+                    connectWebSocket(); 
+                    setInterval(() => {
+                        if (isProcessing) return;
+                        if (ws && ws.readyState === WebSocket.OPEN && videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+                            isProcessing = true; 
+                            const hiddenCanvas = document.createElement("canvas");
+                            hiddenCanvas.width = 320; hiddenCanvas.height = 240; 
+                            hiddenCanvas.getContext("2d").drawImage(videoElement, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
+                            ws.send(hiddenCanvas.toDataURL("image/jpeg", 0.3));
+                        }
+                    }, 30);
+                };
+            } catch (err) { outputElement.innerText = "Camera access denied."; }
+        }
+
+        function toggleAutoSpeak() {
+            autoSpeakEnabled = !autoSpeakEnabled;
+            const text = document.getElementById('auto-speak-text');
+            if (autoSpeakEnabled) { text.innerText = "🔊 Auto-Speak: ON"; window.speechSynthesis.speak(new SpeechSynthesisUtterance("")); } 
+            else { text.innerText = "🔇 Auto-Speak: OFF"; window.speechSynthesis.cancel(); }
         }
     </script>
 </body>

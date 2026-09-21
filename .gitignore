@@ -1,0 +1,15 @@
+# Python Cache
+__pycache__/
+*.pyc
+
+# Virtual Environments (if you created one)
+venv/
+env/
+.venv/
+
+# Downloaded AI Models (The code downloads this automatically, no need to push it)
+gesture_recognizer.task
+
+# OS generated files
+.DS_Store
+Thumbs.db
