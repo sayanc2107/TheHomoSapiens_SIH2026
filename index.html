@@ -6,21 +6,10 @@
     <title>The Homo Sapiens - SIH 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom Scrollbar for the dictionary panel */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.02); 
-            border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(20, 184, 166, 0.3); 
-            border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: rgba(20, 184, 166, 0.6); 
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(20, 184, 166, 0.3); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(20, 184, 166, 0.6); }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-gray-950 via-slate-900 to-teal-950 text-gray-100 flex flex-col font-sans selection:bg-teal-500/30">
@@ -42,138 +31,244 @@
     </nav>
 
     <!-- Main Workspace -->
-    <main class="flex-grow flex flex-col lg:flex-row gap-6 p-4 md:p-8 max-w-7xl mx-auto w-full">
+    <main class="flex-grow flex flex-col items-center p-4 md:p-8 max-w-7xl mx-auto w-full gap-6">
         
-        <!-- Left Column: Camera & Translation -->
-        <div class="flex-1 flex flex-col gap-6">
+        <!-- Mode Toggle Tabs -->
+        <div class="flex bg-black/40 border border-white/10 rounded-full p-1.5 shadow-inner backdrop-blur-sm z-10 w-full max-w-md mx-auto">
+            <button id="tab-sign-to-text" onclick="switchMode('sign-to-text')" class="flex-1 px-6 py-2.5 rounded-full bg-white/10 text-teal-300 shadow-sm font-semibold transition-all flex items-center justify-center gap-2 border border-white/5">
+                <span>📷</span> Sign → Text
+            </button>
+            <button id="tab-text-to-sign" onclick="switchMode('text-to-sign')" class="flex-1 px-6 py-2.5 rounded-full text-gray-400 hover:text-gray-200 font-semibold transition-all flex items-center justify-center gap-2">
+                <span>🎙️</span> Text/Speech → Sign
+            </button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- MODE 1: SIGN TO TEXT (Camera & Translation) -->
+        <!-- ========================================== -->
+        <div id="mode-sign-to-text" class="flex flex-col lg:flex-row gap-6 w-full fade-in block">
+            <!-- Left Column: Camera -->
+            <div class="flex-1 flex flex-col gap-6">
+                <!-- Glassmorphism Camera Container -->
+                <div class="relative bg-black/50 rounded-3xl overflow-hidden aspect-square md:aspect-video shadow-[0_8px_32px_0_rgba(0,0,0,0.5)] border border-white/10 backdrop-blur-sm group">
+                    <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform scale-x-[-1]"></video>
+                    <canvas id="overlay" class="absolute inset-0 w-full h-full z-10 transform scale-x-[-1] pointer-events-none object-cover"></canvas>
+                    
+                    <div class="absolute inset-0 border-2 border-teal-500/20 rounded-3xl pointer-events-none z-20 transition-all duration-300 group-hover:border-teal-500/50"></div>
+                    
+                    <div class="absolute top-4 left-4 z-20 flex gap-2">
+                        <div class="bg-red-500/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase shadow-lg flex items-center gap-2 border border-red-400/50">
+                            <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
+                        </div>
+                        <div class="bg-black/60 backdrop-blur-md text-teal-400 px-3 py-1 rounded-full text-xs font-mono font-medium border border-white/10 shadow-lg">
+                            <span id="fps-counter">0</span> FPS
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Translation Output Card -->
+                <div class="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 to-blue-500"></div>
+                    <h3 class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">Live Translation Output</h3>
+                    
+                    <div class="min-h-[80px] flex items-center">
+                        <p id="translated-text" class="text-3xl md:text-4xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 drop-shadow-sm">
+                            Waiting for gesture...
+                        </p>
+                    </div>
+                    
+                    <div class="mt-6 flex gap-3 border-t border-white/10 pt-5">
+                        <button id="btn-auto-speak" onclick="toggleAutoSpeak()" class="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10 py-3 rounded-xl font-medium transition-all flex justify-center items-center gap-2 shadow-inner">
+                            <span id="auto-speak-icon">🔇</span> <span id="auto-speak-text">Auto-Speak: OFF</span>
+                        </button>
+                        <button onclick="copyText()" class="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10 py-3 rounded-xl font-medium transition-all flex justify-center items-center gap-2 shadow-inner">
+                            <span>📋</span> Copy Text
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Dictionary Panel -->
+            <div class="w-full lg:w-80 flex flex-col gap-4">
+                <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] h-full flex flex-col max-h-[500px] lg:max-h-full">
+                    <h3 class="text-sm text-gray-300 font-bold uppercase tracking-widest mb-4 flex items-center gap-2">📚 Supported Signs</h3>
+                    
+                    <div class="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
+                            <div class="text-2xl">👍</div><div class="font-medium text-gray-200">Good / Yes</div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
+                            <div class="text-2xl">👎</div><div class="font-medium text-gray-200">Bad / No</div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
+                            <div class="text-2xl">✌️</div><div class="font-medium text-gray-200">Victory / Two</div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
+                            <div class="text-2xl">✋</div><div class="font-medium text-gray-200">Wait / Stop</div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
+                            <div class="text-2xl">🤟</div><div class="font-medium text-gray-200">I Love You</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- MODE 2: TEXT/SPEECH TO SIGN (Avatar Mode)  -->
+        <!-- ========================================== -->
+        <div id="mode-text-to-sign" class="hidden flex-col gap-6 w-full max-w-4xl">
             
-            <!-- Glassmorphism Camera Container (Mobile aspect-square fix applied) -->
-            <div class="relative bg-black/50 rounded-3xl overflow-hidden aspect-square md:aspect-video shadow-[0_8px_32px_0_rgba(0,0,0,0.5)] border border-white/10 backdrop-blur-sm group">
-                <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform scale-x-[-1]"></video>
-                <canvas id="overlay" class="absolute inset-0 w-full h-full z-10 transform scale-x-[-1] pointer-events-none object-cover"></canvas>
-                
-                <!-- Inner Glow Ring -->
-                <div class="absolute inset-0 border-2 border-teal-500/20 rounded-3xl pointer-events-none z-20 transition-all duration-300 group-hover:border-teal-500/50"></div>
-                
-                <!-- HUD Overlay -->
-                <div class="absolute top-4 left-4 z-20 flex gap-2">
-                    <div class="bg-red-500/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase shadow-lg flex items-center gap-2 border border-red-400/50">
-                        <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
-                    </div>
-                    <div class="bg-black/60 backdrop-blur-md text-teal-400 px-3 py-1 rounded-full text-xs font-mono font-medium border border-white/10 shadow-lg">
-                        <span id="fps-counter">0</span> FPS
-                    </div>
+            <!-- Input Area (Text + Mic) -->
+            <div class="bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-3xl shadow-lg flex flex-col md:flex-row items-center gap-4">
+                <div class="flex-grow flex w-full relative">
+                    <input type="text" id="input-text-sign" placeholder="Type or speak to translate into sign language..." class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 pl-5 pr-14 text-lg focus:ring-2 focus:ring-teal-500/50 outline-none text-white placeholder-gray-500 transition-all">
+                    
+                    <!-- Microphone Button -->
+                    <button id="btn-mic" onclick="startSpeechRecognition()" class="absolute right-2 top-1/2 transform -translate-y-1/2 p-2.5 bg-white/5 hover:bg-teal-500/20 text-gray-400 hover:text-teal-300 rounded-xl transition-all border border-transparent hover:border-teal-500/30" title="Click to Speak">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8h-1a6 6 0 11-12 0H3a7.001 7.001 0 006 6.93V17H6v1h8v-1h-3v-2.07z" clip-rule="evenodd"></path></svg>
+                    </button>
                 </div>
+                <button onclick="simulateAvatarTranslation()" class="w-full md:w-auto bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white px-8 py-4 rounded-2xl font-bold shadow-[0_0_15px_rgba(20,184,166,0.4)] transition-all flex justify-center items-center gap-2">
+                    Generate Sign
+                </button>
             </div>
-
-            <!-- Translation Output Card -->
-            <div class="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-500 to-blue-500"></div>
-                
-                <h3 class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-                    Live Translation Output
-                </h3>
-                
-                <div class="min-h-[80px] flex items-center">
-                    <p id="translated-text" class="text-3xl md:text-4xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 drop-shadow-sm">
-                        Waiting for gesture...
-                    </p>
-                </div>
-                
-                <!-- Interactive Action Buttons -->
-                <div class="mt-6 flex gap-3 border-t border-white/10 pt-5">
-                    <button onclick="speakText()" class="flex-1 bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 py-3 rounded-xl font-medium transition-all flex justify-center items-center gap-2 shadow-inner">
-                        <span>🔊</span> Speak Aloud
-                    </button>
-                    <button onclick="copyText()" class="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10 py-3 rounded-xl font-medium transition-all flex justify-center items-center gap-2 shadow-inner">
-                        <span>📋</span> Copy Text
-                    </button>
+            
+            <!-- Avatar Display Area (Placeholder for SIH) -->
+            <div class="relative bg-black/60 border border-white/10 rounded-3xl aspect-video md:aspect-[21/9] flex flex-col items-center justify-center shadow-inner overflow-hidden">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                <div id="avatar-status" class="text-center z-10">
+                    <span class="text-7xl block mb-4 animate-bounce">🧍‍♂️</span>
+                    <h2 class="text-2xl font-bold text-gray-200">3D Avatar Engine</h2>
+                    <p class="text-teal-400/80 mt-2">Ready to convert speech/text to ISL animations.</p>
+                    <p class="text-xs text-gray-500 mt-1">(API Integration pending for Finals)</p>
                 </div>
             </div>
         </div>
 
-        <!-- Right Column: Dictionary Panel -->
-        <div class="w-full lg:w-80 flex flex-col gap-4">
-            <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] h-full flex flex-col max-h-[500px] lg:max-h-full">
-                <h3 class="text-sm text-gray-300 font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
-                    📚 Supported Signs
-                </h3>
-                
-                <div class="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
-                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                        <div class="text-2xl">👍</div>
-                        <div class="font-medium text-gray-200">Good / Yes</div>
-                    </div>
-                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                        <div class="text-2xl">👎</div>
-                        <div class="font-medium text-gray-200">Bad / No</div>
-                    </div>
-                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                        <div class="text-2xl">✌️</div>
-                        <div class="font-medium text-gray-200">Victory / Two</div>
-                    </div>
-                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                        <div class="text-2xl">✋</div>
-                        <div class="font-medium text-gray-200">Wait / Stop</div>
-                    </div>
-                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                        <div class="text-2xl">✊</div>
-                        <div class="font-medium text-gray-200">Solid / Fist</div>
-                    </div>
-                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                        <div class="text-2xl">🤟</div>
-                        <div class="font-medium text-gray-200">I Love You</div>
-                    </div>
-                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                        <div class="text-2xl text-teal-400">💧</div>
-                        <div class="font-medium text-gray-200">Water (W-shape)</div>
-                    </div>
-                    <div class="flex items-center gap-4 bg-black/20 p-3 rounded-xl border border-white/5 hover:border-teal-500/30 transition-colors">
-                        <div class="text-2xl text-teal-400">🧍</div>
-                        <div class="font-medium text-gray-200">I / Me (Pinky up)</div>
-                    </div>
-                </div>
-
-                <div class="mt-4 pt-4 border-t border-white/10">
-                    <div class="bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs p-3 rounded-xl flex items-start gap-2">
-                        <span>ℹ️</span> 
-                        <p class="leading-relaxed">Hybrid AI model active: utilizing Google gesture defaults and geometric math fallbacks.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </main>
 
-    <!-- Footer with Developer Signature -->
-    <footer class="mt-auto backdrop-blur-md bg-black/40 border-t border-white/5 py-6">
+    <!-- Footer -->
+    <footer class="mt-auto backdrop-blur-md bg-black/40 border-t border-white/5 py-6 z-50">
         <div class="text-center text-sm text-gray-400">
             Developed by <span class="text-teal-400 font-bold tracking-wide">Sayan Chakraborty @ Team theHomoSapiens</span>
         </div>
     </footer>
 
     <script>
-        // --- Interactive Button Logic ---
-        function speakText() {
-            const text = document.getElementById('translated-text').innerText;
-            if (text && text !== "No hand detected" && text !== "Sign not recognized..." && text !== "Waiting for gesture...") {
-                // Strip out emojis for cleaner speech
-                const cleanText = text.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').trim();
-                const utterance = new SpeechSynthesisUtterance(cleanText);
-                window.speechSynthesis.speak(utterance);
+        // --- Mode Switching Logic ---
+        function switchMode(mode) {
+            const modeSignToText = document.getElementById('mode-sign-to-text');
+            const modeTextToSign = document.getElementById('mode-text-to-sign');
+            const tabSignToText = document.getElementById('tab-sign-to-text');
+            const tabTextToSign = document.getElementById('tab-text-to-sign');
+
+            if (mode === 'sign-to-text') {
+                modeSignToText.classList.remove('hidden');
+                modeSignToText.classList.add('flex');
+                modeTextToSign.classList.add('hidden');
+                modeTextToSign.classList.remove('flex');
+                
+                // Style Active Tab
+                tabSignToText.className = "flex-1 px-6 py-2.5 rounded-full bg-white/10 text-teal-300 shadow-sm font-semibold transition-all flex items-center justify-center gap-2 border border-white/5";
+                tabTextToSign.className = "flex-1 px-6 py-2.5 rounded-full text-gray-400 hover:text-gray-200 font-semibold transition-all flex items-center justify-center gap-2";
+            } else {
+                modeTextToSign.classList.remove('hidden');
+                modeTextToSign.classList.add('flex');
+                modeSignToText.classList.add('hidden');
+                modeSignToText.classList.remove('flex');
+                
+                // Style Active Tab
+                tabTextToSign.className = "flex-1 px-6 py-2.5 rounded-full bg-white/10 text-teal-300 shadow-sm font-semibold transition-all flex items-center justify-center gap-2 border border-white/5";
+                tabSignToText.className = "flex-1 px-6 py-2.5 rounded-full text-gray-400 hover:text-gray-200 font-semibold transition-all flex items-center justify-center gap-2";
+            }
+        }
+
+        // --- Web Speech API (Speech to Text) ---
+        function startSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Your browser does not support Speech Recognition. Try using Google Chrome.");
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            const micBtn = document.getElementById('btn-mic');
+            const inputField = document.getElementById('input-text-sign');
+
+            // Visual feedback that mic is listening
+            micBtn.classList.add('animate-pulse', 'bg-red-500/20', 'text-red-400', 'border-red-500/50');
+            inputField.placeholder = "Listening...";
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                inputField.value = transcript;
+            };
+
+            recognition.onend = function() {
+                micBtn.classList.remove('animate-pulse', 'bg-red-500/20', 'text-red-400', 'border-red-500/50');
+                inputField.placeholder = "Type or speak to translate into sign language...";
+            };
+
+            recognition.start();
+        }
+
+        // Simulate generating an avatar for hackathon UI
+        function simulateAvatarTranslation() {
+            const input = document.getElementById('input-text-sign').value;
+            const statusDiv = document.getElementById('avatar-status');
+            
+            if(!input) return alert("Please enter or speak some text first.");
+
+            statusDiv.innerHTML = `
+                <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-500 mb-4 mx-auto"></div>
+                <h2 class="text-xl font-bold text-teal-300">Rendering ISL Sequence...</h2>
+                <p class="text-gray-400 mt-2">Parsing: "${input}"</p>
+            `;
+            
+            setTimeout(() => {
+                statusDiv.innerHTML = `
+                    <span class="text-7xl block mb-4 text-teal-500">✅</span>
+                    <h2 class="text-xl font-bold text-gray-200">Animation Ready (Simulation)</h2>
+                    <p class="text-gray-400 mt-2">Text: "${input}"</p>
+                `;
+            }, 2000);
+        }
+
+        // --- Auto-Speak & Copy Logic (Mode 1) ---
+        let autoSpeakEnabled = false;
+        let lastSpokenText = ""; 
+
+        function toggleAutoSpeak() {
+            autoSpeakEnabled = !autoSpeakEnabled;
+            const btn = document.getElementById('btn-auto-speak');
+            const icon = document.getElementById('auto-speak-icon');
+            const text = document.getElementById('auto-speak-text');
+            
+            if (autoSpeakEnabled) {
+                btn.classList.replace('bg-white/5', 'bg-teal-500/20');
+                btn.classList.replace('text-gray-300', 'text-teal-300');
+                btn.classList.replace('border-white/10', 'border-teal-500/50');
+                icon.innerText = "🔊";
+                text.innerText = "Auto-Speak: ON";
+                window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+            } else {
+                btn.classList.replace('bg-teal-500/20', 'bg-white/5');
+                btn.classList.replace('text-teal-300', 'text-gray-300');
+                btn.classList.replace('border-teal-500/50', 'border-white/10');
+                icon.innerText = "🔇";
+                text.innerText = "Auto-Speak: OFF";
+                window.speechSynthesis.cancel();
             }
         }
 
         function copyText() {
             const text = document.getElementById('translated-text').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Translation copied to clipboard!");
-            });
+            navigator.clipboard.writeText(text).then(() => alert("Translation copied to clipboard!"));
         }
 
-        // --- WebSocket & Camera Logic ---
+        // --- WebSocket & Camera Logic (Mode 1) ---
         const RENDER_URL = "wss://thehomosapiens-sih2026.onrender.com/ws/translate"; 
-
         let ws;
         const videoElement = document.getElementById('webcam');
         const outputElement = document.getElementById('translated-text');
@@ -184,20 +279,13 @@
         const fpsCounter = document.getElementById('fps-counter');
 
         let isProcessing = false;
-        
-        // Variables to calculate Backend frames per second
         let framesProcessed = 0;
         let lastFpsTime = performance.now();
 
-        const HAND_CONNECTIONS = [
-            [0,1], [1,2], [2,3], [3,4], [0,5], [5,6], [6,7], [7,8], 
-            [5,9], [9,10], [10,11], [11,12], [9,13], [13,14], [14,15], [15,16], 
-            [13,17], [0,17], [17,18], [18,19], [19,20]
-        ];
+        const HAND_CONNECTIONS = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[0,17],[17,18],[18,19],[19,20]];
 
         function connectWebSocket() {
             ws = new WebSocket(RENDER_URL);
-            
             ws.onopen = () => {
                 statusDot.classList.replace('bg-red-500', 'bg-green-500');
                 statusText.innerText = "Live Server Connected";
@@ -206,20 +294,28 @@
 
             ws.onmessage = (event) => {
                 isProcessing = false; 
-                
-                // Update FPS calculation
                 framesProcessed++;
                 const now = performance.now();
                 if (now - lastFpsTime >= 1000) {
                     fpsCounter.innerText = framesProcessed;
-                    framesProcessed = 0;
-                    lastFpsTime = now;
+                    framesProcessed = 0; lastFpsTime = now;
                 }
 
                 const response = JSON.parse(event.data);
-                if (outputElement) {
-                    outputElement.innerText = response.translation;
+                const currentText = response.translation;
+                
+                if (outputElement) outputElement.innerText = currentText;
+                
+                if (autoSpeakEnabled && currentText && currentText !== "No hand detected" && currentText !== "Sign not recognized..." && currentText !== "Waiting for gesture...") {
+                    if (currentText !== lastSpokenText) {
+                        window.speechSynthesis.cancel(); 
+                        const cleanText = currentText.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '').trim();
+                        window.speechSynthesis.speak(new SpeechSynthesisUtterance(cleanText));
+                        lastSpokenText = currentText;
+                    }
                 }
+                
+                if (currentText === "No hand detected") lastSpokenText = ""; 
                 
                 if (response.landmarks && response.landmarks.length > 0) {
                     drawLandmarks(response.landmarks);
@@ -228,7 +324,7 @@
                 }
             };
 
-            ws.onerror = (error) => {
+            ws.onerror = () => {
                 statusDot.classList.replace('bg-green-500', 'bg-red-500');
                 statusText.innerText = "Connection Error";
                 isProcessing = false;
@@ -242,26 +338,19 @@
         }
 
         function drawLandmarks(landmarks) {
-            canvasOverlay.width = videoElement.videoWidth;
-            canvasOverlay.height = videoElement.videoHeight;
+            canvasOverlay.width = videoElement.videoWidth; canvasOverlay.height = videoElement.videoHeight;
             ctx.clearRect(0, 0, canvasOverlay.width, canvasOverlay.height);
-            
             if (!landmarks || landmarks.length === 0) return;
-
-            // Draw Teal Connectors
-            ctx.strokeStyle = '#0D9488'; 
-            ctx.lineWidth = 3;
+            
+            ctx.strokeStyle = '#0D9488'; ctx.lineWidth = 3;
             HAND_CONNECTIONS.forEach(connection => {
-                const startPoint = landmarks[connection[0]];
-                const endPoint = landmarks[connection[1]];
-                
+                const startPoint = landmarks[connection[0]], endPoint = landmarks[connection[1]];
                 ctx.beginPath();
                 ctx.moveTo(startPoint.x * canvasOverlay.width, startPoint.y * canvasOverlay.height);
                 ctx.lineTo(endPoint.x * canvasOverlay.width, endPoint.y * canvasOverlay.height);
                 ctx.stroke();
             });
 
-            // Draw Red Joints
             ctx.fillStyle = '#ef4444'; 
             landmarks.forEach(point => {
                 ctx.beginPath();
@@ -272,39 +361,26 @@
 
         async function startCamera() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { width: 640, height: 480, facingMode: "user" } 
-                });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: "user" } });
                 videoElement.srcObject = stream;
-                
                 videoElement.onloadedmetadata = () => {
-                    canvasOverlay.width = videoElement.videoWidth;
-                    canvasOverlay.height = videoElement.videoHeight;
-                    connectWebSocket();
-                    startVideoStreaming();
+                    canvasOverlay.width = videoElement.videoWidth; canvasOverlay.height = videoElement.videoHeight;
+                    connectWebSocket(); startVideoStreaming();
                 };
             } catch (err) {
-                console.error("Camera access denied:", err);
-                outputElement.innerText = "Camera access required to use the translator.";
+                outputElement.innerText = "Camera access required.";
             }
         }
 
         function startVideoStreaming() {
-            const hiddenCanvas = document.createElement("canvas");
-            const hiddenCtx = hiddenCanvas.getContext("2d");
-
+            const hiddenCanvas = document.createElement("canvas"), hiddenCtx = hiddenCanvas.getContext("2d");
             setInterval(() => {
                 if (isProcessing) return;
-
                 if (ws && ws.readyState === WebSocket.OPEN && videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
                     isProcessing = true; 
-                    
-                    hiddenCanvas.width = 320; 
-                    hiddenCanvas.height = 240; 
+                    hiddenCanvas.width = 320; hiddenCanvas.height = 240; 
                     hiddenCtx.drawImage(videoElement, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-                    
-                    const base64Frame = hiddenCanvas.toDataURL("image/jpeg", 0.3); 
-                    ws.send(base64Frame);
+                    ws.send(hiddenCanvas.toDataURL("image/jpeg", 0.3));
                 }
             }, 30);
         }
