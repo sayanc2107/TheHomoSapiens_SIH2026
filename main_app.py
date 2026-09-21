@@ -45,6 +45,8 @@ def format_gesture(category_name):
     }
     return gesture_map.get(category_name, category_name)
 
+    
+
 # 4. WebSocket Endpoint for live video frames
 @app.websocket("/ws/translate")
 async def websocket_endpoint(websocket: WebSocket):
