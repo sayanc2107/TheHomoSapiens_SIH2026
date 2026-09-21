@@ -18,9 +18,9 @@ from mediapipe.tasks.python import vision
 # ==========================================
 # 1. MONGODB & AUTHENTICATION SETUP
 # ==========================================
-MONGO_URL = "mongodb://localhost:27017"
+MONGO_URL = "mongodb+srv://sayan2008c_db_user:IoeLEYRREtrqTnmS@cluster0.njngnoe.mongodb.net/?appName=Cluster0"
 client = AsyncIOMotorClient(MONGO_URL)
-db = client.sih_database 
+db = client.sih_database
 
 SECRET_KEY = "sih2026_super_secret_key" 
 
