@@ -8,9 +8,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; padding-bottom: 40px; }
-        .form-label { @apply block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1; }
-        .form-input { @apply w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none text-slate-800; }
-        .pwd-btn { @apply absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 transition; }
+        .form-label { @apply block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5; }
+        .form-input { @apply w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:bg-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-slate-800 transition-all; }
+        .pwd-btn { @apply absolute right-3 text-slate-400 hover:text-slate-600 transition; top: 38px; }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
@@ -22,7 +22,7 @@
 
     <!-- ================= AUTHENTICATION VIEW ================= -->
     <div id="auth-view" class="flex-grow flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-100">
             <div class="text-center mb-6">
                 <h1 class="text-2xl font-bold text-gray-800"><i class="fa-solid fa-hands-asl-interpreting text-blue-600"></i> TheHomoSapiens</h1>
                 <p class="text-gray-500 text-sm mt-1">SIH 2026 Sign Language Translator</p>
@@ -37,9 +37,9 @@
                 <div class="relative">
                     <label class="form-label">Password</label>
                     <input type="password" id="login-password" required class="form-input">
-                    <button type="button" class="pwd-btn top-7" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
+                    <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-medium">Log In</button>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm mt-2">Log In</button>
                 <p class="text-sm text-center text-gray-600 mt-4">New here? <a href="#" onclick="toggleAuth('register')" class="text-blue-600 font-semibold hover:underline">Create an account</a></p>
             </form>
 
@@ -66,19 +66,19 @@
                 <div class="relative">
                     <label class="form-label">Password</label>
                     <input type="password" id="reg-password" required class="form-input">
-                    <button type="button" class="pwd-btn top-7" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
+                    <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
                 </div>
-                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-medium">Register</button>
+                <button type="submit" class="w-full bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 transition font-medium shadow-sm mt-2">Register</button>
                 <p class="text-sm text-center text-gray-600 mt-4">Already have an account? <a href="#" onclick="toggleAuth('login')" class="text-blue-600 font-semibold hover:underline">Log In</a></p>
             </form>
         </div>
     </div>
 
     <!-- ================= FULL PAGE SETTINGS VIEWS ================= -->
-    <div id="settings-view" class="hidden fixed inset-0 bg-slate-50 z-40 flex items-center justify-center p-4">
+    <div id="settings-view" class="hidden fixed inset-0 bg-slate-100 z-40 flex items-center justify-center p-4">
         
         <!-- Profile Settings Card -->
-        <div id="profile-card" class="bg-white rounded-xl shadow-sm border border-gray-100 w-full max-w-md p-8 hidden relative">
+        <div id="profile-card" class="bg-white rounded-xl shadow-md border border-gray-200 w-full max-w-md p-8 hidden relative">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-[22px] font-bold text-slate-800">Profile Settings</h2>
                 <button onclick="closeSettings()" class="text-[#4A9084] text-sm font-semibold hover:opacity-80 transition">&larr; Back</button>
@@ -87,100 +87,93 @@
             <form id="update-profile-form" class="space-y-4">
                 <div>
                     <label class="form-label">Full Name</label>
-                    <input type="text" id="set-name" required class="form-input bg-gray-50/50">
+                    <input type="text" id="set-name" required class="form-input">
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="form-label">Age</label>
-                        <input type="number" id="set-age" required class="form-input bg-gray-50/50">
+                        <input type="number" id="set-age" required class="form-input">
                     </div>
                     <div>
                         <label class="form-label">Mobile Number</label>
-                        <input type="text" id="set-mobile" required class="form-input bg-gray-50/50">
+                        <input type="text" id="set-mobile" required class="form-input">
                     </div>
                 </div>
 
                 <div>
                     <label class="form-label">Email Address</label>
-                    <input type="email" id="set-email" required class="form-input bg-gray-50/50">
+                    <input type="email" id="set-email" required class="form-input">
                 </div>
                 
-                <div class="border-t pt-4 mt-2"></div>
+                <div class="border-t border-gray-200 pt-4 mt-2"></div>
 
                 <!-- Red Confirmation Box -->
-                <div class="bg-[#FFF5F5] p-4 rounded-lg border border-red-100">
-                    <label class="block text-[11px] font-bold text-[#C53030] uppercase tracking-wide mb-2">Current Password (Required to Save)</label>
+                <div class="bg-[#FFF5F5] p-5 rounded-lg border border-red-200">
+                    <label class="form-label text-[#C53030]">Current Password (Required to Save)</label>
                     <div class="relative">
-                        <input type="password" id="set-current-pwd" required class="form-input border-red-200 bg-white">
-                        <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
+                        <input type="password" id="set-current-pwd" required class="form-input border-red-300 bg-white focus:ring-red-500 focus:border-red-500" style="padding-right: 2.5rem;">
+                        <button type="button" class="pwd-btn !top-2.5" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full mt-6 bg-[#4A9084] text-white py-3 rounded-lg font-medium hover:bg-teal-700 transition">Verify & Save Changes</button>
+                <button type="submit" class="w-full mt-6 bg-[#4A9084] text-white py-3 rounded-lg font-medium hover:bg-teal-700 transition shadow-sm">Verify & Save Changes</button>
             </form>
         </div>
 
         <!-- Change Password Card -->
-        <div id="password-card" class="bg-white rounded-xl shadow-sm border border-gray-100 w-full max-w-md p-8 hidden relative">
+        <div id="password-card" class="bg-white rounded-xl shadow-md border border-gray-200 w-full max-w-md p-8 hidden relative">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-[22px] font-bold text-slate-800">Change Password</h2>
                 <button onclick="closeSettings()" class="text-[#4A9084] text-sm font-semibold hover:opacity-80 transition">&larr; Back</button>
             </div>
 
             <form id="change-password-form" class="space-y-5">
-                <div>
+                <div class="relative">
                     <label class="form-label">Current Password</label>
-                    <div class="relative">
-                        <input type="password" id="pwd-current" required class="form-input bg-gray-50/50">
-                        <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
-                    </div>
+                    <input type="password" id="pwd-current" required class="form-input">
+                    <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
                 </div>
 
-                <div>
+                <div class="relative">
                     <label class="form-label">New Password</label>
-                    <div class="relative">
-                        <input type="password" id="pwd-new" required class="form-input bg-gray-50/50">
-                        <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
-                    </div>
+                    <input type="password" id="pwd-new" required class="form-input">
+                    <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
                 </div>
 
-                <div>
+                <div class="relative">
                     <label class="form-label">Confirm New Password</label>
-                    <div class="relative">
-                        <input type="password" id="pwd-confirm" required class="form-input bg-gray-50/50">
-                        <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
-                    </div>
+                    <input type="password" id="pwd-confirm" required class="form-input">
+                    <button type="button" class="pwd-btn" onclick="togglePwd(this)"><i class="fa-solid fa-eye"></i></button>
                 </div>
 
-                <button type="submit" class="w-full mt-8 bg-[#1A1F36] text-white py-3 rounded-lg font-medium hover:bg-slate-800 transition">Update Password</button>
+                <button type="submit" class="w-full mt-8 bg-[#1A1F36] text-white py-3 rounded-lg font-medium hover:bg-slate-800 transition shadow-sm">Update Password</button>
             </form>
         </div>
     </div>
 
     <!-- ================= WORKSPACE VIEW ================= -->
     <div id="workspace-view" class="hidden flex-col h-full relative">
-        <nav class="bg-white shadow-sm px-6 py-3 flex justify-between items-center z-30">
+        <nav class="bg-white shadow-sm px-6 py-3 flex justify-between items-center z-30 border-b border-gray-200">
             <div class="flex items-center gap-3">
                 <i class="fa-solid fa-hands-asl-interpreting text-blue-600 text-xl"></i>
                 <span class="font-bold text-gray-800 text-lg">TheHomoSapiens <span class="text-gray-400 font-normal text-sm">| SIH 2026</span></span>
             </div>
             <div class="flex items-center gap-6">
                 <div class="flex items-center gap-2 text-sm font-medium border-r pr-6 border-gray-200">
-                    <div id="status-dot" class="w-3 h-3 rounded-full bg-red-500"></div>
-                    <span id="status-text" class="text-gray-600 tracking-wider text-xs">OFFLINE</span>
+                    <div id="status-dot" class="w-3 h-3 rounded-full bg-red-500 shadow-sm"></div>
+                    <span id="status-text" class="text-gray-600 tracking-wider text-xs font-bold">OFFLINE</span>
                 </div>
                 
-                <!-- Redesigned Dropdown -->
                 <div class="relative">
                     <button onclick="document.getElementById('dropdown').classList.toggle('hidden')" class="flex items-center gap-2 text-[13px] font-bold text-slate-600 hover:text-blue-600 tracking-wide uppercase transition">
                         WELCOME, <span id="nav-user-name">USER</span> <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
                     </button>
-                    <div id="dropdown" class="hidden absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
-                        <a href="#" onclick="openSettings('profile')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-gray-50 transition">
+                    <div id="dropdown" class="hidden absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
+                        <a href="#" onclick="openSettings('profile')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition">
                             <i class="fa-solid fa-gear w-6 text-[#A78BFA]"></i> Profile Settings
                         </a>
-                        <a href="#" onclick="openSettings('password')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-gray-50 transition">
+                        <a href="#" onclick="openSettings('password')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition">
                             <i class="fa-solid fa-lock w-6 text-[#FBBF24]"></i> Change Password
                         </a>
                         <div class="border-t border-gray-100 my-1"></div>
@@ -199,14 +192,14 @@
                     <canvas id="overlayCanvas" class="absolute top-0 left-0 w-full h-full transform -scale-x-100 z-10"></canvas>
                     <div id="camera-loading" class="text-white text-center z-20">
                         <i class="fa-solid fa-video text-4xl mb-3 text-gray-400"></i>
-                        <p class="text-gray-300">Requesting Camera Access...</p>
+                        <p class="text-gray-300 font-medium">Requesting Camera Access...</p>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm border p-5 flex flex-col justify-between">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col justify-between">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-xs font-bold text-gray-400 tracking-wider uppercase">Live Translation</span>
-                        <button onclick="saveChat()" class="text-sm bg-blue-50 text-blue-600 px-3 py-1 rounded hover:bg-blue-100 transition">
+                        <button onclick="saveChat()" class="text-sm bg-blue-50 text-blue-600 px-3 py-1.5 rounded-md hover:bg-blue-100 transition font-medium border border-blue-100">
                             <i class="fa-solid fa-bookmark mr-1"></i> Save to History
                         </button>
                     </div>
@@ -214,8 +207,8 @@
                 </div>
             </div>
 
-            <div class="w-80 bg-white rounded-xl shadow-sm border p-5 flex flex-col h-[580px]">
-                <h3 class="text-xs font-bold text-gray-400 tracking-wider uppercase mb-4 border-b pb-2"><i class="fa-solid fa-folder-open mr-2 text-yellow-500"></i>Saved Conversations</h3>
+            <div class="w-80 bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex flex-col h-[580px]">
+                <h3 class="text-xs font-bold text-gray-400 tracking-wider uppercase mb-4 border-b border-gray-100 pb-3"><i class="fa-solid fa-folder-open mr-2 text-yellow-500"></i>Saved Conversations</h3>
                 <div id="history-list" class="overflow-y-auto flex-grow space-y-3 pr-2">
                     <p class="text-sm text-gray-400 italic text-center mt-10">No saved conversations.</p>
                 </div>
@@ -555,7 +548,7 @@
                 
                 if (data.history && data.history.length > 0) {
                     list.innerHTML = data.history.map(item => `
-                        <div class="bg-gray-50 border rounded-lg p-3 shadow-sm hover:shadow-md transition">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-xs font-bold text-blue-600">${item.mode_used}</span>
                                 <span class="text-[10px] text-gray-400">${item.timestamp}</span>
