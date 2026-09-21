@@ -134,14 +134,13 @@
                 </button>
             </div>
             
-            <!-- Avatar Display Area (Placeholder for SIH) -->
+            <!-- Avatar Display Area -->
             <div class="relative bg-black/60 border border-white/10 rounded-3xl aspect-video md:aspect-[21/9] flex flex-col items-center justify-center shadow-inner overflow-hidden">
                 <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                <div id="avatar-status" class="text-center z-10">
+                <div id="avatar-status" class="text-center z-10 w-full px-6">
                     <span class="text-7xl block mb-4 animate-bounce">🧍‍♂️</span>
                     <h2 class="text-2xl font-bold text-gray-200">3D Avatar Engine</h2>
                     <p class="text-teal-400/80 mt-2">Ready to convert speech/text to ISL animations.</p>
-                    <p class="text-xs text-gray-500 mt-1">(API Integration pending for Finals)</p>
                 </div>
             </div>
         </div>
@@ -169,7 +168,6 @@
                 modeTextToSign.classList.add('hidden');
                 modeTextToSign.classList.remove('flex');
                 
-                // Style Active Tab
                 tabSignToText.className = "flex-1 px-6 py-2.5 rounded-full bg-white/10 text-teal-300 shadow-sm font-semibold transition-all flex items-center justify-center gap-2 border border-white/5";
                 tabTextToSign.className = "flex-1 px-6 py-2.5 rounded-full text-gray-400 hover:text-gray-200 font-semibold transition-all flex items-center justify-center gap-2";
             } else {
@@ -178,7 +176,6 @@
                 modeSignToText.classList.add('hidden');
                 modeSignToText.classList.remove('flex');
                 
-                // Style Active Tab
                 tabTextToSign.className = "flex-1 px-6 py-2.5 rounded-full bg-white/10 text-teal-300 shadow-sm font-semibold transition-all flex items-center justify-center gap-2 border border-white/5";
                 tabSignToText.className = "flex-1 px-6 py-2.5 rounded-full text-gray-400 hover:text-gray-200 font-semibold transition-all flex items-center justify-center gap-2";
             }
@@ -196,7 +193,6 @@
             const micBtn = document.getElementById('btn-mic');
             const inputField = document.getElementById('input-text-sign');
 
-            // Visual feedback that mic is listening
             micBtn.classList.add('animate-pulse', 'bg-red-500/20', 'text-red-400', 'border-red-500/50');
             inputField.placeholder = "Listening...";
 
@@ -213,12 +209,42 @@
             recognition.start();
         }
 
-        // Simulate generating an avatar for hackathon UI
+        // --- NEW: Emoji Sign Translation Logic ---
         function simulateAvatarTranslation() {
-            const input = document.getElementById('input-text-sign').value;
+            const input = document.getElementById('input-text-sign').value.trim().toLowerCase();
             const statusDiv = document.getElementById('avatar-status');
             
             if(!input) return alert("Please enter or speak some text first.");
+
+            // Map words to corresponding emojis
+            const signMap = {
+                "hello": "👋", "hi": "👋", "hey": "👋",
+                "good": "👍", "yes": "👍", "great": "👍",
+                "bad": "👎", "no": "👎",
+                "victory": "✌️", "two": "✌️", "peace": "✌️",
+                "wait": "✋", "stop": "✋",
+                "solid": "✊", "fist": "✊",
+                "love": "🤟", "i love you": "🤟",
+                "water": "💧",
+                "me": "🧍", "i": "🧍",
+                "up": "☝️", "one": "☝️"
+            };
+
+            // Break sentence into words and map them
+            const words = input.replace(/[.,!?]/g, '').split(' ');
+            let emojis = [];
+            let hasUnknown = false;
+
+            words.forEach(word => {
+                if (signMap[word]) {
+                    emojis.push(signMap[word]);
+                } else if (word !== "") {
+                    emojis.push("👐"); // Fallback for words not in the dictionary
+                    hasUnknown = true;
+                }
+            });
+
+            const emojiString = emojis.join(" ");
 
             statusDiv.innerHTML = `
                 <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-teal-500 mb-4 mx-auto"></div>
@@ -228,11 +254,14 @@
             
             setTimeout(() => {
                 statusDiv.innerHTML = `
-                    <span class="text-7xl block mb-4 text-teal-500">✅</span>
-                    <h2 class="text-xl font-bold text-gray-200">Animation Ready (Simulation)</h2>
-                    <p class="text-gray-400 mt-2">Text: "${input}"</p>
+                    <div class="flex gap-4 justify-center flex-wrap mb-4 px-4">
+                        <span class="text-7xl md:text-8xl block animate-bounce drop-shadow-[0_0_15px_rgba(20,184,166,0.5)]">${emojiString}</span>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-200">Translation Complete</h2>
+                    <p class="text-teal-400 mt-2">Signs for: <span class="text-white font-medium">"${input}"</span></p>
+                    ${hasUnknown ? `<p class="text-xs text-gray-500 mt-2">(Unknown words displayed as 👐)</p>` : ''}
                 `;
-            }, 2000);
+            }, 1000); // Changed to 1 second for a snappier response
         }
 
         // --- Auto-Speak & Copy Logic (Mode 1) ---
