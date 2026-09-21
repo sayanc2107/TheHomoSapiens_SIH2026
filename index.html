@@ -24,14 +24,12 @@
         }
     </script>
     <style>
-        /* CSS SECTION */
         body {
             background-color: #F9FAFB;
             color: #111827;
             -webkit-font-smoothing: antialiased;
         }
         
-        /* Flat UI specific utilities */
         .flat-card {
             background-color: #FFFFFF;
             border: 1px solid #E5E7EB;
@@ -52,16 +50,13 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
 
-        /* Hide elements by default for routing */
         .view-hidden { display: none !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- HTML SECTION -->
-
-    <!-- VIEW 1: AUTHENTICATION -->
-    <div id="view-auth" class="flex-grow flex items-center justify-center p-4">
+    <!-- VIEW 1: LOGIN -->
+    <div id="view-login" class="flex-grow flex items-center justify-center p-4">
         <div class="flat-card w-full max-w-md p-8">
             <div class="text-center mb-8">
                 <div class="w-16 h-16 bg-teal-50 text-primary text-3xl rounded-full flex items-center justify-center mx-auto mb-4 border border-teal-100">
@@ -71,28 +66,84 @@
                 <p class="text-sm text-gray-500 mt-2">Sign in to your account</p>
             </div>
             
-            <form id="login-form" class="space-y-5" onsubmit="event.preventDefault(); handleLogin();">
+            <form id="login-form" class="space-y-5" onsubmit="event.preventDefault(); window.handleLogin();">
+                <div id="login-error" class="hidden bg-red-50 text-red-600 p-3 rounded-md text-sm border border-red-200"></div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <input type="email" id="email-input" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="you@example.com" required>
+                    <input type="email" id="login-email" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="you@example.com" required>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input type="password" id="password-input" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="••••••••" required>
+                    <input type="password" id="login-password" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="flat-button w-full bg-primary hover:bg-primaryDark text-white font-semibold py-3 px-4 rounded-md shadow-sm mt-4">
+                <button type="submit" id="btn-login" class="flat-button w-full bg-primary hover:bg-primaryDark text-white font-semibold py-3 px-4 rounded-md shadow-sm mt-4">
                     Sign In
                 </button>
                 <div class="text-center text-sm text-gray-500 mt-4">
-                    Don't have an account? <a href="#" class="text-primary font-medium hover:underline">Register here</a>
+                    Don't have an account? <button type="button" onclick="switchView('register')" class="text-primary font-medium hover:underline">Register here</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- VIEW 2: DASHBOARD -->
+    <!-- VIEW 2: REGISTER -->
+    <div id="view-register" class="view-hidden flex-grow flex items-center justify-center p-4 py-12">
+        <div class="flat-card w-full max-w-lg p-8">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-teal-50 text-primary text-3xl rounded-full flex items-center justify-center mx-auto mb-4 border border-teal-100">
+                    📝
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900">Create an Account</h1>
+                <p class="text-sm text-gray-500 mt-2">Join TheHomoSapiens SIH 2026</p>
+            </div>
+            
+            <form id="register-form" class="space-y-4" onsubmit="event.preventDefault(); window.handleRegister();">
+                <div id="register-error" class="hidden bg-red-50 text-red-600 p-3 rounded-md text-sm border border-red-200"></div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" id="reg-name" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="John Doe" required>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                        <input type="number" id="reg-age" min="1" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="20" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                        <input type="tel" id="reg-mobile" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="+91 9876543210" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" id="reg-email" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="you@example.com" required>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="reg-password" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="••••••••" required minlength="6">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <input type="password" id="reg-confirm-password" class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-gray-900" placeholder="••••••••" required minlength="6">
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-register" class="flat-button w-full bg-primary hover:bg-primaryDark text-white font-semibold py-3 px-4 rounded-md shadow-sm mt-6">
+                    Register Account
+                </button>
+                <div class="text-center text-sm text-gray-500 mt-4">
+                    Already have an account? <button type="button" onclick="switchView('login')" class="text-primary font-medium hover:underline">Log in here</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIEW 3: DASHBOARD -->
     <div id="view-dashboard" class="view-hidden flex-grow flex flex-col">
-        <!-- Top Navbar -->
         <header class="bg-surface border-b border-gray-200 sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-2">
@@ -100,17 +151,15 @@
                     <span class="font-bold text-lg text-gray-900 tracking-tight">TheHomoSapiens</span>
                 </div>
                 
-                <!-- User Menu -->
                 <div class="relative">
                     <button id="user-menu-btn" class="flex items-center gap-2 hover:bg-gray-50 p-2 rounded-md transition-colors border border-transparent hover:border-gray-200">
                         <div class="w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
-                            <span id="user-initial">S</span>
+                            <span id="user-initial">U</span>
                         </div>
                         <span id="user-welcome-text" class="text-sm font-medium text-gray-700 hidden md:block">Welcome, User</span>
                         <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     
-                    <!-- Dropdown (Hidden by default) -->
                     <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Account Settings</a>
                         <div class="border-t border-gray-100 my-1"></div>
@@ -120,14 +169,10 @@
             </div>
         </header>
 
-        <!-- Dashboard Content -->
         <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
-            
-            <!-- Quick Actions -->
             <section>
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Start Translation</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Action 1 -->
                     <button onclick="openTranslation('sign-to-text')" class="flat-card hover:border-primary hover:shadow-md transition-all p-6 flex flex-col items-center justify-center gap-4 group text-left w-full">
                         <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl group-hover:bg-blue-100 transition-colors">
                             📷
@@ -138,7 +183,6 @@
                         </div>
                     </button>
                     
-                    <!-- Action 2 -->
                     <button onclick="openTranslation('text-to-sign')" class="flat-card hover:border-primary hover:shadow-md transition-all p-6 flex flex-col items-center justify-center gap-4 group text-left w-full">
                         <div class="w-16 h-16 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center text-2xl group-hover:bg-teal-100 transition-colors">
                             🤖
@@ -151,7 +195,6 @@
                 </div>
             </section>
 
-            <!-- Chat History -->
             <section class="flex-grow flex flex-col">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-lg font-semibold text-gray-900">Recent Conversations</h2>
@@ -159,16 +202,13 @@
                 </div>
                 
                 <div class="flat-card flex-grow flex flex-col overflow-hidden bg-white">
-                    <!-- Header Row -->
                     <div class="bg-gray-50 border-b border-gray-200 px-6 py-3 grid grid-cols-12 gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         <div class="col-span-3">Date & Time</div>
                         <div class="col-span-2">Mode</div>
                         <div class="col-span-7">Transcript / Data</div>
                     </div>
                     
-                    <!-- History List Container -->
                     <div id="history-list" class="flex-grow overflow-y-auto custom-scrollbar max-h-[400px]">
-                        <!-- Populated by JS -->
                         <div class="p-8 text-center text-gray-500">Loading history...</div>
                     </div>
                 </div>
@@ -176,9 +216,8 @@
         </main>
     </div>
 
-    <!-- VIEW 3: TRANSLATION WORKSPACE -->
+    <!-- VIEW 4: TRANSLATION WORKSPACE -->
     <div id="view-translation" class="view-hidden flex-grow flex flex-col h-screen bg-gray-900">
-        <!-- Workspace Navbar -->
         <header class="bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center text-white shadow-md">
             <div class="flex items-center gap-4">
                 <button onclick="switchView('dashboard')" class="hover:bg-gray-700 p-2 rounded-md transition-colors flex items-center gap-2 text-sm font-medium">
@@ -188,9 +227,8 @@
                 <span id="workspace-title" class="font-bold">Translation Mode</span>
             </div>
             
-            <!-- Save Conversation Toggle -->
             <div class="flex items-center gap-3 bg-gray-700 px-4 py-2 rounded-md border border-gray-600">
-                <span class="text-sm font-medium">Save to History</span>
+                <span class="text-sm font-medium">Save Conversation</span>
                 <label class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" id="save-toggle" class="sr-only peer" checked>
                     <div class="w-9 h-5 bg-gray-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-500"></div>
@@ -198,22 +236,18 @@
             </div>
         </header>
 
-        <!-- Workspace Content -->
         <main class="flex-grow flex flex-col md:flex-row p-4 gap-4 overflow-hidden">
-            <!-- Media Area (Camera or Avatar) -->
             <div class="flex-1 bg-black rounded-lg border border-gray-700 flex items-center justify-center relative overflow-hidden shadow-inner">
                 <div id="media-placeholder" class="text-center text-gray-500">
                     <span class="text-6xl mb-4 block" id="media-icon">📷</span>
                     <p class="font-medium">Media Feed Active</p>
-                    <p class="text-sm">(Simulation)</p>
+                    <p class="text-sm">(Simulation UI Placeholder)</p>
                 </div>
-                <!-- Mock Record indicator -->
                 <div class="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded shadow-lg flex items-center gap-2">
                     <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
                 </div>
             </div>
 
-            <!-- Interaction & Transcript Area -->
             <div class="w-full md:w-96 bg-gray-800 rounded-lg border border-gray-700 flex flex-col p-4 shadow-lg">
                 <h3 class="text-gray-300 text-sm font-bold uppercase tracking-wider mb-4">Live Transcript</h3>
                 
@@ -221,25 +255,22 @@
                     Waiting for input...
                 </div>
 
-                <!-- Input area for simulation -->
                 <div class="mt-auto flex flex-col gap-2">
                     <input type="text" id="mock-input" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white placeholder-gray-400 focus:outline-none focus:border-teal-500" placeholder="Type a sentence to translate...">
                     <button onclick="processMockTranslation()" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3 rounded-md transition-colors">
-                        Process Translation
+                        Process & Translate
                     </button>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- JAVASCRIPT SECTION -->
-    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // 1. Setup Firebase Configuration using environment variables
+        // Firebase Configuration
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-sih-app';
         let firebaseConfig = {};
         try {
@@ -252,18 +283,131 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Global State
+        // State variables
         let currentUser = null;
         let currentMode = '';
         let historyUnsubscribe = null;
+        
+        // Initial check for environment auth tokens if they want to bypass manual login
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && !auth.currentUser) {
+             signInWithCustomToken(auth, __initial_auth_token).catch(console.error);
+        }
 
-        // 2. Authentication Flow
-        onAuthStateChanged(auth, (user) => {
+        // View Router
+        window.switchView = (viewName) => {
+            document.querySelectorAll('body > div').forEach(div => {
+                if(div.id.startsWith('view-')) div.classList.add('view-hidden');
+            });
+            document.getElementById(`view-${viewName}`).classList.remove('view-hidden');
+            
+            // Clear errors when switching
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('register-error').classList.add('hidden');
+        };
+
+        // User Dropdown Interaction
+        document.getElementById('user-menu-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('user-dropdown').classList.toggle('hidden');
+        });
+        window.addEventListener('click', () => {
+            document.getElementById('user-dropdown').classList.add('hidden');
+        });
+
+        
+        // Register Logic
+        window.handleRegister = async () => {
+            const errorDiv = document.getElementById('register-error');
+            errorDiv.classList.add('hidden');
+            
+            const name = document.getElementById('reg-name').value;
+            const age = document.getElementById('reg-age').value;
+            const mobile = document.getElementById('reg-mobile').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm-password').value;
+
+            if (password !== confirm) {
+                errorDiv.innerText = "Passwords do not match.";
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            const btn = document.getElementById('btn-register');
+            btn.innerText = 'Creating account...';
+            btn.disabled = true;
+
+            try {
+                // Create user
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Save extended profile data strictly to users/{userId}/profile
+                const profileRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data');
+                await setDoc(profileRef, {
+                    fullName: name,
+                    age: age,
+                    mobile: mobile,
+                    email: email,
+                    createdAt: new Date().getTime()
+                });
+
+                // onAuthStateChanged will handle the redirect
+            } catch (error) {
+                console.error("Registration Error:", error);
+                errorDiv.innerText = error.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                btn.innerText = 'Register Account';
+                btn.disabled = false;
+            }
+        };
+
+        // Login Logic
+        window.handleLogin = async () => {
+            const errorDiv = document.getElementById('login-error');
+            errorDiv.classList.add('hidden');
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            const btn = document.getElementById('btn-login');
+            btn.innerText = 'Authenticating...';
+            btn.disabled = true;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // onAuthStateChanged will handle redirect
+            } catch (error) {
+                console.error("Login Error:", error);
+                errorDiv.innerText = "Invalid email or password.";
+                errorDiv.classList.remove('hidden');
+            } finally {
+                btn.innerText = 'Sign In';
+                btn.disabled = false;
+            }
+        };
+
+        // Logout Logic
+        window.handleLogout = async () => {
+            if(historyUnsubscribe) historyUnsubscribe();
+            await signOut(auth);
+        };
+
+
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                // Update UI with user info (Mocking name based on email input or default)
-                const emailInput = document.getElementById('email-input').value;
-                const displayName = emailInput ? emailInput.split('@')[0] : 'Sayan';
+                let displayName = user.email ? user.email.split('@')[0] : 'User';
+                
+                // Attempt to fetch custom profile name
+                try {
+                    const profileRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data');
+                    const profileSnap = await getDoc(profileRef);
+                    if (profileSnap.exists() && profileSnap.data().fullName) {
+                        displayName = profileSnap.data().fullName;
+                    }
+                } catch(e) { console.error("Error fetching profile", e); }
                 
                 document.getElementById('user-welcome-text').innerText = `Welcome, ${displayName}`;
                 document.getElementById('user-initial').innerText = displayName.charAt(0).toUpperCase();
@@ -272,61 +416,11 @@
                 loadChatHistory();
             } else {
                 currentUser = null;
-                switchView('auth');
+                switchView('login');
             }
         });
 
-        // Attach to window so HTML inline onclick can access it
-        window.handleLogin = async () => {
-            const btn = document.querySelector('#login-form button');
-            const originalText = btn.innerText;
-            btn.innerText = 'Authenticating...';
-            btn.disabled = true;
-
-            try {
-                // In this collaborative environment, we use the provided token or fallback to anonymous
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                // onAuthStateChanged will handle the redirect
-            } catch (error) {
-                console.error("Login Error:", error);
-                alert("Authentication failed. Please try again.");
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        };
-
-        window.handleLogout = async () => {
-            if(historyUnsubscribe) historyUnsubscribe();
-            await signOut(auth);
-            document.getElementById('user-dropdown').classList.add('hidden');
-        };
-
-        // 3. UI Routing & General Interactions
-        window.switchView = (viewName) => {
-            document.getElementById('view-auth').classList.add('view-hidden');
-            document.getElementById('view-dashboard').classList.add('view-hidden');
-            document.getElementById('view-translation').classList.add('view-hidden');
-            
-            document.getElementById(`view-${viewName}`).classList.remove('view-hidden');
-        };
-
-        // Dropdown toggle logic
-        document.getElementById('user-menu-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const dropdown = document.getElementById('user-dropdown');
-            dropdown.classList.toggle('hidden');
-        });
-
-        // Close dropdown when clicking outside
-        window.addEventListener('click', () => {
-            document.getElementById('user-dropdown').classList.add('hidden');
-        });
-
+        
         window.openTranslation = (mode) => {
             currentMode = mode;
             const title = mode === 'sign-to-text' ? 'Sign → Text / Audio' : 'Text / Audio → Sign';
@@ -340,24 +434,19 @@
             switchView('translation');
         };
 
-        // 4. Database Logic (History)
-        
-        // Save conversation to Firestore
         window.processMockTranslation = async () => {
             const input = document.getElementById('mock-input').value.trim();
             if(!input) return;
 
-            const transcriptArea = document.getElementById('live-transcript');
-            transcriptArea.innerText = input;
-
+            document.getElementById('live-transcript').innerText = input;
             const shouldSave = document.getElementById('save-toggle').checked;
             
             if (shouldSave && currentUser) {
                 try {
-                    // CRITICAL RULE 1: Strict Paths -> /artifacts/{appId}/users/{userId}/history
+                    // Strict Paths compliance
                     const historyRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'history');
-                    
                     const now = new Date();
+                    
                     await addDoc(historyRef, {
                         mode: currentMode,
                         content: input,
@@ -365,50 +454,36 @@
                         dateString: now.toLocaleString()
                     });
                     
-                    // Clear input after processing
-                    document.getElementById('mock-input').value = '';
-                    
                 } catch (error) {
                     console.error("Error saving history:", error);
                 }
-            } else {
-                document.getElementById('mock-input').value = '';
             }
+            document.getElementById('mock-input').value = '';
         };
 
-        // Load conversation history from Firestore
         function loadChatHistory() {
             if (!currentUser) return;
-
             const historyList = document.getElementById('history-list');
             historyList.innerHTML = '<div class="p-8 text-center text-gray-500">Loading history...</div>';
 
-            // CRITICAL RULE 1: Strict Paths
             const historyRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'history');
 
-            // CRITICAL RULE 2: No Complex Queries. Fetch all, sort in memory.
-            // CRITICAL RULE 3: Error callbacks required for onSnapshot.
             historyUnsubscribe = onSnapshot(historyRef, (snapshot) => {
                 let records = [];
-                snapshot.forEach((doc) => {
-                    records.push({ id: doc.id, ...doc.data() });
-                });
+                snapshot.forEach((doc) => { records.push({ id: doc.id, ...doc.data() }); });
 
-                // Sort descending by timestamp in memory
+                // Sort descending in memory
                 records.sort((a, b) => b.timestamp - a.timestamp);
 
                 if (records.length === 0) {
                     historyList.innerHTML = `
                         <div class="p-12 flex flex-col items-center justify-center text-gray-400">
-                            <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                             <p>No translation history yet.</p>
                             <p class="text-sm mt-1">Saved conversations will appear here.</p>
-                        </div>
-                    `;
+                        </div>`;
                     return;
                 }
 
-                // Render list
                 historyList.innerHTML = records.map(record => `
                     <div class="border-b border-gray-100 px-6 py-4 grid grid-cols-12 gap-4 items-center hover:bg-gray-50 transition-colors">
                         <div class="col-span-3 text-sm text-gray-500 flex flex-col">
@@ -420,7 +495,7 @@
                                 ${record.mode === 'sign-to-text' ? 'Sign → Text' : 'Text → Sign'}
                             </span>
                         </div>
-                        <div class="col-span-7 text-sm text-gray-900 font-medium truncate pr-4" title="${record.content}">
+                        <div class="col-span-7 text-sm text-gray-900 font-medium truncate pr-4">
                             "${record.content}"
                         </div>
                     </div>
@@ -428,7 +503,7 @@
 
             }, (error) => {
                 console.error("Error fetching history:", error);
-                historyList.innerHTML = '<div class="p-8 text-center text-red-500">Error loading history. Check permissions.</div>';
+                historyList.innerHTML = '<div class="p-8 text-center text-red-500">Error loading history. Check database permissions.</div>';
             });
         }
     </script>
