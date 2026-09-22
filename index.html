@@ -31,6 +31,12 @@
         body { font-family: 'Inter', system-ui, -apple-system, sans-serif; padding-bottom: 50px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* AI Prompt Box Specific Focus Styles */
+        .prompt-box:focus-within {
+            box-shadow: 0 0 0 2px #6366f1;
+            border-color: transparent;
+        }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
@@ -380,7 +386,7 @@
         <div class="flex-grow flex flex-col gap-4">
             
             <!-- 3D Avatar Render Canvas Container -->
-            <div class="bg-slate-900 border-4 border-slate-300 dark:border-slate-800 rounded-2xl overflow-hidden relative h-[420px] md:h-[480px] flex items-center justify-center">
+            <div class="bg-slate-900 border-4 border-slate-300 dark:border-slate-800 rounded-2xl overflow-hidden relative h-[420px] md:h-[480px] flex items-center justify-center shadow-sm">
                 <!-- Interactive Avatar Canvas -->
                 <canvas id="avatarCanvas" width="640" height="480" class="w-full h-full object-contain"></canvas>
                 
@@ -404,33 +410,37 @@
             </div>
 
             <!-- Quick ISL Common Phrases Scroll -->
-            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1">
                 <span class="text-[10px] font-black uppercase text-slate-400 shrink-0">Quick Signs:</span>
-                <button onclick="injectPresetPhrase('I need help')" class="shrink-0 text-xs font-bold px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-teal-600 hover:text-white transition">I need help</button>
-                <button onclick="injectPresetPhrase('Thank you')" class="shrink-0 text-xs font-bold px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-teal-600 hover:text-white transition">Thank you</button>
-                <button onclick="injectPresetPhrase('Where is the exit?')" class="shrink-0 text-xs font-bold px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-teal-600 hover:text-white transition">Where is the exit?</button>
-                <button onclick="injectPresetPhrase('Nice to meet you')" class="shrink-0 text-xs font-bold px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-teal-600 hover:text-white transition">Nice to meet you</button>
-                <button onclick="injectPresetPhrase('Emergency')" class="shrink-0 text-xs font-bold px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-teal-600 hover:text-white transition">Emergency</button>
+                <button onclick="injectPresetPhrase('I need help')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">I need help</button>
+                <button onclick="injectPresetPhrase('Thank you')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Thank you</button>
+                <button onclick="injectPresetPhrase('Where is the exit?')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Where is the exit?</button>
+                <button onclick="injectPresetPhrase('Nice to meet you')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Nice to meet you</button>
+                <button onclick="injectPresetPhrase('Emergency')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Emergency</button>
             </div>
 
-            <!-- Input & Microphone Control -->
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col gap-3">
-                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
-                    <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Audio & Text Prompt for Avatar</span>
-                    <!-- Dynamic Waveform Preview Canvas -->
-                    <canvas id="waveformCanvas" width="120" height="24" class="rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></canvas>
-                </div>
-
-                <div class="flex gap-2">
-                    <input type="text" id="t2s-prompt-input" placeholder="Type words or speak into microphone..." class="flex-grow px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+            <!-- AI Prompt Box / Chat Input Style -->
+            <div class="w-full">
+                <div class="prompt-box relative flex flex-col w-full p-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm transition-shadow">
                     
-                    <button id="btn-mic-capture" onclick="toggleAudioRecording()" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-bold border border-slate-300 dark:border-slate-700 flex items-center gap-1.5 transition">
-                        <i id="mic-icon" class="fa-solid fa-microphone text-indigo-500"></i> <span id="mic-text">Speak</span>
-                    </button>
+                    <textarea id="t2s-prompt-input" rows="2" class="w-full bg-transparent border-0 focus:ring-0 resize-none text-sm font-semibold text-slate-800 dark:text-slate-100 placeholder-slate-400 p-2 outline-none" placeholder="Type a sentence to translate into sign language..."></textarea>
                     
-                    <button onclick="generateAndSaveSignAvatar()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-sm transition shrink-0">
-                        Generate & Save
-                    </button>
+                    <div class="flex items-center justify-between mt-1 px-1">
+                        <div class="flex items-center gap-2">
+                            <!-- Mic Button -->
+                            <button id="btn-mic-capture" onclick="toggleAudioRecording()" class="w-10 h-10 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center" title="Voice Input">
+                                <i id="mic-icon" class="fa-solid fa-microphone text-lg"></i>
+                            </button>
+                            <!-- Dynamic Waveform -->
+                            <canvas id="waveformCanvas" width="80" height="24" class="rounded opacity-0 transition-opacity duration-300"></canvas>
+                        </div>
+                        
+                        <!-- Send/Generate Button -->
+                        <button onclick="generateAndSaveSignAvatar()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-sm transition flex items-center gap-2" title="Generate Sign">
+                            <span>Translate</span>
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -453,21 +463,21 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
                 <div>
                     <h2 class="text-xl font-black text-slate-900 dark:text-white">Master Conversation Records</h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Total stored database logs across all translation engines</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Total stored database logs across all translation engines</p>
                 </div>
                 
                 <!-- Export Document Dropdown -->
                 <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="exportData('txt')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700">
+                    <button onclick="exportData('txt')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 transition">
                         <i class="fa-solid fa-file-lines text-teal-600 mr-1"></i> TXT
                     </button>
-                    <button onclick="exportData('word')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700">
-                        <i class="fa-solid fa-file-word text-blue-600 mr-1"></i> Word (.doc)
+                    <button onclick="exportData('word')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 transition">
+                        <i class="fa-solid fa-file-word text-blue-600 mr-1"></i> Word
                     </button>
-                    <button onclick="exportData('pdf')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700">
-                        <i class="fa-solid fa-file-pdf text-rose-600 mr-1"></i> PDF Transcript
+                    <button onclick="exportData('pdf')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 transition">
+                        <i class="fa-solid fa-file-pdf text-rose-600 mr-1"></i> PDF
                     </button>
-                    <button onclick="clearAllConversationsPrompt()" class="px-3 py-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 hover:bg-rose-100 rounded-lg text-xs font-bold border border-rose-200 dark:border-rose-900 ml-2">
+                    <button onclick="clearAllConversationsPrompt()" class="px-3 py-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/50 rounded-lg text-xs font-bold border border-rose-200 dark:border-rose-900 ml-2 transition">
                         <i class="fa-solid fa-trash-can mr-1"></i> Wipe History
                     </button>
                 </div>
@@ -480,17 +490,17 @@
                     <button id="tab-all" onclick="setMasterFilter('All')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition">
                         All (<span id="cnt-all">0</span>)
                     </button>
-                    <button id="tab-s2t" onclick="setMasterFilter('Sign to Text')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+                    <button id="tab-s2t" onclick="setMasterFilter('Sign to Text')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">
                         Sign → Text (<span id="cnt-s2t">0</span>)
                     </button>
-                    <button id="tab-t2s" onclick="setMasterFilter('Text to Sign')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+                    <button id="tab-t2s" onclick="setMasterFilter('Text to Sign')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">
                         Text → Sign (<span id="cnt-t2s">0</span>)
                     </button>
                 </div>
 
                 <!-- Search Input -->
                 <div class="w-full sm:w-64 relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
                     <input type="text" id="history-search-input" oninput="applyHistoryFilterAndSearch()" placeholder="Search conversations..." class="w-full pl-8 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500">
                 </div>
             </div>
@@ -509,43 +519,43 @@
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-ro-profile')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="text-center pb-4 border-b border-slate-100 dark:border-slate-800">
-                <img id="ro-pfp" src="" class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-teal-600 mb-3 shadow-md">
+                <img id="ro-pfp" src="" class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-teal-600 mb-3 shadow-md bg-white">
                 <h3 id="ro-name" class="font-extrabold text-lg text-slate-900 dark:text-white"></h3>
-                <span id="ro-uid" class="text-[10px] font-black bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded text-slate-500"></span>
+                <span id="ro-uid" class="inline-block mt-1 text-[10px] font-black bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded text-slate-500 tracking-wider"></span>
             </div>
             <div class="py-4 space-y-2.5 text-xs">
-                <div class="flex justify-between"><span class="font-bold text-slate-400">Date of Birth:</span> <span id="ro-dob" class="font-extrabold"></span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-400">Current Calculated Age:</span> <span id="ro-age" class="font-extrabold text-teal-600"></span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-400">Mobile Number:</span> <span id="ro-mobile" class="font-extrabold"></span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-400">Registered Email:</span> <span id="ro-email" class="font-extrabold"></span></div>
+                <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Date of Birth</span> <span id="ro-dob" class="font-extrabold text-slate-700 dark:text-slate-200"></span></div>
+                <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Current Age</span> <span id="ro-age" class="font-extrabold text-teal-600 dark:text-teal-400"></span></div>
+                <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Mobile Number</span> <span id="ro-mobile" class="font-extrabold text-slate-700 dark:text-slate-200"></span></div>
+                <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Email Address</span> <span id="ro-email" class="font-extrabold text-slate-700 dark:text-slate-200"></span></div>
             </div>
-            <button onclick="closeModal('modal-ro-profile')" class="w-full mt-2 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 font-bold text-xs rounded-xl transition">Close</button>
+            <button onclick="closeModal('modal-ro-profile')" class="w-full mt-2 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl transition">Close Details</button>
         </div>
     </div>
 
-    <!-- Modal 2: Profile Updation (Password Protected) -->
+    <!-- Modal 2: Profile Updation -->
     <div id="modal-update-profile" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-update-profile')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Edit Profile</h3>
             
             <form id="form-update-profile" class="space-y-3">
-                <div class="flex items-center gap-3">
-                    <img id="upd-pfp-preview" src="" class="w-12 h-12 rounded-full object-cover border-2 border-teal-600 shadow-sm">
-                    <input type="file" id="upd-pfp-file" accept="image/*" class="text-xs file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-bold file:bg-teal-50 file:text-teal-700" onchange="compressAndSetAvatar(this, 'upd-pfp-preview', 'upd')">
+                <div class="flex items-center gap-3 mb-2">
+                    <img id="upd-pfp-preview" src="" class="w-12 h-12 rounded-full object-cover border-2 border-teal-600 shadow-sm bg-white">
+                    <input type="file" id="upd-pfp-file" accept="image/*" class="text-xs file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-teal-50 file:text-teal-700 dark:file:bg-teal-900 dark:file:text-teal-300 text-slate-500 cursor-pointer" onchange="compressAndSetAvatar(this, 'upd-pfp-preview', 'upd')">
                 </div>
-                <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Full Name</label><input type="text" id="upd-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs font-semibold"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Full Name</label><input type="text" id="upd-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase">DOB</label><input type="date" id="upd-dob" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs font-semibold"></div>
-                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Mobile</label><input type="tel" id="upd-mobile" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs font-semibold"></div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">DOB</label><input type="date" id="upd-dob" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Mobile</label><input type="tel" id="upd-mobile" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
                 </div>
-                <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Email</label><input type="email" id="upd-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs font-semibold"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Email</label><input type="email" id="upd-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
                 
-                <div class="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-lg">
-                    <label class="block text-[10px] font-black text-red-600 uppercase mb-1">Current Password (Required to Save)</label>
-                    <input type="password" id="upd-current-pwd" required class="w-full px-3 py-1.5 bg-white dark:bg-slate-900 border border-red-300 dark:border-red-800 rounded text-xs outline-none">
+                <div class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-lg mt-2">
+                    <label class="block text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-1.5">Current Password (Required to Save)</label>
+                    <input type="password" id="upd-current-pwd" required class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-red-300 dark:border-red-800 rounded text-xs outline-none focus:ring-2 focus:ring-red-500 text-slate-800 dark:text-slate-100">
                 </div>
-                <button type="submit" class="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Verify & Save Changes</button>
+                <button type="submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Verify & Save Changes</button>
             </form>
         </div>
     </div>
@@ -558,34 +568,34 @@
             <form id="form-change-password" class="space-y-3">
                 <div class="relative">
                     <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current Password</label>
-                    <input type="password" id="cp-current" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs font-semibold pr-9">
+                    <input type="password" id="cp-current" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100">
                     <button type="button" onclick="toggleInputPwd('cp-current', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button>
                 </div>
                 <div class="relative">
                     <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label>
-                    <input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs font-semibold pr-9">
+                    <input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100">
                     <button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button>
                 </div>
                 <div class="relative">
                     <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm New Password</label>
-                    <input type="password" id="cp-confirm" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs font-semibold pr-9">
+                    <input type="password" id="cp-confirm" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100">
                     <button type="button" onclick="toggleInputPwd('cp-confirm', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button>
                 </div>
-                <button type="submit" class="w-full py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl transition">Change Password</button>
+                <button type="submit" class="w-full mt-2 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl transition">Change Password</button>
             </form>
         </div>
     </div>
 
-    <!-- Modal 4: Reset Password (Auth Screen) -->
+    <!-- Modal 4: Reset Password -->
     <div id="modal-reset-pwd" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-reset-pwd')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2">Reset Password</h3>
-            <p class="text-xs text-slate-500 mb-4">Enter registered email or mobile to set new credentials.</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-4 font-semibold">Enter registered email or mobile to set new credentials.</p>
             <form id="form-reset-password" class="space-y-3">
-                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Registered ID</label><input type="text" id="rst-id" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs font-semibold"></div>
-                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label><input type="password" id="rst-pwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs font-semibold"></div>
-                <button type="submit" class="w-full py-2.5 bg-teal-600 text-white font-bold text-xs rounded-xl transition">Reset & Save</button>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Registered ID</label><input type="text" id="rst-id" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-800 dark:text-slate-100"></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label><input type="password" id="rst-pwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-800 dark:text-slate-100 pr-9"><button type="button" onclick="toggleInputPwd('rst-pwd', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <button type="submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl transition">Reset & Save</button>
             </form>
         </div>
     </div>
@@ -615,7 +625,7 @@
         let isProcessingFrame = false;
         let activeWorkspace = "";
         let masterHistoryRecords = [];
-        let currentFacingMode = "user"; // "user" or "environment"
+        let currentFacingMode = "user";
 
         // Audio & Avatar state
         let isSpokenAudioOn = true;
@@ -628,11 +638,9 @@
         let avatarAnimationAngle = 0;
         let avatarAnimReqId = null;
 
-        // Temporary Base64 Storage for Avatar Uploads
         let regPfpBase64 = "";
         let updPfpBase64 = "";
 
-        // Elements
         const video = document.getElementById('videoElement');
         const overlayCanvas = document.getElementById('overlayCanvas');
         const overlayCtx = overlayCanvas.getContext('2d');
@@ -664,14 +672,16 @@
                 document.getElementById('theme-icon').className = "fa-solid fa-sun text-amber-400";
             } else {
                 document.documentElement.classList.remove("dark");
-                document.getElementById('theme-icon').className = "fa-solid fa-moon text-slate-600";
+                document.getElementById('theme-icon').className = "fa-solid fa-moon text-slate-600 dark:text-slate-300";
             }
         }
 
         function toggleDarkMode() {
             const isDark = document.documentElement.classList.toggle("dark");
             localStorage.setItem("ths_theme", isDark ? "dark" : "light");
-            document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-amber-400" : "fa-solid fa-moon text-slate-600";
+            document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-amber-400" : "fa-solid fa-moon text-slate-600 dark:text-slate-300";
+            
+            if(activeWorkspace === 'Text2Sign') drawStylizedAvatar(avatarGender, avatarAnimationAngle);
         }
 
         // --- BACKEND PING ---
@@ -1159,7 +1169,6 @@
                 [13, 17], [0, 17], [17, 18], [18, 19], [19, 20]
             ];
 
-            // 1. Cyan/Teal Bones
             overlayCtx.lineWidth = 3;
             overlayCtx.strokeStyle = '#00FFFF';
             HAND_CONNECTIONS.forEach(([s, e]) => {
@@ -1171,7 +1180,6 @@
                 }
             });
 
-            // 2. Red Joints
             lms.forEach(pt => {
                 overlayCtx.beginPath();
                 overlayCtx.arc(pt.x * overlayCanvas.width, pt.y * overlayCanvas.height, 4.5, 0, 2 * Math.PI);
@@ -1185,7 +1193,6 @@
             const ignore = ["No hand detected", "Sign not recognized...", "Hold sign in view..."];
             if (ignore.includes(word) || !word) return;
 
-            // Trigger physical haptic vibration
             triggerHaptic([60]);
 
             const isQueueing = document.getElementById('queue-sentence-toggle').checked;
@@ -1200,7 +1207,6 @@
                 }
             }
 
-            // Auto-Save
             if (isAutoSaveOn && lastAutoSavedWord !== word) {
                 lastAutoSavedWord = word;
                 executeSaveConversation(word, "Sign to Text");
@@ -1270,7 +1276,8 @@
 
         // ================= MODULE 2: 3D AVATAR & AUDIO ENGINE =================
         function initAvatarCanvas() {
-            avatarCtx.fillStyle = "#0f172a";
+            const isDark = document.documentElement.classList.contains('dark');
+            avatarCtx.fillStyle = isDark ? "#0f172a" : "#f1f5f9";
             avatarCtx.fillRect(0, 0, avatarCanvas.width, avatarCanvas.height);
             drawStylizedAvatar(avatarGender, 0);
         }
@@ -1302,11 +1309,12 @@
         }
 
         function drawStylizedAvatar(gender, angle) {
+            const isDark = document.documentElement.classList.contains('dark');
             const w = avatarCanvas.width, h = avatarCanvas.height;
             avatarCtx.clearRect(0, 0, w, h);
 
             // Studio backdrop
-            avatarCtx.fillStyle = "#090d16";
+            avatarCtx.fillStyle = isDark ? "#090d16" : "#e2e8f0";
             avatarCtx.fillRect(0, 0, w, h);
 
             const cx = w / 2;
@@ -1324,7 +1332,6 @@
             avatarCtx.fillStyle = gender === 'female' ? '#4f46e5' : '#0d9488';
             avatarCtx.fill();
 
-            // Animated Hands Signing in ISL
             const handSwing = Math.sin(angle) * 35;
             const handSwing2 = Math.cos(angle) * 35;
 
@@ -1373,7 +1380,8 @@
                 audioRecognitionInstance.onstart = () => {
                     isRecordingMicrophone = true;
                     document.getElementById('mic-icon').className = "fa-solid fa-microphone text-rose-500 animate-pulse";
-                    document.getElementById('mic-text').innerText = "Listening...";
+                    document.getElementById('waveformCanvas').classList.remove('opacity-0');
+                    document.getElementById('waveformCanvas').classList.add('opacity-100');
                 };
 
                 audioRecognitionInstance.onresult = (e) => {
@@ -1383,8 +1391,9 @@
 
                 audioRecognitionInstance.onend = () => {
                     isRecordingMicrophone = false;
-                    document.getElementById('mic-icon').className = "fa-solid fa-microphone text-indigo-500";
-                    document.getElementById('mic-text').innerText = "Speak";
+                    document.getElementById('mic-icon').className = "fa-solid fa-microphone text-lg";
+                    document.getElementById('waveformCanvas').classList.remove('opacity-100');
+                    document.getElementById('waveformCanvas').classList.add('opacity-0');
                 };
             }
 
@@ -1401,11 +1410,13 @@
             const ctx = cv.getContext('2d');
             function renderWave() {
                 ctx.clearRect(0, 0, cv.width, cv.height);
-                ctx.fillStyle = isRecordingMicrophone ? "#6366f1" : "#94a3b8";
-                const bars = 10;
-                for (let i = 0; i < bars; i++) {
-                    const h = isRecordingMicrophone ? Math.random() * 18 + 4 : 4;
-                    ctx.fillRect(i * 12 + 4, (cv.height - h) / 2, 6, h);
+                if(isRecordingMicrophone) {
+                    ctx.fillStyle = "#6366f1";
+                    const bars = 8;
+                    for (let i = 0; i < bars; i++) {
+                        const h = Math.random() * 16 + 4;
+                        ctx.fillRect(i * 10, (cv.height - h) / 2, 4, h);
+                    }
                 }
                 requestAnimationFrame(renderWave);
             }
@@ -1467,7 +1478,7 @@
         function setMasterFilter(mode) {
             currentMasterTab = mode;
             ['tab-all', 'tab-s2t', 'tab-t2s'].forEach(id => {
-                document.getElementById(id).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition";
+                document.getElementById(id).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700";
             });
 
             if (mode === 'All') document.getElementById('tab-all').className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
@@ -1580,7 +1591,6 @@ Total Records: ${masterHistoryRecords.length}
                 `;
                 downloadFileBlob(docHtml, `ISL_Transcript_${sessionDate}.doc`, "application/msword");
             } else if (format === 'pdf') {
-                // Generates printable official PDF document window
                 const printWindow = window.open('', '_blank');
                 printWindow.document.write(`
                     <html>
