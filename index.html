@@ -12,13 +12,17 @@
         .toggle-checkbox:checked + .toggle-label { background-color: #4A9084; }
         .toggle-checkbox { right: 4; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
         .toggle-label { width: 3.5rem; height: 1.75rem; background-color: #cbd5e1; border-radius: 9999px; transition: all 0.3s; }
+        
+        /* Hide scrollbar for profile view */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
 
-    <!-- PERMANENT FOOTER -->
+   <!-- PERMANENT FOOTER -->
     <div class="fixed bottom-0 left-0 w-full bg-slate-900 text-slate-300 text-center py-2 text-sm font-medium z-50 shadow-inner">
-        Developed by <a href="www.linkedin.com/in/sayan-chakraborty-282203379" target="_blank">Sayan Chakraborty</a> @Team TheHomoSapiens
+        Developed by <a href="https://www.linkedin.com/in/sayan-chakraborty-282203379" target="_blank">Sayan Chakraborty</a> @Team TheHomoSapiens
     </div>
 
     <!-- ================= GLOBAL TOP NAVIGATION ================= -->
@@ -38,13 +42,15 @@
                 <span id="be-text" class="text-yellow-600 tracking-wider text-[10px] font-bold uppercase">Waking Server...</span>
             </div>
             
-            <!-- USER DROPDOWN (Hidden on Auth View) -->
+            <!-- USER DROPDOWN -->
             <div id="nav-user-container" class="relative hidden">
-                <button onclick="document.getElementById('dropdown').classList.toggle('hidden')" class="flex items-center gap-2 text-[13px] font-bold text-slate-600 hover:text-blue-600 tracking-wide uppercase transition">
-                    WELCOME, <span id="nav-user-name">USER</span> <i class="fa-solid fa-chevron-down text-[10px] ml-1"></i>
+                <button onclick="document.getElementById('dropdown').classList.toggle('hidden')" class="flex items-center gap-3 text-[13px] font-bold text-slate-600 hover:text-blue-600 tracking-wide uppercase transition">
+                    <img id="nav-pfp" src="https://ui-avatars.com/api/?name=User&background=4A9084&color=fff" class="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-sm">
+                    <span>WELCOME, <span id="nav-user-name">USER</span></span> 
+                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
                 </button>
                 <div id="dropdown" class="hidden absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
-                    <a href="#" onclick="openSettings('profile')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-gear w-6 text-[#A78BFA]"></i> Profile Settings</a>
+                    <a href="#" onclick="openSettings('profile')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-user w-6 text-[#A78BFA]"></i> Full Profile View</a>
                     <a href="#" onclick="openSettings('password')" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-lock w-6 text-[#FBBF24]"></i> Change Password</a>
                     <div class="border-t border-gray-100 my-1"></div>
                     <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-sm font-medium text-[#C53030] hover:bg-red-50 transition"><i class="fa-solid fa-door-open w-6 text-[#D97706]"></i> Logout</a>
@@ -60,6 +66,7 @@
                 <h1 class="text-2xl font-bold text-gray-800"><i class="fa-solid fa-hands-asl-interpreting text-blue-600"></i> TheHomoSapiens</h1>
                 <p class="text-gray-500 text-sm mt-1">SIH 2026 Sign Language Translator</p>
             </div>
+            
             <!-- Login Form -->
             <form id="login-form" class="space-y-4">
                 <h2 class="text-lg font-semibold text-gray-700 border-b pb-2">Welcome Back</h2>
@@ -68,9 +75,26 @@
                 <button type="submit" class="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm mt-2">Log In</button>
                 <p class="text-sm text-center text-gray-600 mt-4">New here? <a href="#" onclick="toggleAuth('register')" class="text-blue-600 font-semibold hover:underline">Create an account</a></p>
             </form>
+
             <!-- Register Form -->
             <form id="register-form" class="space-y-4 hidden">
                 <h2 class="text-lg font-semibold text-gray-700 border-b pb-2">Create Account</h2>
+                
+                <!-- Profile Picture Upload -->
+                <div class="flex items-center gap-4 py-2">
+                    <div class="relative group cursor-pointer w-14 h-14">
+                        <img id="reg-pfp-preview" src="https://ui-avatars.com/api/?name=New+User&background=cbd5e1&color=fff" class="w-14 h-14 rounded-full object-cover border border-slate-300 shadow-sm">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i class="fa-solid fa-camera text-white text-xs"></i>
+                        </div>
+                        <input type="file" id="reg-pfp" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="processImageUpload(this, 'reg-pfp-preview', 'reg')">
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-gray-700">Profile Picture</p>
+                        <p class="text-[10px] text-gray-500">Optional. Click to upload.</p>
+                    </div>
+                </div>
+
                 <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Full Name</label><input type="text" id="reg-name" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all"></div>
                 <div class="grid grid-cols-2 gap-4">
                     <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1.5">Age</label><input type="number" id="reg-age" required class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4A9084] outline-none transition-all"></div>
@@ -117,7 +141,7 @@
     <div id="workspace-view" class="hidden flex-grow p-6 gap-6 max-w-7xl mx-auto w-full">
         <div class="flex-grow flex flex-col gap-4">
             
-            <!-- MODULE 1: Sign to Text (Camera) -->
+            <!-- MODULE 1: Sign to Text -->
             <div id="module-sign2text" class="hidden flex-col h-full gap-4">
                 <div class="bg-black rounded-xl overflow-hidden shadow-lg relative h-[450px] flex items-center justify-center border-4 border-gray-200">
                     <video id="videoElement" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100 hidden"></video>
@@ -132,7 +156,6 @@
                     <div class="flex justify-between items-center mb-2 border-b pb-3 border-gray-100">
                         <div class="flex items-center gap-4">
                             <span class="text-xs font-bold text-gray-400 tracking-wider uppercase">Live ASL Translation</span>
-                            <!-- AI WEBSOCKET STATUS -->
                             <div class="flex items-center gap-1.5 bg-gray-100 px-2 py-1 rounded border border-gray-200">
                                 <div id="ws-status-dot" class="w-2 h-2 rounded-full bg-red-500 shadow-sm"></div>
                                 <span id="ws-status-text" class="text-gray-500 tracking-wider text-[9px] font-bold uppercase">AI OFFLINE</span>
@@ -155,7 +178,7 @@
                 </div>
             </div>
 
-            <!-- MODULE 2: Text to Sign (Avatar Placeholder) -->
+            <!-- MODULE 2: Text to Sign -->
             <div id="module-text2sign" class="hidden flex-col h-full gap-4">
                 <div class="bg-slate-900 rounded-xl overflow-hidden shadow-lg relative h-[450px] flex items-center justify-center border-4 border-gray-200">
                     <div class="text-center p-8"><i class="fa-solid fa-cube text-6xl text-purple-400 mb-4 animate-pulse"></i><h3 class="text-2xl font-bold text-white mb-2">3D Avatar Engine</h3><p class="text-slate-400">Sign Language generation pipeline initializing...<br>Enter text below to simulate generation.</p></div>
@@ -178,27 +201,48 @@
         </div>
     </div>
 
-    <!-- Hidden Settings Modal -->
-    <div id="settings-view" class="hidden fixed inset-0 bg-slate-800 bg-opacity-50 z-40 flex items-center justify-center p-4 backdrop-blur-sm">
-        <div id="profile-card" class="bg-white rounded-xl shadow-lg border border-slate-200 w-full max-w-md p-8 hidden relative">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-[22px] font-extrabold text-[#0F172A]">Profile Settings</h2>
-                <button onclick="closeSettings()" class="text-[#4A9084] text-sm font-bold hover:opacity-80 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+    <!-- ================= FULL PROFILE / SETTINGS MODAL ================= -->
+    <div id="settings-view" class="hidden fixed inset-0 bg-slate-800 bg-opacity-60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        
+        <!-- Profile View & Editor -->
+        <div id="profile-card" class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md hidden relative overflow-hidden flex flex-col max-h-[90vh]">
+            
+            <!-- Banner & Header -->
+            <div class="bg-gradient-to-r from-[#4A9084] to-[#2d6359] p-6 pb-12 relative text-center">
+                <button onclick="closeSettings()" class="absolute top-4 right-4 text-white hover:text-gray-200 transition bg-black bg-opacity-20 rounded-full w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                <h2 class="text-xl font-extrabold text-white tracking-wide uppercase">Full Profile</h2>
             </div>
-            <form id="update-profile-form" class="space-y-4">
-                <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Full Name</label><input type="text" id="set-name" required class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg outline-none"></div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Age</label><input type="number" id="set-age" required class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg outline-none"></div>
-                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Mobile</label><input type="text" id="set-mobile" required class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg outline-none"></div>
+            
+            <form id="update-profile-form" class="flex-grow overflow-y-auto no-scrollbar px-8 pb-8 pt-0 bg-white">
+                
+                <!-- Profile Picture Display & Edit -->
+                <div class="flex flex-col items-center -mt-10 mb-6">
+                    <div class="relative group cursor-pointer w-24 h-24">
+                        <img id="set-pfp-preview" src="" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md bg-white">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i class="fa-solid fa-camera text-white text-lg mb-1"></i>
+                            <span class="text-white text-[9px] font-bold uppercase">Change</span>
+                        </div>
+                        <input type="file" id="set-pfp" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="processImageUpload(this, 'set-pfp-preview', 'set')">
+                    </div>
                 </div>
-                <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Email</label><input type="email" id="set-email" required class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg outline-none"></div>
-                <div class="bg-[#FEF2F2] p-4 rounded-xl border border-[#FCA5A5] mt-4">
-                    <label class="block text-[11px] font-bold text-[#B91C1C] uppercase mb-1">Current Password (Required)</label>
-                    <input type="password" id="set-current-pwd" required class="w-full px-4 py-2 bg-white border border-[#FCA5A5] rounded-lg outline-none">
+
+                <div class="space-y-4">
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Full Name</label><input type="text" id="set-name" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-[#4A9084] font-medium text-slate-800"></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Age</label><input type="number" id="set-age" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-[#4A9084] font-medium text-slate-800"></div>
+                        <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Mobile</label><input type="text" id="set-mobile" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-[#4A9084] font-medium text-slate-800"></div>
+                    </div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase">Email</label><input type="email" id="set-email" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-[#4A9084] font-medium text-slate-800"></div>
+                    <div class="bg-[#FEF2F2] p-4 rounded-xl border border-[#FCA5A5] mt-4">
+                        <label class="block text-[11px] font-bold text-[#B91C1C] uppercase mb-1">Current Password (Required to Save)</label>
+                        <input type="password" id="set-current-pwd" required class="w-full px-4 py-2.5 bg-white border border-[#FCA5A5] rounded-lg outline-none focus:ring-2 focus:ring-red-400">
+                    </div>
+                    <button type="submit" class="w-full mt-4 bg-[#4A9084] text-white py-3.5 rounded-lg font-bold shadow-md hover:bg-[#397268] transition">Verify & Save Profile</button>
                 </div>
-                <button type="submit" class="w-full mt-4 bg-[#4A9084] text-white py-3 rounded-lg font-bold disabled:opacity-75">Verify & Save</button>
             </form>
         </div>
+
         <div id="password-card" class="bg-white rounded-xl shadow-lg border border-slate-200 w-full max-w-md p-8 hidden relative">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-[22px] font-extrabold text-[#0F172A]">Change Password</h2>
@@ -213,7 +257,7 @@
         </div>
     </div>
 
-    <!-- Hidden Canvas -->
+    <!-- Hidden Canvas for Video Capture -->
     <canvas id="captureCanvas" class="hidden"></canvas>
 
     <!-- ================= JAVASCRIPT LOGIC ================= -->
@@ -222,22 +266,19 @@
         const RENDER_URL = "wss://thehomosapiens-sih2026.onrender.com/ws/translate";
         const ROOT_URL = "https://thehomosapiens-sih2026.onrender.com/";
 
-        let ws;
-        let cameraStream;
-        let isConnected = false;
-        let isProcessingFrame = false;
-        
-        let currentMode = ""; 
-        let fullHistoryData = [];
-        
-        let isAutoSaveEnabled = false;
-        let lastAutoSavedText = "";
-        let autoSaveTimer = null;
+        let ws; let cameraStream; let isConnected = false; let isProcessingFrame = false;
+        let currentMode = ""; let fullHistoryData = [];
+        let isAutoSaveEnabled = false; let lastAutoSavedText = ""; let autoSaveTimer = null;
+
+        // Profile Picture Memory Variables
+        let regPfpData = ""; 
+        let setPfpData = "";
 
         let currentUser = {
             email: localStorage.getItem("userEmail") || "",
             name: localStorage.getItem("userName") || "",
-            token: localStorage.getItem("token") || ""
+            token: localStorage.getItem("token") || "",
+            profile_picture: localStorage.getItem("userPfp") || ""
         };
 
         const video = document.getElementById('videoElement');
@@ -247,7 +288,7 @@
         const overlayCtx = overlayCanvas.getContext('2d');
         const translationOutput = document.getElementById('translation-output');
 
-        // --- GLOBAL BACKEND STATUS CHECK ON LOAD ---
+        // --- INIT ---
         window.onload = () => {
             checkServerStatus();
             if (currentUser.token && currentUser.email) goHome();
@@ -271,11 +312,51 @@
         }
 
         function setBtnLoading(btn, isLoading, text="Processing...") {
-            if(isLoading) {
-                btn.dataset.original = btn.innerText; btn.innerText = text; btn.disabled = true; btn.classList.add('cursor-not-allowed');
-            } else {
-                btn.innerText = btn.dataset.original || btn.innerText; btn.disabled = false; btn.classList.remove('cursor-not-allowed');
-            }
+            if(isLoading) { btn.dataset.original = btn.innerText; btn.innerText = text; btn.disabled = true; btn.classList.add('cursor-not-allowed'); } 
+            else { btn.innerText = btn.dataset.original || btn.innerText; btn.disabled = false; btn.classList.remove('cursor-not-allowed'); }
+        }
+
+        // --- PROFILE PICTURE COMPRESSION COMPONENT ---
+        // Resizes images locally so the database doesn't crash from 5MB files
+        function processImageUpload(input, previewElementId, stateTarget) {
+            const file = input.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Max resolution: 256x256 (perfect for avatars)
+                    const MAX_SIZE = 256;
+                    let width = img.width; let height = img.height;
+                    
+                    if (width > height) {
+                        if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                    } else {
+                        if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+                    }
+                    
+                    canvas.width = width; canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    const base64String = canvas.toDataURL('image/jpeg', 0.8); // Compress to 80% quality
+                    document.getElementById(previewElementId).src = base64String;
+                    
+                    if (stateTarget === 'reg') regPfpData = base64String;
+                    if (stateTarget === 'set') setPfpData = base64String;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateNavbarProfileUI() {
+            document.getElementById('nav-user-name').innerText = currentUser.name;
+            const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=4A9084&color=fff`;
+            document.getElementById('nav-pfp').src = currentUser.profile_picture || fallbackAvatar;
         }
 
         // --- NAVIGATION & VIEWS ---
@@ -284,6 +365,7 @@
             document.getElementById('home-view').classList.add('hidden');
             document.getElementById('workspace-view').classList.add('hidden');
             document.getElementById('nav-user-container').classList.add('hidden');
+            regPfpData = ""; 
         }
 
         function goHome() {
@@ -295,8 +377,9 @@
             document.getElementById('home-view').classList.remove('hidden');
             
             document.getElementById('nav-user-container').classList.remove('hidden');
-            document.getElementById('nav-user-name').innerText = currentUser.name;
             document.getElementById('btn-back-home').classList.add('hidden');
+            
+            updateNavbarProfileUI();
             fetchAllHistory(); 
         }
 
@@ -332,11 +415,11 @@
         }
 
         function logout() {
-            localStorage.clear(); currentUser = { email: "", name: "", token: "" };
+            localStorage.clear(); currentUser = { email: "", name: "", token: "", profile_picture: "" };
             showAuth(); document.getElementById('dropdown').classList.add('hidden');
         }
 
-        // --- FORMS & SETTINGS WITH LOADING ---
+        // --- FORMS & API ---
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); setBtnLoading(btn, true, "Logging in...");
             const identifier = document.getElementById('login-id').value; const password = document.getElementById('login-password').value;
@@ -344,8 +427,10 @@
                 const res = await fetch(`${API_BASE_URL}/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ identifier, password }) });
                 const data = await res.json();
                 if (res.ok) {
-                    localStorage.setItem("token", data.token); localStorage.setItem("userEmail", data.email); localStorage.setItem("userName", data.name);
-                    currentUser = { email: data.email, name: data.name, token: data.token }; goHome();
+                    localStorage.setItem("token", data.token); localStorage.setItem("userEmail", data.email); 
+                    localStorage.setItem("userName", data.name); localStorage.setItem("userPfp", data.profile_picture || "");
+                    currentUser = { email: data.email, name: data.name, token: data.token, profile_picture: data.profile_picture || "" }; 
+                    goHome();
                 } else alert(data.detail || "Login failed");
             } catch (err) { alert("Server timeout. If this persists, verify MongoDB IP Whitelist (0.0.0.0/0)."); }
             finally { setBtnLoading(btn, false); }
@@ -353,7 +438,15 @@
 
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); setBtnLoading(btn, true, "Registering...");
-            const payload = { name: document.getElementById('reg-name').value, age: parseInt(document.getElementById('reg-age').value), mobile: document.getElementById('reg-mobile').value, email: document.getElementById('reg-email').value, password: document.getElementById('reg-password').value };
+            
+            const payload = { 
+                name: document.getElementById('reg-name').value, 
+                age: parseInt(document.getElementById('reg-age').value), 
+                mobile: document.getElementById('reg-mobile').value, 
+                email: document.getElementById('reg-email').value, 
+                password: document.getElementById('reg-password').value,
+                profile_picture: regPfpData
+            };
             try {
                 const res = await fetch(`${API_BASE_URL}/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (res.ok) { alert("Registration successful! Please log in."); toggleAuth('login'); }
@@ -372,7 +465,16 @@
                     const res = await fetch(`${API_BASE_URL}/user/${currentUser.email}`);
                     const data = await res.json();
                     if (res.ok) {
-                        document.getElementById('set-name').value = data.name; document.getElementById('set-age').value = data.age; document.getElementById('set-mobile').value = data.mobile; document.getElementById('set-email').value = data.email; document.getElementById('set-current-pwd').value = ''; 
+                        document.getElementById('set-name').value = data.name; 
+                        document.getElementById('set-age').value = data.age; 
+                        document.getElementById('set-mobile').value = data.mobile; 
+                        document.getElementById('set-email').value = data.email; 
+                        document.getElementById('set-current-pwd').value = ''; 
+                        
+                        setPfpData = data.profile_picture || "";
+                        const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=4A9084&color=fff`;
+                        document.getElementById('set-pfp-preview').src = setPfpData || fallbackAvatar;
+                        
                     } else { alert("Failed to fetch profile"); closeSettings(); }
                 } catch (e) { alert("Network Error fetching profile."); closeSettings(); }
             } else if (viewType === 'password') {
@@ -384,15 +486,31 @@
 
         document.getElementById('update-profile-form').addEventListener('submit', async (e) => {
             e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); setBtnLoading(btn, true, "Saving...");
-            const payload = { original_email: currentUser.email, name: document.getElementById('set-name').value, age: parseInt(document.getElementById('set-age').value), mobile: document.getElementById('set-mobile').value, email: document.getElementById('set-email').value, current_password: document.getElementById('set-current-pwd').value };
+            
+            const payload = { 
+                original_email: currentUser.email, 
+                name: document.getElementById('set-name').value, 
+                age: parseInt(document.getElementById('set-age').value), 
+                mobile: document.getElementById('set-mobile').value, 
+                email: document.getElementById('set-email').value, 
+                current_password: document.getElementById('set-current-pwd').value,
+                profile_picture: setPfpData
+            };
             try {
                 const res = await fetch(`${API_BASE_URL}/update_user`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const data = await res.json();
                 if (res.ok) {
                     alert("Profile updated successfully!");
-                    currentUser.email = data.new_email; currentUser.name = data.new_name;
-                    localStorage.setItem("userEmail", data.new_email); localStorage.setItem("userName", data.new_name);
-                    document.getElementById('nav-user-name').innerText = data.new_name; closeSettings();
+                    currentUser.email = data.new_email; 
+                    currentUser.name = data.new_name;
+                    currentUser.profile_picture = data.new_profile_picture;
+                    
+                    localStorage.setItem("userEmail", data.new_email); 
+                    localStorage.setItem("userName", data.new_name);
+                    localStorage.setItem("userPfp", data.new_profile_picture);
+                    
+                    updateNavbarProfileUI();
+                    closeSettings();
                 } else alert(data.detail || "Update failed");
             } catch (e) { alert("Network timeout. Check backend."); }
             finally { setBtnLoading(btn, false); }

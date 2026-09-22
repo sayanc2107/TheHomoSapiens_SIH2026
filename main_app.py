@@ -20,19 +20,20 @@ from mediapipe.tasks.python import vision
 # ==========================================
 # 1. MONGODB & AUTHENTICATION SETUP
 # ==========================================
-# IMPORTANT: Server timeout set to 5 seconds to prevent permanent freezing if IP is blocked
 MONGO_URL = "mongodb+srv://sayan2008c_db_user:IoeLEYRREtrqTnmS@cluster0.njngnoe.mongodb.net/?appName=Cluster0"
 client = AsyncIOMotorClient(MONGO_URL, serverSelectionTimeoutMS=5000) 
 db = client.sih_database 
 
 SECRET_KEY = "sih2026_super_secret_key" 
 
+# Added profile_picture to models
 class UserRegister(BaseModel):
     name: str
     age: int
     mobile: str
     email: str
     password: str
+    profile_picture: str = ""
 
 class UserLogin(BaseModel):
     identifier: str
@@ -45,6 +46,7 @@ class UserUpdate(BaseModel):
     age: int
     mobile: str
     email: str
+    profile_picture: str = ""
 
 class PasswordChange(BaseModel):
     email: str
@@ -56,7 +58,6 @@ class ChatSave(BaseModel):
     mode_used: str
     transcript: str
 
-# Thread-safe password hashing functions to unblock the main server loop
 def hash_password(password: str) -> str:
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
@@ -65,7 +66,7 @@ def check_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
 # ==========================================
-# 2. MEDIAPIPE AI SETUP (THREAD SAFE)
+# 2. MEDIAPIPE AI SETUP
 # ==========================================
 MODEL_URL = "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task"
 MODEL_PATH = "gesture_recognizer.task"
@@ -84,7 +85,6 @@ options = vision.GestureRecognizerOptions(
 )
 recognizer = vision.GestureRecognizer.create_from_options(options)
 
-# CRITICAL FIX: Global lock prevents MediaPipe from crashing the server
 recognizer_lock = threading.Lock()
 
 def process_frame_sync(mp_image):
@@ -144,14 +144,27 @@ async def login_user(user: UserLogin):
         raise HTTPException(status_code=401, detail="Invalid email/mobile or password.")
     
     token = jwt.encode({"email": db_user["email"], "name": db_user["name"]}, SECRET_KEY, algorithm="HS256")
-    return {"token": token, "name": db_user["name"], "email": db_user["email"]}
+    
+    # Return profile picture alongside standard data
+    return {
+        "token": token, 
+        "name": db_user["name"], 
+        "email": db_user["email"],
+        "profile_picture": db_user.get("profile_picture", "")
+    }
 
 @app.get("/api/user/{email}")
 async def get_user_details(email: str):
     db_user = await db.users.find_one({"email": email})
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
-    return {"name": db_user["name"], "age": db_user["age"], "mobile": db_user["mobile"], "email": db_user["email"]}
+    return {
+        "name": db_user["name"], 
+        "age": db_user["age"], 
+        "mobile": db_user["mobile"], 
+        "email": db_user["email"],
+        "profile_picture": db_user.get("profile_picture", "")
+    }
 
 @app.post("/api/update_user")
 async def update_user(update_data: UserUpdate):
@@ -171,7 +184,8 @@ async def update_user(update_data: UserUpdate):
         "name": update_data.name,
         "age": update_data.age,
         "mobile": update_data.mobile,
-        "email": update_data.email
+        "email": update_data.email,
+        "profile_picture": update_data.profile_picture
     }
     
     await db.users.update_one({"email": update_data.original_email}, {"$set": update_dict})
@@ -179,7 +193,12 @@ async def update_user(update_data: UserUpdate):
     if update_data.email != update_data.original_email:
         await db.conversations.update_many({"email": update_data.original_email}, {"$set": {"email": update_data.email}})
         
-    return {"message": "Profile updated successfully!", "new_email": update_data.email, "new_name": update_data.name}
+    return {
+        "message": "Profile updated successfully!", 
+        "new_email": update_data.email, 
+        "new_name": update_data.name,
+        "new_profile_picture": update_data.profile_picture
+    }
 
 @app.post("/api/change_password")
 async def change_password(data: PasswordChange):
@@ -228,7 +247,6 @@ async def websocket_endpoint(websocket: WebSocket):
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
             
-            # --- Safely offload to locked thread ---
             recognition_result = await asyncio.to_thread(process_frame_sync, mp_image)
             
             response = {"translation": "No hand detected", "landmarks": []}
