@@ -12,18 +12,7 @@
     <!-- Tailwind CSS with Dark Mode Class Strategy -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#0d9488',
-                        primaryHover: '#0f766e',
-                        navy: '#1e293b',
-                    }
-                }
-            }
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#0d9488', navy: '#1e293b' } } } }
     </script>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -31,17 +20,11 @@
         body { font-family: 'Inter', system-ui, -apple-system, sans-serif; padding-bottom: 50px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* AI Prompt Box Specific Focus Styles */
-        .prompt-box:focus-within {
-            box-shadow: 0 0 0 2px #4f46e5;
-            border-color: transparent;
-        }
+        .prompt-box:focus-within { box-shadow: 0 0 0 2px #4f46e5; border-color: transparent; }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
 
-    <!-- PERMANENT NON-GLASSY FOOTER -->
     <footer class="fixed bottom-0 left-0 w-full bg-slate-900 border-t border-slate-800 text-slate-300 text-center py-2.5 text-xs font-semibold z-50 shadow-md">
         Developed by <a href="https://www.linkedin.com/in/sayan-chakraborty-282203379/" target="_blank" class="text-teal-400 hover:underline">Sayan Chakraborty</a> @Team TheHomoSapiens
     </footer>
@@ -58,29 +41,22 @@
                     <span class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">SIH 2026</span>
                 </div>
             </div>
-            
             <span class="hidden sm:inline-block bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                 <i class="fa-solid fa-certificate text-[10px] mr-1"></i> Powered by ISL
             </span>
-
             <button id="btn-back-home" onclick="goHome()" class="hidden ml-2 text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 transition font-bold border border-slate-300 dark:border-slate-700">
                 <i class="fa-solid fa-arrow-left mr-1.5"></i> Dashboard
             </button>
         </div>
 
         <div class="flex items-center gap-3 md:gap-5">
-            <!-- Theme Toggle -->
             <button onclick="toggleDarkMode()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition border border-slate-200 dark:border-slate-700" title="Toggle Light/Dark Theme">
                 <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
             </button>
-
-            <!-- Global Backend Status Indicator -->
             <div id="be-status" class="flex items-center gap-1.5 px-2.5 py-1 bg-slate-50 dark:bg-slate-800/80 rounded-md border border-slate-200 dark:border-slate-700 text-xs font-bold" title="Server API Status">
                 <span id="be-icon" class="fa-solid fa-circle-notch fa-spin text-amber-500 text-[10px]"></span>
                 <span id="be-text" class="text-amber-600 dark:text-amber-400 text-[11px] tracking-wide uppercase">Connecting...</span>
             </div>
-
-            <!-- Profile & Dropdown -->
             <div id="nav-user-container" class="relative hidden">
                 <button onclick="toggleUserDropdown()" class="flex items-center gap-2 text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-teal-600 transition outline-none">
                     <img id="nav-pfp" src="" onclick="event.stopPropagation(); openReadOnlyProfile();" class="w-8 h-8 rounded-full object-cover border-2 border-teal-600 shadow-sm cursor-pointer" title="Click to view full profile details">
@@ -88,19 +64,11 @@
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
                 </button>
                 <div id="dropdown-menu" class="hidden absolute right-0 mt-3 w-60 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 py-2 z-50">
-                    <a href="#" onclick="openReadOnlyProfile()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-address-card w-6 text-teal-600"></i> Account Details
-                    </a>
-                    <a href="#" onclick="openUpdateModal()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-user-pen w-6 text-indigo-500"></i> Profile Update
-                    </a>
-                    <a href="#" onclick="openPasswordModal()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-key w-6 text-amber-500"></i> Change Password
-                    </a>
+                    <a href="#" onclick="openReadOnlyProfile()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-address-card w-6 text-teal-600"></i> Account Details</a>
+                    <a href="#" onclick="openUpdateModal()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-user-pen w-6 text-indigo-500"></i> Profile Update</a>
+                    <a href="#" onclick="openPasswordModal()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-key w-6 text-amber-500"></i> Change Password</a>
                     <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
-                    <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition">
-                        <i class="fa-solid fa-right-from-bracket w-6"></i> Logout
-                    </a>
+                    <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition"><i class="fa-solid fa-right-from-bracket w-6"></i> Logout</a>
                 </div>
             </div>
         </div>
@@ -109,84 +77,38 @@
     <!-- ================= VIEW 1: AUTHENTICATION ================= -->
     <div id="auth-view" class="flex-grow flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 w-full max-w-md">
-            
             <div class="text-center mb-6">
                 <h1 class="text-2xl font-black text-slate-900 dark:text-white">TheHomoSapiens</h1>
                 <p class="text-slate-500 dark:text-slate-400 text-xs font-semibold mt-1">Smart India Hackathon 2026 | Indian Sign Language Platform</p>
             </div>
 
-            <!-- Login Form -->
             <form id="form-login" class="space-y-4">
                 <h2 class="text-base font-bold text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2">Log In to Account</h2>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Email or Mobile</label>
-                    <input type="text" id="login-id" required class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
-                </div>
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Password</label>
-                    <input type="password" id="login-pwd" required class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100 pr-10">
-                    <button type="button" onclick="toggleInputPwd('login-pwd', this)" class="absolute right-3 top-8 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-eye"></i></button>
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="openResetPasswordModal()" class="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline">Reset Password?</button>
-                </div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Email or Mobile</label><input type="text" id="login-id" required class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Password</label><input type="password" id="login-pwd" required class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100 pr-10"><button type="button" onclick="toggleInputPwd('login-pwd', this)" class="absolute right-3 top-8 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="flex justify-end"><button type="button" onclick="openResetPasswordModal()" class="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline">Reset Password?</button></div>
                 <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-lg shadow-sm transition">Log In</button>
                 <p class="text-xs text-center text-slate-600 dark:text-slate-400 pt-2 font-medium">New user? <a href="#" onclick="switchAuth('register')" class="text-teal-600 dark:text-teal-400 font-bold hover:underline">Create an account</a></p>
             </form>
 
-            <!-- Register Form -->
             <form id="form-register" class="space-y-3.5 hidden">
                 <h2 class="text-base font-bold text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2">Create New Account</h2>
-                
-                <!-- Profile Picture Picker -->
                 <div class="flex items-center gap-3.5 py-1">
                     <div class="relative group w-14 h-14 cursor-pointer">
                         <img id="reg-pfp-preview" src="https://ui-avatars.com/api/?name=User&background=0d9488&color=fff" class="w-14 h-14 rounded-full object-cover border-2 border-teal-600 shadow-sm">
-                        <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                            <i class="fa-solid fa-camera text-white text-xs"></i>
-                        </div>
+                        <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-camera text-white text-xs"></i></div>
                         <input type="file" id="reg-pfp-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="compressAndSetAvatar(this, 'reg-pfp-preview', 'reg')">
                     </div>
-                    <div>
-                        <span class="text-xs font-bold text-slate-700 dark:text-slate-200 block">Profile Avatar</span>
-                        <span class="text-[10px] text-slate-400">Click photo to upload</span>
-                    </div>
+                    <div><span class="text-xs font-bold text-slate-700 dark:text-slate-200 block">Profile Avatar</span><span class="text-[10px] text-slate-400">Click photo to upload</span></div>
                 </div>
-
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Full Name</label>
-                    <input type="text" id="reg-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
-                </div>
-
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Full Name</label><input type="text" id="reg-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Date of Birth</label>
-                        <input type="date" id="reg-dob" required onchange="calculateDisplayAge(this.value, 'reg-age-hint')" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
-                        <span id="reg-age-hint" class="text-[10px] text-teal-600 font-bold mt-0.5 block"></span>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Mobile</label>
-                        <input type="tel" id="reg-mobile" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
-                    </div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Date of Birth</label><input type="date" id="reg-dob" required onchange="calculateDisplayAge(this.value, 'reg-age-hint')" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"><span id="reg-age-hint" class="text-[10px] text-teal-600 font-bold mt-0.5 block"></span></div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Mobile</label><input type="tel" id="reg-mobile" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
                 </div>
-
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Email Address</label>
-                    <input type="email" id="reg-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
-                </div>
-
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Password</label>
-                    <input type="password" id="reg-pwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100 pr-10">
-                    <button type="button" onclick="toggleInputPwd('reg-pwd', this)" class="absolute right-3 top-7 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-eye"></i></button>
-                </div>
-
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Confirm Password</label>
-                    <input type="password" id="reg-cpwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100 pr-10">
-                    <button type="button" onclick="toggleInputPwd('reg-cpwd', this)" class="absolute right-3 top-7 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-eye"></i></button>
-                </div>
-
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Email Address</label><input type="email" id="reg-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Password</label><input type="password" id="reg-pwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100 pr-10"><button type="button" onclick="toggleInputPwd('reg-pwd', this)" class="absolute right-3 top-7 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Confirm Password</label><input type="password" id="reg-cpwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100 pr-10"><button type="button" onclick="toggleInputPwd('reg-cpwd', this)" class="absolute right-3 top-7 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-eye"></i></button></div>
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow-sm transition mt-1">Register Account</button>
                 <p class="text-xs text-center text-slate-600 dark:text-slate-400 pt-2 font-medium">Already registered? <a href="#" onclick="switchAuth('login')" class="text-teal-600 dark:text-teal-400 font-bold hover:underline">Log In</a></p>
             </form>
@@ -195,221 +117,97 @@
 
     <!-- ================= VIEW 2: HOME DASHBOARD ================= -->
     <main id="home-view" class="hidden flex-grow p-4 md:p-8 max-w-6xl mx-auto w-full flex flex-col gap-6">
-        
-        <!-- 3-Step Setup Quick Graphic Banner -->
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm">
-            <div class="flex items-center gap-2 mb-3">
-                <i class="fa-solid fa-circle-info text-teal-600 text-sm"></i>
-                <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quick Setup Guidelines for Accurate ISL Tracking</h3>
-            </div>
+            <div class="flex items-center gap-2 mb-3"><i class="fa-solid fa-circle-info text-teal-600 text-sm"></i><h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quick Setup Guidelines for Accurate ISL Tracking</h3></div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-                    <div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-black text-sm">1</div>
-                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Ensure good front lighting</span>
-                </div>
-                <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-                    <div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-600 flex items-center justify-center font-black text-sm">2</div>
-                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Keep hands 2 feet from camera</span>
-                </div>
-                <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-                    <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-black text-sm">3</div>
-                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Hold ISL signs firmly & clearly</span>
-                </div>
+                <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-black text-sm">1</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Ensure good front lighting</span></div>
+                <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-600 flex items-center justify-center font-black text-sm">2</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Keep hands 2 feet from camera</span></div>
+                <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-black text-sm">3</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Hold ISL signs firmly & clearly</span></div>
             </div>
         </div>
 
-        <!-- Two Core Modules -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Card 1: Sign to Speech / Audio -->
-            <div onclick="openWorkspace('Sign2Text')" class="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-teal-500 dark:hover:border-teal-500 rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                <div class="flex items-start justify-between">
-                    <div class="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 flex items-center justify-center text-teal-600 group-hover:scale-105 transition">
-                        <i class="fa-solid fa-video text-2xl"></i>
-                    </div>
-                    <span class="text-[10px] font-black uppercase bg-teal-600 text-white px-2.5 py-1 rounded-full">Module 1</span>
-                </div>
-                <div class="mt-6">
-                    <h3 class="text-xl font-black text-slate-900 dark:text-white">Sign to Audio / Text</h3>
-                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Live ISL camera recognition with skeletal joints, automated audio pronunciation, and sentence queuing.</p>
-                </div>
-                <div class="mt-6 flex items-center gap-2 text-xs font-bold text-teal-600 dark:text-teal-400 group-hover:translate-x-1 transition">
-                    <span>Open Live Camera Workspace</span> <i class="fa-solid fa-arrow-right"></i>
-                </div>
+            <div onclick="openWorkspace('Sign2Text')" class="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-teal-500 rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+                <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 flex items-center justify-center text-teal-600 group-hover:scale-105 transition"><i class="fa-solid fa-video text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-teal-600 text-white px-2.5 py-1 rounded-full">Module 1</span></div>
+                <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Sign to Audio / Text</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Zero-Latency ISL client-side tracking, audio pronunciation, and sentence queuing.</p></div>
+                <div class="mt-6 flex items-center gap-2 text-xs font-bold text-teal-600 dark:text-teal-400 group-hover:translate-x-1 transition"><span>Open Live Camera Workspace</span> <i class="fa-solid fa-arrow-right"></i></div>
             </div>
-
-            <!-- Card 2: Audio/Text to Sign -->
-            <div onclick="openWorkspace('Text2Sign')" class="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                <div class="flex items-start justify-between">
-                    <div class="w-14 h-14 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition">
-                        <i class="fa-solid fa-microphone-lines text-2xl"></i>
-                    </div>
-                    <span class="text-[10px] font-black uppercase bg-indigo-600 text-white px-2.5 py-1 rounded-full">Module 2</span>
-                </div>
-                <div class="mt-6">
-                    <h3 class="text-xl font-black text-slate-900 dark:text-white">Audio / Text to Sign</h3>
-                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Microphone speech recognition and typing input rendered into 3D avatar animations with gender customization.</p>
-                </div>
-                <div class="mt-6 flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition">
-                    <span>Open 3D Avatar Engine</span> <i class="fa-solid fa-arrow-right"></i>
-                </div>
+            <div onclick="openWorkspace('Text2Sign')" class="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+                <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition"><i class="fa-solid fa-microphone-lines text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-indigo-600 text-white px-2.5 py-1 rounded-full">Module 2</span></div>
+                <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Audio / Text to Sign</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Microphone speech recognition and typing input rendered into 3D avatar animations.</p></div>
+                <div class="mt-6 flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition"><span>Open 3D Avatar Engine</span> <i class="fa-solid fa-arrow-right"></i></div>
             </div>
         </div>
 
-        <!-- Master Conversation Section Button -->
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 text-xl">
-                    <i class="fa-solid fa-database"></i>
-                </div>
-                <div>
-                    <h4 class="font-extrabold text-slate-900 dark:text-white">Master Conversation History</h4>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Search, filter, manage, and export official PDF/Word transcripts with metadata.</p>
-                </div>
+                <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 text-xl"><i class="fa-solid fa-database"></i></div>
+                <div><h4 class="font-extrabold text-slate-900 dark:text-white">Master Conversation History</h4><p class="text-xs text-slate-500 dark:text-slate-400">Search, filter, manage, and export official PDF/Word transcripts with metadata.</p></div>
             </div>
-            <button onclick="openMasterHistoryView()" class="w-full md:w-auto px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl hover:opacity-90 transition">
-                Open Full History Records
-            </button>
+            <button onclick="openMasterHistoryView()" class="w-full md:w-auto px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl hover:opacity-90 transition">Open Full History Records</button>
         </div>
     </main>
 
     <!-- ================= VIEW 3: SIGN TO AUDIO/TEXT WORKSPACE ================= -->
     <div id="workspace-sign2text" class="hidden flex-grow p-4 md:p-6 max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-6">
         <div class="flex-grow flex flex-col gap-4">
-            
-            <!-- Video & Canvas Window -->
             <div id="camera-border" class="bg-black rounded-2xl overflow-hidden shadow-md relative h-[420px] md:h-[480px] flex items-center justify-center border-4 border-slate-300 dark:border-slate-800 transition-colors">
                 <video id="videoElement" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100 hidden"></video>
                 <canvas id="overlayCanvas" class="absolute top-0 left-0 w-full h-full transform -scale-x-100 z-10"></canvas>
-                
-                <div id="camera-loading" class="text-white text-center z-20">
-                    <i class="fa-solid fa-video text-3xl text-slate-400 mb-2"></i>
-                    <p class="text-xs font-bold text-slate-300">Requesting Web Camera...</p>
-                </div>
-
-                <!-- Camera Switch Button for Mobile -->
-                <button id="btn-camera-flip" onclick="flipCameraFacingMode()" class="absolute top-4 right-4 bg-slate-900/80 text-white w-9 h-9 rounded-lg flex items-center justify-center z-20 hover:bg-slate-900 border border-slate-700 text-xs font-bold" title="Flip Camera">
-                    <i class="fa-solid fa-camera-rotate"></i>
-                </button>
-
-                <!-- Confidence Badge Overlay -->
-                <div class="absolute bottom-4 left-4 bg-slate-900/80 border border-slate-700 px-3 py-1 rounded-lg flex items-center gap-2 z-20">
-                    <div id="ai-conf-dot" class="w-2 h-2 rounded-full bg-slate-400"></div>
-                    <span id="ai-conf-text" class="text-[10px] font-black text-slate-200 uppercase tracking-wide">Confidence: 0%</span>
-                </div>
+                <div id="camera-loading" class="text-white text-center z-20"><i class="fa-solid fa-video text-3xl text-slate-400 mb-2"></i><p class="text-xs font-bold text-slate-300">Requesting Web Camera...</p></div>
+                <button id="btn-camera-flip" onclick="flipCameraFacingMode()" class="absolute top-4 right-4 bg-slate-900/80 text-white w-9 h-9 rounded-lg flex items-center justify-center z-20 hover:bg-slate-900 border border-slate-700 text-xs font-bold" title="Flip Camera"><i class="fa-solid fa-camera-rotate"></i></button>
+                <div class="absolute bottom-4 left-4 bg-slate-900/80 border border-slate-700 px-3 py-1 rounded-lg flex items-center gap-2 z-20"><div id="ai-conf-dot" class="w-2 h-2 rounded-full bg-slate-400"></div><span id="ai-conf-text" class="text-[10px] font-black text-slate-200 uppercase tracking-wide">Confidence: 0%</span></div>
             </div>
 
-            <!-- Controls & Live Output Panel -->
             <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
-                
                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
                     <div class="flex items-center gap-2">
                         <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Live ISL Gesture</span>
-                        <div id="ws-badge" class="flex items-center gap-1.5 px-2 py-0.5 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 rounded text-[10px] font-bold text-red-600 dark:text-red-400">
-                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> OFFLINE
+                        <div id="ws-badge" class="flex items-center gap-1.5 px-2 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-bold text-slate-600 dark:text-slate-400">
+                            <i class="fa-solid fa-spinner fa-spin"></i> INIT AI
                         </div>
                     </div>
-
-                    <!-- Audio Voice & Speed Controls -->
                     <div class="flex flex-wrap items-center gap-3">
-                        <div class="flex items-center gap-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Voice</label>
-                            <select id="tts-gender" class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 font-bold outline-none text-slate-800 dark:text-slate-200">
-                                <option value="female">Female</option>
-                                <option value="male">Male</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Speed</label>
-                            <select id="tts-speed" class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 font-bold outline-none text-slate-800 dark:text-slate-200">
-                                <option value="0.5">0.5x</option>
-                                <option value="1.0" selected>1.0x</option>
-                                <option value="1.25">1.25x</option>
-                                <option value="1.5">1.5x</option>
-                                <option value="2.0">2.0x</option>
-                            </select>
-                        </div>
-                        <button id="btn-audio-toggle" onclick="toggleSpokenAudio()" class="px-3 py-1 text-xs font-bold rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">
-                            <i class="fa-solid fa-volume-high mr-1"></i> Audio: ON
-                        </button>
+                        <div class="flex items-center gap-1.5"><label class="text-[11px] font-bold text-slate-500 uppercase">Voice</label><select id="tts-gender" class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 font-bold outline-none text-slate-800 dark:text-slate-200"><option value="female">Female</option><option value="male">Male</option></select></div>
+                        <div class="flex items-center gap-1.5"><label class="text-[11px] font-bold text-slate-500 uppercase">Speed</label><select id="tts-speed" class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 font-bold outline-none text-slate-800 dark:text-slate-200"><option value="0.5">0.5x</option><option value="1.0" selected>1.0x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="2.0">2.0x</option></select></div>
+                        <button id="btn-audio-toggle" onclick="toggleSpokenAudio()" class="px-3 py-1 text-xs font-bold rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700"><i class="fa-solid fa-volume-high mr-1"></i> Audio: ON</button>
                     </div>
                 </div>
 
-                <!-- Recognition Output -->
                 <div class="flex items-center justify-between">
-                    <div id="sign-output-text" class="text-2xl md:text-3xl font-black text-teal-600 dark:text-teal-400 tracking-tight">
-                        Waiting for camera...
-                    </div>
+                    <div id="sign-output-text" class="text-2xl md:text-3xl font-black text-teal-600 dark:text-teal-400 tracking-tight">Loading Client-Side AI...</div>
                     <div class="flex items-center gap-2">
-                        <button onclick="copyCurrentTranslation()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200" title="Save to Clipboard">
-                            <i class="fa-solid fa-copy mr-1"></i> Copy
-                        </button>
-                        <button id="btn-auto-save" onclick="toggleAutoSaveState()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200">
-                            Auto-Save: OFF
-                        </button>
+                        <button onclick="copyCurrentTranslation()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"><i class="fa-solid fa-copy mr-1"></i> Copy</button>
+                        <button id="btn-auto-save" onclick="toggleAutoSaveState()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200">Auto-Save: OFF</button>
                     </div>
                 </div>
 
-                <!-- Sentence Builder Bar (Staging Mode) -->
                 <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex flex-col gap-2">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" id="queue-sentence-toggle" class="w-4 h-4 text-teal-600 rounded">
-                            <label for="queue-sentence-toggle" class="text-xs font-bold text-slate-600 dark:text-slate-300">Queue signs into Sentence Builder</label>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="speakSentenceBuilder()" class="text-xs px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded">
-                                <i class="fa-solid fa-play mr-1"></i> Speak Sentence
-                            </button>
-                            <button onclick="clearSentenceBuilder()" class="text-xs px-2.5 py-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded">Clear</button>
-                        </div>
+                        <div class="flex items-center gap-2"><input type="checkbox" id="queue-sentence-toggle" class="w-4 h-4 text-teal-600 rounded"><label for="queue-sentence-toggle" class="text-xs font-bold text-slate-600 dark:text-slate-300">Queue signs into Sentence Builder</label></div>
+                        <div class="flex gap-2"><button onclick="speakSentenceBuilder()" class="text-xs px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded"><i class="fa-solid fa-play mr-1"></i> Speak Sentence</button><button onclick="clearSentenceBuilder()" class="text-xs px-2.5 py-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded">Clear</button></div>
                     </div>
-                    <div id="sentence-builder-box" class="w-full min-h-[42px] p-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 flex items-center flex-wrap gap-1.5">
-                        <span class="text-slate-400 italic">Queue is empty. Check the box above to build sentences...</span>
-                    </div>
+                    <div id="sentence-builder-box" class="w-full min-h-[42px] p-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 flex items-center flex-wrap gap-1.5"><span class="text-slate-400 italic">Queue is empty. Check the box above to build sentences...</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- Sidebar: Filtered Sign-To-Text History -->
         <div class="w-full lg:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col h-[520px]">
-            <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800">
-                <i class="fa-solid fa-folder-open text-teal-600 mr-1.5"></i> Sign → Text History
-            </h4>
-            <div id="sign2text-sidebar-list" class="overflow-y-auto flex-grow space-y-2.5 py-3 pr-1">
-                <p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>
-            </div>
+            <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800"><i class="fa-solid fa-folder-open text-teal-600 mr-1.5"></i> Sign → Text History</h4>
+            <div id="sign2text-sidebar-list" class="overflow-y-auto flex-grow space-y-2.5 py-3 pr-1"><p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p></div>
         </div>
     </div>
 
     <!-- ================= VIEW 4: AUDIO/TEXT TO SIGN WORKSPACE ================= -->
     <div id="workspace-text2sign" class="hidden flex-grow p-4 md:p-6 max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-6">
         <div class="flex-grow flex flex-col gap-4">
-            
-            <!-- 3D Avatar Render Canvas Container -->
             <div class="bg-slate-900 border-4 border-slate-300 dark:border-slate-800 rounded-2xl overflow-hidden relative h-[420px] md:h-[480px] flex items-center justify-center shadow-sm">
-                <!-- Interactive Avatar Canvas -->
                 <canvas id="avatarCanvas" width="640" height="480" class="w-full h-full object-contain"></canvas>
-                
-                <!-- Overlay Animation Controls -->
-                <div class="absolute top-4 left-4 flex gap-2">
-                    <select id="avatar-model-gender" onchange="switchAvatarGender(this.value)" class="bg-slate-900/90 text-white border border-slate-700 text-xs font-bold rounded-lg px-2.5 py-1.5 outline-none">
-                        <option value="female">Avatar: Female Model</option>
-                        <option value="male">Avatar: Male Model</option>
-                    </select>
-                </div>
-
-                <div class="absolute top-4 right-4 flex items-center gap-2 bg-slate-900/90 border border-slate-700 rounded-lg px-3 py-1.5">
-                    <label class="text-[10px] font-bold text-slate-300 uppercase">Avatar Speed</label>
-                    <input type="range" id="avatar-speed-slider" min="0.5" max="2.0" step="0.25" value="1.0" class="w-20 accent-indigo-500 cursor-pointer">
-                    <span id="avatar-speed-label" class="text-xs font-bold text-indigo-400">1.0x</span>
-                </div>
-
-                <button onclick="replayCurrentAvatarAnimation()" class="absolute bottom-4 right-4 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-md transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-rotate-right"></i> Replay Sign Animation
-                </button>
+                <div class="absolute top-4 left-4 flex gap-2"><select id="avatar-model-gender" onchange="switchAvatarGender(this.value)" class="bg-slate-900/90 text-white border border-slate-700 text-xs font-bold rounded-lg px-2.5 py-1.5 outline-none"><option value="female">Avatar: Female Model</option><option value="male">Avatar: Male Model</option></select></div>
+                <div class="absolute top-4 right-4 flex items-center gap-2 bg-slate-900/90 border border-slate-700 rounded-lg px-3 py-1.5"><label class="text-[10px] font-bold text-slate-300 uppercase">Avatar Speed</label><input type="range" id="avatar-speed-slider" min="0.5" max="2.0" step="0.25" value="1.0" class="w-20 accent-indigo-500 cursor-pointer"><span id="avatar-speed-label" class="text-xs font-bold text-indigo-400">1.0x</span></div>
+                <button onclick="replayCurrentAvatarAnimation()" class="absolute bottom-4 right-4 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-md transition flex items-center gap-1.5"><i class="fa-solid fa-rotate-right"></i> Replay Sign Animation</button>
             </div>
 
-            <!-- Quick ISL Common Phrases Scroll -->
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1">
                 <span class="text-[10px] font-black uppercase text-slate-400 shrink-0">Quick Signs:</span>
                 <button onclick="injectPresetPhrase('I need help')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white dark:text-slate-200 transition">I need help</button>
@@ -419,93 +217,54 @@
                 <button onclick="injectPresetPhrase('Emergency')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white dark:text-slate-200 transition">Emergency</button>
             </div>
 
-            <!-- 21st.dev Style AI Prompt Box Integration -->
             <div class="w-full mt-2">
                 <div class="prompt-box relative flex flex-col w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-3xl shadow-sm transition-all overflow-hidden">
-                    
                     <textarea id="t2s-prompt-input" rows="1" oninput="autoResizeTextarea(this)" class="w-full bg-transparent border-0 focus:ring-0 resize-none text-sm font-semibold text-slate-800 dark:text-slate-100 placeholder-slate-400 px-5 pt-4 pb-2 outline-none max-h-[150px]" placeholder="Type a sentence to translate into sign language..."></textarea>
-                    
                     <div class="flex items-center justify-between px-3 pb-3 pt-1">
                         <div class="flex items-center gap-1">
-                            <!-- Mic Button -->
-                            <button id="btn-mic-capture" onclick="toggleAudioRecording()" class="w-10 h-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center" title="Voice Input">
-                                <i id="mic-icon" class="fa-solid fa-microphone text-base"></i>
-                            </button>
-                            <!-- Dynamic Waveform -->
+                            <button id="btn-mic-capture" onclick="toggleAudioRecording()" class="w-10 h-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center" title="Voice Input"><i id="mic-icon" class="fa-solid fa-microphone text-base"></i></button>
                             <canvas id="waveformCanvas" width="60" height="24" class="rounded opacity-0 transition-opacity duration-300 pointer-events-none ml-1"></canvas>
                         </div>
-                        
-                        <!-- Send/Generate Button -->
-                        <button onclick="generateAndSaveSignAvatar()" class="w-10 h-10 rounded-full bg-slate-900 dark:bg-white hover:opacity-80 text-white dark:text-slate-900 font-bold shadow-sm transition flex items-center justify-center disabled:opacity-50" title="Generate Sign">
-                            <i class="fa-solid fa-arrow-up text-base"></i>
-                        </button>
+                        <button onclick="generateAndSaveSignAvatar()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-sm transition flex items-center gap-2" title="Generate Sign"><span>Translate</span><i class="fa-solid fa-paper-plane text-xs"></i></button>
                     </div>
                 </div>
             </div>
-            
         </div>
 
-        <!-- Sidebar: Filtered Text-To-Sign History -->
         <div class="w-full lg:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col h-[520px]">
-            <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800">
-                <i class="fa-solid fa-folder-open text-indigo-600 mr-1.5"></i> Text → Sign History
-            </h4>
-            <div id="text2sign-sidebar-list" class="overflow-y-auto flex-grow space-y-2.5 py-3 pr-1">
-                <p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>
-            </div>
+            <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800"><i class="fa-solid fa-folder-open text-indigo-600 mr-1.5"></i> Text → Sign History</h4>
+            <div id="text2sign-sidebar-list" class="overflow-y-auto flex-grow space-y-2.5 py-3 pr-1"><p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p></div>
         </div>
     </div>
 
     <!-- ================= VIEW 5: MASTER CONVERSATION MENU ================= -->
     <div id="master-history-view" class="hidden flex-grow p-4 md:p-8 max-w-6xl mx-auto w-full flex flex-col gap-6">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col gap-5">
-            
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
                 <div>
                     <h2 class="text-xl font-black text-slate-900 dark:text-white">Master Conversation Records</h2>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Total stored database logs across all translation engines</p>
                 </div>
-                
-                <!-- Export Document Dropdown -->
                 <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="exportData('txt')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 transition">
-                        <i class="fa-solid fa-file-lines text-teal-600 mr-1"></i> TXT
-                    </button>
-                    <button onclick="exportData('word')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 transition">
-                        <i class="fa-solid fa-file-word text-blue-600 mr-1"></i> Word
-                    </button>
-                    <button onclick="exportData('pdf')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 transition">
-                        <i class="fa-solid fa-file-pdf text-rose-600 mr-1"></i> PDF
-                    </button>
-                    <button onclick="clearAllConversationsPrompt()" class="px-3 py-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/50 rounded-lg text-xs font-bold border border-rose-200 dark:border-rose-900 ml-2 transition">
-                        <i class="fa-solid fa-trash-can mr-1"></i> Wipe History
-                    </button>
+                    <button onclick="exportData('txt')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 transition"><i class="fa-solid fa-file-lines text-teal-600 mr-1"></i> TXT</button>
+                    <button onclick="exportData('word')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 transition"><i class="fa-solid fa-file-word text-blue-600 mr-1"></i> Word</button>
+                    <button onclick="exportData('pdf')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 transition"><i class="fa-solid fa-file-pdf text-rose-600 mr-1"></i> PDF</button>
+                    <button onclick="clearAllConversationsPrompt()" class="px-3 py-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/50 rounded-lg text-xs font-bold border border-rose-200 dark:border-rose-900 ml-2 transition"><i class="fa-solid fa-trash-can mr-1"></i> Wipe History</button>
                 </div>
             </div>
 
-            <!-- Filters & Search Toolbar -->
             <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
-                <!-- 3 Filter Boxes with Counts -->
                 <div class="flex gap-2 w-full sm:w-auto">
-                    <button id="tab-all" onclick="setMasterFilter('All')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition">
-                        All (<span id="cnt-all">0</span>)
-                    </button>
-                    <button id="tab-s2t" onclick="setMasterFilter('Sign to Text')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">
-                        Sign → Text (<span id="cnt-s2t">0</span>)
-                    </button>
-                    <button id="tab-t2s" onclick="setMasterFilter('Text to Sign')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">
-                        Text → Sign (<span id="cnt-t2s">0</span>)
-                    </button>
+                    <button id="tab-all" onclick="setMasterFilter('All')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition">All (<span id="cnt-all">0</span>)</button>
+                    <button id="tab-s2t" onclick="setMasterFilter('Sign to Text')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">Sign → Text (<span id="cnt-s2t">0</span>)</button>
+                    <button id="tab-t2s" onclick="setMasterFilter('Text to Sign')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">Text → Sign (<span id="cnt-t2s">0</span>)</button>
                 </div>
-
-                <!-- Search Input -->
                 <div class="w-full sm:w-64 relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
                     <input type="text" id="history-search-input" oninput="applyHistoryFilterAndSearch()" placeholder="Search conversations..." class="w-full pl-8 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
                 </div>
             </div>
 
-            <!-- Scrollable Master List -->
             <div id="master-history-container" class="space-y-3 overflow-y-auto max-h-[500px] pr-2">
                 <p class="text-xs text-slate-400 italic text-center py-10">Loading conversation history...</p>
             </div>
@@ -513,8 +272,6 @@
     </div>
 
     <!-- ================= MODALS ================= -->
-
-    <!-- Modal 1: Read-Only Account Details (PFP Click) -->
     <div id="modal-ro-profile" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-ro-profile')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -533,12 +290,10 @@
         </div>
     </div>
 
-    <!-- Modal 2: Profile Updation -->
     <div id="modal-update-profile" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-update-profile')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Edit Profile</h3>
-            
             <form id="form-update-profile" class="space-y-3">
                 <div class="flex items-center gap-3 mb-2">
                     <img id="upd-pfp-preview" src="" class="w-12 h-12 rounded-full object-cover border-2 border-teal-600 shadow-sm bg-white">
@@ -550,43 +305,28 @@
                     <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Mobile</label><input type="tel" id="upd-mobile" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
                 </div>
                 <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Email</label><input type="email" id="upd-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
-                
                 <div class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-lg mt-2">
                     <label class="block text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-1.5">Current Password (Required to Save)</label>
-                    <input type="password" id="upd-current-pwd" required class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-red-300 dark:border-red-800 rounded text-xs outline-none focus:ring-2 focus:ring-red-500 text-slate-800 dark:text-slate-100 pr-10">
+                    <input type="password" id="upd-current-pwd" required class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-red-300 dark:border-red-800 rounded text-xs outline-none focus:ring-2 focus:ring-red-500 text-slate-800 dark:text-slate-100">
                 </div>
                 <button type="submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Verify & Save Changes</button>
             </form>
         </div>
     </div>
 
-    <!-- Modal 3: Change Password -->
     <div id="modal-change-password" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-change-password')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Update Password</h3>
             <form id="form-change-password" class="space-y-3">
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current Password</label>
-                    <input type="password" id="cp-current" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100">
-                    <button type="button" onclick="toggleInputPwd('cp-current', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button>
-                </div>
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label>
-                    <input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100">
-                    <button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button>
-                </div>
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm New Password</label>
-                    <input type="password" id="cp-confirm" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100">
-                    <button type="button" onclick="toggleInputPwd('cp-confirm', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button>
-                </div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current Password</label><input type="password" id="cp-current" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100"><button type="button" onclick="toggleInputPwd('cp-current', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label><input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100"><button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm New Password</label><input type="password" id="cp-confirm" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100"><button type="button" onclick="toggleInputPwd('cp-confirm', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
                 <button type="submit" class="w-full mt-2 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl transition">Change Password</button>
             </form>
         </div>
     </div>
 
-    <!-- Modal 4: Reset Password -->
     <div id="modal-reset-pwd" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-reset-pwd')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -600,73 +340,153 @@
         </div>
     </div>
 
-    <!-- Hidden Capture Canvas -->
-    <canvas id="captureCanvas" class="hidden"></canvas>
+    <!-- ================= JAVASCRIPT ENGINE & CLIENT-SIDE AI ================= -->
+    <script type="module">
+        import { GestureRecognizer, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/vision_bundle.mjs";
 
-    <!-- ================= JAVASCRIPT ENGINE ================= -->
-    <script>
-        // === MUST UPDATE THESE WHEN HOSTING ON FLY.IO OR RAILWAY ===
         const API_BASE_URL = "https://thehomosapiens-sih2026.onrender.com/api";
-        const RENDER_URL = "wss://thehomosapiens-sih2026.onrender.com/ws/translate";
         const ROOT_URL = "https://thehomosapiens-sih2026.onrender.com/";
 
         let currentUser = {
-            unique_id: localStorage.getItem("ths_uid") || "",
-            email: localStorage.getItem("ths_email") || "",
-            name: localStorage.getItem("ths_name") || "",
-            dob: localStorage.getItem("ths_dob") || "",
-            mobile: localStorage.getItem("ths_mobile") || "",
-            profile_picture: localStorage.getItem("ths_pfp") || "",
+            unique_id: localStorage.getItem("ths_uid") || "", email: localStorage.getItem("ths_email") || "",
+            name: localStorage.getItem("ths_name") || "", dob: localStorage.getItem("ths_dob") || "",
+            mobile: localStorage.getItem("ths_mobile") || "", profile_picture: localStorage.getItem("ths_pfp") || "",
             token: localStorage.getItem("ths_token") || ""
         };
 
-        let ws;
-        let cameraStream;
-        let isConnected = false;
-        let isProcessingFrame = false;
-        let activeWorkspace = "";
-        let masterHistoryRecords = [];
-        let currentFacingMode = "user";
-
-        // Audio & Avatar state
-        let isSpokenAudioOn = true;
-        let isAutoSaveOn = false;
-        let lastAutoSavedWord = "";
-        let audioRecognitionInstance;
-        let isRecordingMicrophone = false;
-        let sentenceBuilderList = [];
-        let avatarGender = "female";
-        let avatarAnimationAngle = 0;
-        let avatarAnimReqId = null;
-
-        let regPfpBase64 = "";
-        let updPfpBase64 = "";
+        window.cameraStream = null; window.activeWorkspace = ""; window.masterHistoryRecords = []; window.currentFacingMode = "user";
+        window.isSpokenAudioOn = true; window.isAutoSaveOn = false; window.lastAutoSavedWord = "";
+        window.audioRecognitionInstance = null; window.isRecordingMicrophone = false; window.sentenceBuilderList = [];
+        window.avatarGender = "female"; window.avatarAnimationAngle = 0; window.avatarAnimReqId = null;
+        window.regPfpBase64 = ""; window.updPfpBase64 = "";
 
         const video = document.getElementById('videoElement');
-        const overlayCanvas = document.getElementById('overlayCanvas');
-        const overlayCtx = overlayCanvas.getContext('2d');
-        const captureCanvas = document.getElementById('captureCanvas');
-        const captureCtx = captureCanvas.getContext('2d');
+        const overlayCanvas = document.getElementById('overlayCanvas'); const overlayCtx = overlayCanvas.getContext('2d');
         const signOutputText = document.getElementById('sign-output-text');
-        const avatarCanvas = document.getElementById('avatarCanvas');
-        const avatarCtx = avatarCanvas.getContext('2d');
+        const avatarCanvas = document.getElementById('avatarCanvas'); const avatarCtx = avatarCanvas.getContext('2d');
 
-        // ================= INIT =================
-        window.onload = () => {
-            initTheme();
-            checkBackendOnlineStatus();
-            initAvatarCanvas();
-            initAudioWaveform();
+        // --- CLIENT-SIDE AI ENGINE ---
+        let gestureRecognizer = null;
+        let lastVideoTime = -1;
+        let lastRecognizedWord = "";
+        let wordHoldStartTime = 0;
 
-            if (currentUser.token && currentUser.email) {
-                goHome();
+        const ISL_MAP = {
+            "Thumb_Up": "Good / Yes", "Thumb_Down": "Bad / No", "Victory": "Victory / Two", "Open_Palm": "Stop / Wait",
+            "Closed_Fist": "Solid / Fist", "ILoveYou": "I Love You", "Pointing_Up": "One / Attention", "PointingAtUser": "You",
+            "Call_Me": "Call Me", "Rock_On": "Rock On", "Fist_Bump": "Friendship", "High_Five": "Hello / High Five",
+            "PinchedHand": "Little / Specific", "Pinching": "Small", "PinchedFingers": "Please / Request", "None": "Sign not recognized..."
+        };
+
+        async function initLocalAI() {
+            try {
+                const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
+                gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+                    baseOptions: {
+                        modelAssetPath: "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task",
+                        delegate: "GPU"
+                    },
+                    runningMode: "VIDEO",
+                    numHands: 1
+                });
+                const b = document.getElementById('ws-badge');
+                b.className = "flex items-center gap-1.5 px-2 py-0.5 bg-teal-50 dark:bg-teal-950/50 border border-teal-200 dark:border-teal-900 rounded text-[10px] font-bold text-teal-600 dark:text-teal-400";
+                b.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> AI READY';
+            } catch(e) {
+                console.error("AI Initialization Failed", e);
+            }
+        }
+        initLocalAI();
+
+        async function predictWebcam() {
+            if (!window.cameraStream || window.activeWorkspace !== 'Sign2Text') return;
+            
+            if (gestureRecognizer && video.currentTime !== lastVideoTime) {
+                lastVideoTime = video.currentTime;
+                const results = gestureRecognizer.recognizeForVideo(video, Date.now());
+                
+                if (results.gestures.length > 0) {
+                    const topG = results.gestures[0][0].categoryName;
+                    const score = results.gestures[0][0].score;
+                    const translation = ISL_MAP[topG] || "Sign not recognized...";
+                    
+                    signOutputText.innerText = translation;
+                    drawSkeletalLandmarks(results.landmarks[0]);
+                    window.updateConfidenceDisplay(score);
+                    handleRecognizedGestureActions(translation);
+                } else {
+                    signOutputText.innerText = "No hand detected";
+                    overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                    window.updateConfidenceDisplay(0);
+                    lastRecognizedWord = "";
+                }
+            }
+            requestAnimationFrame(predictWebcam);
+        }
+
+        function handleRecognizedGestureActions(word) {
+            const ignore = ["No hand detected", "Sign not recognized...", "Hold sign in view..."];
+            if (ignore.includes(word) || !word) { lastRecognizedWord = ""; return; }
+
+            if (word !== lastRecognizedWord) {
+                lastRecognizedWord = word;
+                wordHoldStartTime = Date.now();
             } else {
-                switchAuth('login');
+                if (Date.now() - wordHoldStartTime > 1200) {
+                    window.triggerHaptic([60]);
+
+                    const isQueueing = document.getElementById('queue-sentence-toggle').checked;
+                    if (isQueueing) {
+                        if (window.sentenceBuilderList[window.sentenceBuilderList.length - 1] !== word) {
+                            window.sentenceBuilderList.push(word);
+                            window.renderSentenceBuilder();
+                        }
+                    } else {
+                        if (window.isSpokenAudioOn) window.speakTextWithSynthesis(word);
+                    }
+
+                    if (window.isAutoSaveOn && window.lastAutoSavedWord !== word) {
+                        window.lastAutoSavedWord = word;
+                        window.executeSaveConversation(word, "Sign to Text");
+                    }
+                    wordHoldStartTime = Date.now() + 9999999; 
+                }
+            }
+        }
+
+        // --- GLOBAL BINDINGS ---
+        window.startCamera = async function() {
+            try {
+                if (window.cameraStream) window.stopCamera();
+                window.cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 640, height: 480, facingMode: window.currentFacingMode }
+                });
+                video.srcObject = window.cameraStream;
+                video.classList.remove('hidden');
+                document.getElementById('camera-loading').classList.add('hidden');
+
+                video.onloadedmetadata = () => {
+                    video.play();
+                    overlayCanvas.width = video.videoWidth;
+                    overlayCanvas.height = video.videoHeight;
+                    signOutputText.innerText = "Hold sign in view...";
+                    lastVideoTime = -1;
+                    predictWebcam();
+                };
+            } catch (err) {
+                document.getElementById('camera-loading').innerHTML = `
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-3xl mb-2"></i>
+                    <p class="text-xs font-bold text-slate-300">Camera Access Denied or Blocked.</p>
+                `;
             }
         };
 
-        // --- THEME ---
-        function initTheme() {
+        window.onload = () => {
+            window.initTheme(); window.checkBackendOnlineStatus(); window.initAvatarCanvas(); window.initAudioWaveform();
+            if (currentUser.token && currentUser.email) window.goHome(); else window.switchAuth('login');
+        };
+
+        window.initTheme = function() {
             const saved = localStorage.getItem("ths_theme") || "light";
             if (saved === "dark") {
                 document.documentElement.classList.add("dark");
@@ -675,18 +495,16 @@
                 document.documentElement.classList.remove("dark");
                 document.getElementById('theme-icon').className = "fa-solid fa-moon text-slate-600 dark:text-slate-300";
             }
-        }
+        };
 
-        function toggleDarkMode() {
+        window.toggleDarkMode = function() {
             const isDark = document.documentElement.classList.toggle("dark");
             localStorage.setItem("ths_theme", isDark ? "dark" : "light");
             document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-amber-400" : "fa-solid fa-moon text-slate-600 dark:text-slate-300";
-            
-            if(activeWorkspace === 'Text2Sign') drawStylizedAvatar(avatarGender, avatarAnimationAngle);
-        }
+            if(window.activeWorkspace === 'Text2Sign') window.drawStylizedAvatar(window.avatarGender, window.avatarAnimationAngle);
+        };
 
-        // --- BACKEND PING ---
-        function checkBackendOnlineStatus() {
+        window.checkBackendOnlineStatus = function() {
             fetch(ROOT_URL)
                 .then(r => {
                     document.getElementById('be-icon').className = "fa-solid fa-circle text-emerald-500 text-[10px]";
@@ -697,967 +515,327 @@
                     document.getElementById('be-icon').className = "fa-solid fa-circle text-rose-500 text-[10px]";
                     document.getElementById('be-text').innerText = "SERVER OFFLINE";
                     document.getElementById('be-text').className = "text-rose-600 dark:text-rose-400 text-[11px] tracking-wide uppercase";
-                    triggerHaptic([150, 50, 150]);
                 });
-        }
+        };
 
-        // --- HAPTICS ---
-        function triggerHaptic(pattern = [80]) {
-            if ("vibrate" in navigator) {
-                try { navigator.vibrate(pattern); } catch(e){}
-            }
-        }
+        window.triggerHaptic = function(pattern = [80]) { if ("vibrate" in navigator) { try { navigator.vibrate(pattern); } catch(e){} } };
 
-        // --- DYNAMIC AGE CALCULATOR ---
-        function calculateAgeFromDob(dobString) {
+        window.calculateAgeFromDob = function(dobString) {
             if (!dobString) return 0;
-            const birthDate = new Date(dobString);
-            const today = new Date();
+            const birthDate = new Date(dobString); const today = new Date();
             let age = today.getFullYear() - birthDate.getFullYear();
             const m = today.getMonth() - birthDate.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
             return age >= 0 ? age : 0;
-        }
+        };
 
-        function calculateDisplayAge(val, targetElementId) {
-            const age = calculateAgeFromDob(val);
-            document.getElementById(targetElementId).innerText = `Age: ${age} years old`;
-        }
+        window.calculateDisplayAge = function(val, targetElementId) { document.getElementById(targetElementId).innerText = `Age: ${window.calculateAgeFromDob(val)} years old`; };
 
-        // --- AVATAR COMPRESSOR ---
-        function compressAndSetAvatar(input, previewId, target) {
-            const file = input.files[0];
-            if (!file) return;
+        window.compressAndSetAvatar = function(input, previewId, target) {
+            const file = input.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = new Image();
                 img.onload = () => {
-                    const canvas = document.createElement("canvas");
-                    const ctx = canvas.getContext("2d");
-                    const MAX = 240;
-                    let w = img.width, h = img.height;
-                    if (w > h && w > MAX) { h *= MAX / w; w = MAX; }
-                    else if (h > MAX) { w *= MAX / h; h = MAX; }
-                    canvas.width = w; canvas.height = h;
-                    ctx.drawImage(img, 0, 0, w, h);
+                    const canvas = document.createElement("canvas"); const ctx = canvas.getContext("2d");
+                    const MAX = 240; let w = img.width, h = img.height;
+                    if (w > h && w > MAX) { h *= MAX / w; w = MAX; } else if (h > MAX) { w *= MAX / h; h = MAX; }
+                    canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
                     const b64 = canvas.toDataURL("image/jpeg", 0.75);
                     document.getElementById(previewId).src = b64;
-                    if (target === 'reg') regPfpBase64 = b64;
-                    if (target === 'upd') updPfpBase64 = b64;
+                    if (target === 'reg') window.regPfpBase64 = b64; if (target === 'upd') window.updPfpBase64 = b64;
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
-        }
+        };
 
-        function toggleInputPwd(inputId, btn) {
-            const el = document.getElementById(inputId);
-            const icon = btn.querySelector('i');
-            if (el.type === 'password') {
-                el.type = 'text';
-                icon.className = 'fa-solid fa-eye-slash';
-            } else {
-                el.type = 'password';
-                icon.className = 'fa-solid fa-eye';
-            }
-        }
+        window.toggleInputPwd = function(inputId, btn) {
+            const el = document.getElementById(inputId); const icon = btn.querySelector('i');
+            if (el.type === 'password') { el.type = 'text'; icon.className = 'fa-solid fa-eye-slash'; }
+            else { el.type = 'password'; icon.className = 'fa-solid fa-eye'; }
+        };
 
-        // ================= ROUTING & VIEWS =================
-        function switchAuth(type) {
-            document.getElementById('auth-view').classList.remove('hidden');
-            document.getElementById('home-view').classList.add('hidden');
-            document.getElementById('workspace-sign2text').classList.add('hidden');
-            document.getElementById('workspace-text2sign').classList.add('hidden');
-            document.getElementById('master-history-view').classList.add('hidden');
-            document.getElementById('nav-user-container').classList.add('hidden');
+        window.switchAuth = function(type) {
+            document.getElementById('auth-view').classList.remove('hidden'); document.getElementById('home-view').classList.add('hidden'); document.getElementById('workspace-sign2text').classList.add('hidden'); document.getElementById('workspace-text2sign').classList.add('hidden'); document.getElementById('master-history-view').classList.add('hidden'); document.getElementById('nav-user-container').classList.add('hidden');
+            if (type === 'login') { document.getElementById('form-login').classList.remove('hidden'); document.getElementById('form-register').classList.add('hidden'); }
+            else { document.getElementById('form-login').classList.add('hidden'); document.getElementById('form-register').classList.remove('hidden'); }
+        };
 
-            if (type === 'login') {
-                document.getElementById('form-login').classList.remove('hidden');
-                document.getElementById('form-register').classList.add('hidden');
-            } else {
-                document.getElementById('form-login').classList.add('hidden');
-                document.getElementById('form-register').classList.remove('hidden');
-            }
-        }
+        window.goHome = function() {
+            window.stopCamera(); window.activeWorkspace = ""; document.getElementById('dropdown-menu').classList.add('hidden');
+            document.getElementById('auth-view').classList.add('hidden'); document.getElementById('workspace-sign2text').classList.add('hidden'); document.getElementById('workspace-text2sign').classList.add('hidden'); document.getElementById('master-history-view').classList.add('hidden'); document.getElementById('home-view').classList.remove('hidden');
+            document.getElementById('nav-user-container').classList.remove('hidden'); document.getElementById('btn-back-home').classList.add('hidden');
+            window.updateNavUserUI(); window.refreshMasterConversations();
+        };
 
-        function goHome() {
-            stopCamera();
-            if (ws) ws.close();
-            activeWorkspace = "";
-            document.getElementById('dropdown-menu').classList.add('hidden');
+        window.openWorkspace = function(mode) {
+            window.activeWorkspace = mode; document.getElementById('home-view').classList.add('hidden'); document.getElementById('master-history-view').classList.add('hidden'); document.getElementById('btn-back-home').classList.remove('hidden');
+            if (mode === 'Sign2Text') { document.getElementById('workspace-sign2text').classList.remove('hidden'); document.getElementById('workspace-text2sign').classList.add('hidden'); window.startCamera(); } 
+            else { document.getElementById('workspace-sign2text').classList.add('hidden'); document.getElementById('workspace-text2sign').classList.remove('hidden'); window.runAvatarAnimation(); }
+            window.renderSidebarHistory();
+        };
 
-            document.getElementById('auth-view').classList.add('hidden');
-            document.getElementById('workspace-sign2text').classList.add('hidden');
-            document.getElementById('workspace-text2sign').classList.add('hidden');
-            document.getElementById('master-history-view').classList.add('hidden');
-            document.getElementById('home-view').classList.remove('hidden');
+        window.openMasterHistoryView = function() {
+            document.getElementById('home-view').classList.add('hidden'); document.getElementById('workspace-sign2text').classList.add('hidden'); document.getElementById('workspace-text2sign').classList.add('hidden'); document.getElementById('master-history-view').classList.remove('hidden'); document.getElementById('btn-back-home').classList.remove('hidden');
+            window.setMasterFilter('All');
+        };
 
-            document.getElementById('nav-user-container').classList.remove('hidden');
-            document.getElementById('btn-back-home').classList.add('hidden');
+        window.toggleUserDropdown = function() { document.getElementById('dropdown-menu').classList.toggle('hidden'); };
 
-            updateNavUserUI();
-            refreshMasterConversations();
-        }
-
-        function openWorkspace(mode) {
-            activeWorkspace = mode;
-            document.getElementById('home-view').classList.add('hidden');
-            document.getElementById('master-history-view').classList.add('hidden');
-            document.getElementById('btn-back-home').classList.remove('hidden');
-
-            if (mode === 'Sign2Text') {
-                document.getElementById('workspace-sign2text').classList.remove('hidden');
-                document.getElementById('workspace-text2sign').classList.add('hidden');
-                startCamera();
-            } else {
-                document.getElementById('workspace-sign2text').classList.add('hidden');
-                document.getElementById('workspace-text2sign').classList.remove('hidden');
-                runAvatarAnimation();
-            }
-            renderSidebarHistory();
-        }
-
-        function openMasterHistoryView() {
-            document.getElementById('home-view').classList.add('hidden');
-            document.getElementById('workspace-sign2text').classList.add('hidden');
-            document.getElementById('workspace-text2sign').classList.add('hidden');
-            document.getElementById('master-history-view').classList.remove('hidden');
-            document.getElementById('btn-back-home').classList.remove('hidden');
-            setMasterFilter('All');
-        }
-
-        function toggleUserDropdown() {
-            document.getElementById('dropdown-menu').classList.toggle('hidden');
-        }
-
-        function updateNavUserUI() {
+        window.updateNavUserUI = function() {
             document.getElementById('nav-user-name').innerText = currentUser.name || "User";
             const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'User')}&background=0d9488&color=fff`;
             document.getElementById('nav-pfp').src = currentUser.profile_picture || fallback;
-        }
+        };
 
-        function logout() {
-            localStorage.clear();
-            currentUser = { unique_id: "", email: "", name: "", dob: "", mobile: "", profile_picture: "", token: "" };
-            switchAuth('login');
-        }
+        window.logout = function() {
+            localStorage.clear(); currentUser = { unique_id: "", email: "", name: "", dob: "", mobile: "", profile_picture: "", token: "" };
+            window.switchAuth('login'); document.getElementById('dropdown-menu').classList.add('hidden');
+        };
 
-        // ================= AUTH API CALLS =================
-        function setBtnLoading(btn, isLoading, text="Processing...") {
+        window.setBtnLoading = function(btn, isLoading, text="Processing...") {
             if(isLoading) { btn.dataset.original = btn.innerText; btn.innerText = text; btn.disabled = true; btn.classList.add('cursor-not-allowed'); } 
             else { btn.innerText = btn.dataset.original || btn.innerText; btn.disabled = false; btn.classList.remove('cursor-not-allowed'); }
-        }
+        };
 
+        // --- AUTH FORMS ---
         document.getElementById('form-login').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]'); setBtnLoading(btn, true, "Logging in...");
-            const identifier = document.getElementById('login-id').value.trim();
-            const password = document.getElementById('login-pwd').value;
+            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); window.setBtnLoading(btn, true, "Logging in...");
             try {
-                const res = await fetch(`${API_BASE_URL}/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ identifier, password })
-                });
+                const res = await fetch(`${API_BASE_URL}/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ identifier: document.getElementById('login-id').value.trim(), password: document.getElementById('login-pwd').value }) });
                 const d = await res.json();
-                if (res.ok) {
-                    saveSessionUser(d);
-                    goHome();
-                } else {
-                    alert(d.detail || "Login failed");
-                }
-            } catch (err) { alert("Unable to connect to backend."); }
-            finally { setBtnLoading(btn, false); }
+                if (res.ok) { window.saveSessionUser(d); window.goHome(); } else alert(d.detail || "Login failed");
+            } catch (err) { alert("Unable to connect to backend. Please ensure the server is awake."); }
+            finally { window.setBtnLoading(btn, false); }
         });
 
         document.getElementById('form-register').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]'); setBtnLoading(btn, true, "Registering...");
-            const pwd = document.getElementById('reg-pwd').value;
-            const cpwd = document.getElementById('reg-cpwd').value;
-            if (pwd !== cpwd) { alert("Passwords do not match!"); setBtnLoading(btn, false); return; }
-
-            const payload = {
-                name: document.getElementById('reg-name').value.trim(),
-                dob: document.getElementById('reg-dob').value,
-                email: document.getElementById('reg-email').value.trim(),
-                mobile: document.getElementById('reg-mobile').value.trim(),
-                password: pwd,
-                profile_picture: regPfpBase64
-            };
-
+            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); window.setBtnLoading(btn, true, "Registering...");
+            if (document.getElementById('reg-pwd').value !== document.getElementById('reg-cpwd').value) { alert("Passwords do not match!"); window.setBtnLoading(btn, false); return; }
             try {
-                const res = await fetch(`${API_BASE_URL}/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                const res = await fetch(`${API_BASE_URL}/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: document.getElementById('reg-name').value.trim(), dob: document.getElementById('reg-dob').value, email: document.getElementById('reg-email').value.trim(), mobile: document.getElementById('reg-mobile').value.trim(), password: document.getElementById('reg-pwd').value, profile_picture: window.regPfpBase64 }) });
                 const d = await res.json();
-                if (res.ok) {
-                    alert("Account registered successfully! Please log in.");
-                    switchAuth('login');
-                } else {
-                    alert(d.detail || "Registration failed");
-                }
+                if (res.ok) { alert("Account registered successfully!"); window.switchAuth('login'); } else alert(d.detail || "Registration failed");
             } catch (err) { alert("Network error registering account."); }
-            finally { setBtnLoading(btn, false); }
+            finally { window.setBtnLoading(btn, false); }
         });
 
-        function saveSessionUser(d) {
-            localStorage.setItem("ths_uid", d.unique_id);
-            localStorage.setItem("ths_email", d.email);
-            localStorage.setItem("ths_name", d.name);
-            localStorage.setItem("ths_dob", d.dob || "");
-            localStorage.setItem("ths_mobile", d.mobile || "");
-            localStorage.setItem("ths_pfp", d.profile_picture || "");
-            localStorage.setItem("ths_token", d.token);
+        window.saveSessionUser = function(d) {
+            localStorage.setItem("ths_uid", d.unique_id); localStorage.setItem("ths_email", d.email); localStorage.setItem("ths_name", d.name); localStorage.setItem("ths_dob", d.dob || ""); localStorage.setItem("ths_mobile", d.mobile || ""); localStorage.setItem("ths_pfp", d.profile_picture || ""); localStorage.setItem("ths_token", d.token);
+            currentUser = { unique_id: d.unique_id, email: d.email, name: d.name, dob: d.dob || "", mobile: d.mobile || "", profile_picture: d.profile_picture || "", token: d.token };
+        };
 
-            currentUser = {
-                unique_id: d.unique_id,
-                email: d.email,
-                name: d.name,
-                dob: d.dob || "",
-                mobile: d.mobile || "",
-                profile_picture: d.profile_picture || "",
-                token: d.token
-            };
-        }
+        // --- MODALS ---
+        window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); };
 
-        // ================= MODAL MANAGERS =================
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        function openReadOnlyProfile() {
-            document.getElementById('dropdown-menu').classList.add('hidden');
-            document.getElementById('modal-ro-profile').classList.remove('hidden');
-
+        window.openReadOnlyProfile = function() {
+            document.getElementById('dropdown-menu').classList.add('hidden'); document.getElementById('modal-ro-profile').classList.remove('hidden');
             const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0d9488&color=fff`;
-            document.getElementById('ro-pfp').src = currentUser.profile_picture || fallback;
-            document.getElementById('ro-name').innerText = currentUser.name;
-            document.getElementById('ro-uid').innerText = `ID: ${currentUser.unique_id}`;
-            document.getElementById('ro-dob').innerText = currentUser.dob || "Not Provided";
-            document.getElementById('ro-age').innerText = `${calculateAgeFromDob(currentUser.dob)} Years`;
-            document.getElementById('ro-mobile').innerText = currentUser.mobile || "Not Provided";
-            document.getElementById('ro-email').innerText = currentUser.email;
-        }
+            document.getElementById('ro-pfp').src = currentUser.profile_picture || fallback; document.getElementById('ro-name').innerText = currentUser.name; document.getElementById('ro-uid').innerText = `ID: ${currentUser.unique_id}`; document.getElementById('ro-dob').innerText = currentUser.dob || "Not Provided"; document.getElementById('ro-age').innerText = `${window.calculateAgeFromDob(currentUser.dob)} Years`; document.getElementById('ro-mobile').innerText = currentUser.mobile || "Not Provided"; document.getElementById('ro-email').innerText = currentUser.email;
+        };
 
-        function openUpdateModal() {
-            document.getElementById('dropdown-menu').classList.add('hidden');
-            document.getElementById('modal-update-profile').classList.remove('hidden');
-
-            document.getElementById('upd-name').value = currentUser.name;
-            document.getElementById('upd-dob').value = currentUser.dob;
-            document.getElementById('upd-mobile').value = currentUser.mobile;
-            document.getElementById('upd-email').value = currentUser.email;
-            document.getElementById('upd-current-pwd').value = "";
-            updPfpBase64 = currentUser.profile_picture;
+        window.openUpdateModal = function() {
+            document.getElementById('dropdown-menu').classList.add('hidden'); document.getElementById('modal-update-profile').classList.remove('hidden');
+            document.getElementById('upd-name').value = currentUser.name; document.getElementById('upd-dob').value = currentUser.dob; document.getElementById('upd-mobile').value = currentUser.mobile; document.getElementById('upd-email').value = currentUser.email; document.getElementById('upd-current-pwd').value = "";
+            window.updPfpBase64 = currentUser.profile_picture;
             const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0d9488&color=fff`;
-            document.getElementById('upd-pfp-preview').src = updPfpBase64 || fallback;
-        }
+            document.getElementById('upd-pfp-preview').src = window.updPfpBase64 || fallback;
+        };
 
         document.getElementById('form-update-profile').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]'); setBtnLoading(btn, true, "Saving...");
-            const payload = {
-                original_email: currentUser.email,
-                current_password: document.getElementById('upd-current-pwd').value,
-                name: document.getElementById('upd-name').value.trim(),
-                dob: document.getElementById('upd-dob').value,
-                mobile: document.getElementById('upd-mobile').value.trim(),
-                email: document.getElementById('upd-email').value.trim(),
-                profile_picture: updPfpBase64
-            };
+            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); window.setBtnLoading(btn, true, "Saving...");
             try {
-                const res = await fetch(`${API_BASE_URL}/update_user`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                const res = await fetch(`${API_BASE_URL}/update_user`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ original_email: currentUser.email, current_password: document.getElementById('upd-current-pwd').value, name: document.getElementById('upd-name').value.trim(), dob: document.getElementById('upd-dob').value, mobile: document.getElementById('upd-mobile').value.trim(), email: document.getElementById('upd-email').value.trim(), profile_picture: window.updPfpBase64 }) });
                 const d = await res.json();
                 if (res.ok) {
-                    alert("Profile updated successfully!");
-                    currentUser.name = d.new_name;
-                    currentUser.email = d.new_email;
-                    currentUser.dob = d.new_dob;
-                    currentUser.mobile = d.new_mobile;
-                    currentUser.profile_picture = d.new_profile_picture;
-                    saveSessionUser({ ...currentUser, token: currentUser.token });
-                    updateNavUserUI();
-                    closeModal('modal-update-profile');
-                } else {
-                    alert(d.detail || "Update failed");
-                }
+                    alert("Profile updated!"); currentUser.name = d.new_name; currentUser.email = d.new_email; currentUser.dob = d.new_dob; currentUser.mobile = d.new_mobile; currentUser.profile_picture = d.new_profile_picture;
+                    window.saveSessionUser({ ...currentUser, token: currentUser.token }); window.updateNavUserUI(); window.closeModal('modal-update-profile');
+                } else alert(d.detail || "Update failed");
             } catch (err) { alert("Server error updating profile."); }
-            finally { setBtnLoading(btn, false); }
+            finally { window.setBtnLoading(btn, false); }
         });
 
-        function openPasswordModal() {
-            document.getElementById('dropdown-menu').classList.add('hidden');
-            document.getElementById('modal-change-password').classList.remove('hidden');
-            document.getElementById('cp-current').value = "";
-            document.getElementById('cp-new').value = "";
-            document.getElementById('cp-confirm').value = "";
-        }
+        window.openPasswordModal = function() { document.getElementById('dropdown-menu').classList.add('hidden'); document.getElementById('modal-change-password').classList.remove('hidden'); document.getElementById('cp-current').value = ""; document.getElementById('cp-new').value = ""; document.getElementById('cp-confirm').value = ""; };
 
         document.getElementById('form-change-password').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]'); setBtnLoading(btn, true, "Updating...");
-            const n = document.getElementById('cp-new').value;
-            const c = document.getElementById('cp-confirm').value;
-            if (n !== c) { alert("New passwords do not match!"); setBtnLoading(btn, false); return; }
-
-            const payload = {
-                email: currentUser.email,
-                current_password: document.getElementById('cp-current').value,
-                new_password: n
-            };
+            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); window.setBtnLoading(btn, true, "Updating...");
+            const n = document.getElementById('cp-new').value; if (n !== document.getElementById('cp-confirm').value) { alert("New passwords do not match!"); window.setBtnLoading(btn, false); return; }
             try {
-                const res = await fetch(`${API_BASE_URL}/change_password`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const d = await res.json();
-                if (res.ok) {
-                    alert("Password changed successfully!");
-                    closeModal('modal-change-password');
-                } else {
-                    alert(d.detail || "Password change failed");
-                }
-            } catch (err) { alert("Server error updating password."); }
-            finally { setBtnLoading(btn, false); }
+                const res = await fetch(`${API_BASE_URL}/change_password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentUser.email, current_password: document.getElementById('cp-current').value, new_password: n }) });
+                if (res.ok) { alert("Password changed successfully!"); window.closeModal('modal-change-password'); } else alert((await res.json()).detail || "Password change failed");
+            } catch (err) { alert("Server error."); }
+            finally { window.setBtnLoading(btn, false); }
         });
 
-        function openResetPasswordModal() {
-            document.getElementById('modal-reset-pwd').classList.remove('hidden');
-        }
+        window.openResetPasswordModal = function() { document.getElementById('modal-reset-pwd').classList.remove('hidden'); };
 
         document.getElementById('form-reset-password').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]'); setBtnLoading(btn, true, "Resetting...");
-            const payload = {
-                identifier: document.getElementById('rst-id').value.trim(),
-                new_password: document.getElementById('rst-pwd').value
-            };
+            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); window.setBtnLoading(btn, true, "Resetting...");
             try {
-                const res = await fetch(`${API_BASE_URL}/reset_password`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const d = await res.json();
-                if (res.ok) {
-                    alert(d.message);
-                    closeModal('modal-reset-pwd');
-                } else {
-                    alert(d.detail || "Reset failed");
-                }
+                const res = await fetch(`${API_BASE_URL}/reset_password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ identifier: document.getElementById('rst-id').value.trim(), new_password: document.getElementById('rst-pwd').value }) });
+                if (res.ok) { alert((await res.json()).message); window.closeModal('modal-reset-pwd'); } else alert((await res.json()).detail || "Reset failed");
             } catch (err) { alert("Network error."); }
-            finally { setBtnLoading(btn, false); }
+            finally { window.setBtnLoading(btn, false); }
         });
 
-        // ================= MODULE 1: CAMERA & WEBSOCKET ENGINE =================
-        async function startCamera() {
-            try {
-                if (cameraStream) stopCamera();
-                cameraStream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: 640, height: 480, facingMode: currentFacingMode }
-                });
-                video.srcObject = cameraStream;
-                video.classList.remove('hidden');
-                document.getElementById('camera-loading').classList.add('hidden');
+        // --- CAMERA ---
+        window.stopCamera = function() { if (window.cameraStream) { window.cameraStream.getTracks().forEach(t => t.stop()); window.cameraStream = null; } };
+        window.flipCameraFacingMode = function() { window.currentFacingMode = window.currentFacingMode === "user" ? "environment" : "user"; window.startCamera(); };
 
-                video.onloadedmetadata = () => {
-                    captureCanvas.width = 320;
-                    captureCanvas.height = 240;
-                    overlayCanvas.width = video.videoWidth;
-                    overlayCanvas.height = video.videoHeight;
-                    connectWebSocket();
-                };
-            } catch (err) {
-                document.getElementById('camera-loading').innerHTML = `
-                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-3xl mb-2"></i>
-                    <p class="text-xs font-bold text-slate-300">Camera Access Denied or Blocked.</p>
-                `;
-            }
-        }
-
-        function stopCamera() {
-            if (cameraStream) {
-                cameraStream.getTracks().forEach(t => t.stop());
-                cameraStream = null;
-            }
-            isProcessingFrame = false;
-        }
-
-        function flipCameraFacingMode() {
-            currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
-            startCamera();
-        }
-
-        function connectWebSocket() {
-            ws = new WebSocket(RENDER_URL);
-            ws.onopen = () => {
-                isConnected = true;
-                isProcessingFrame = false;
-                updateWsStatus(true);
-                signOutputText.innerText = "Hold sign in view...";
-                sendFrame();
-            };
-
-            ws.onmessage = (e) => {
-                const data = JSON.parse(e.data);
-                signOutputText.innerText = data.translation;
-                drawSkeletalLandmarks(data.landmarks);
-                updateConfidenceDisplay(data.confidence);
-
-                handleRecognizedGestureActions(data.translation);
-
-                isProcessingFrame = false;
-                if (activeWorkspace === 'Sign2Text') {
-                    requestAnimationFrame(sendFrame);
-                }
-            };
-
-            ws.onclose = () => {
-                isConnected = false;
-                isProcessingFrame = false;
-                updateWsStatus(false);
-                signOutputText.innerText = "Connection lost. Reconnecting...";
-                triggerHaptic([150, 50, 150]);
-                if (activeWorkspace === 'Sign2Text') setTimeout(connectWebSocket, 3000);
-            };
-        }
-
-        function sendFrame() {
-            if (!isConnected || isProcessingFrame || ws.readyState !== WebSocket.OPEN || activeWorkspace !== 'Sign2Text') return;
-            isProcessingFrame = true;
-            captureCtx.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
-            ws.send(captureCanvas.toDataURL('image/jpeg', 0.35));
-        }
-
-        function updateWsStatus(online) {
-            const b = document.getElementById('ws-badge');
-            if (online) {
-                b.className = "flex items-center gap-1.5 px-2 py-0.5 bg-teal-50 dark:bg-teal-950/50 border border-teal-200 dark:border-teal-900 rounded text-[10px] font-bold text-teal-600 dark:text-teal-400";
-                b.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> ACTIVE';
-            } else {
-                b.className = "flex items-center gap-1.5 px-2 py-0.5 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 rounded text-[10px] font-bold text-red-600 dark:text-red-400";
-                b.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> OFFLINE';
-            }
-        }
-
-        function updateConfidenceDisplay(conf) {
-            const pct = Math.round(conf * 100);
-            const dot = document.getElementById('ai-conf-dot');
-            const txt = document.getElementById('ai-conf-text');
-            const border = document.getElementById('camera-border');
+        window.updateConfidenceDisplay = function(conf) {
+            const pct = Math.round(conf * 100); const dot = document.getElementById('ai-conf-dot'); const txt = document.getElementById('ai-conf-text'); const border = document.getElementById('camera-border');
             txt.innerText = `Confidence: ${pct}%`;
+            if (pct > 75) { dot.className = "w-2 h-2 rounded-full bg-emerald-400"; border.classList.replace('border-slate-300', 'border-emerald-500'); border.classList.replace('dark:border-slate-800', 'dark:border-emerald-500'); } 
+            else if (pct > 40) { dot.className = "w-2 h-2 rounded-full bg-amber-400"; border.classList.replace('border-emerald-500', 'border-slate-300'); border.classList.replace('dark:border-emerald-500', 'dark:border-slate-800'); } 
+            else { dot.className = "w-2 h-2 rounded-full bg-slate-400"; border.classList.replace('border-emerald-500', 'border-slate-300'); border.classList.replace('dark:border-emerald-500', 'dark:border-slate-800'); }
+        };
 
-            if (pct > 75) {
-                dot.className = "w-2 h-2 rounded-full bg-emerald-400";
-                border.classList.replace('border-slate-300', 'border-emerald-500');
-                border.classList.replace('dark:border-slate-800', 'dark:border-emerald-500');
-            } else if (pct > 40) {
-                dot.className = "w-2 h-2 rounded-full bg-amber-400";
-                border.classList.replace('border-emerald-500', 'border-slate-300');
-                border.classList.replace('dark:border-emerald-500', 'dark:border-slate-800');
-            } else {
-                dot.className = "w-2 h-2 rounded-full bg-slate-400";
-                border.classList.replace('border-emerald-500', 'border-slate-300');
-                border.classList.replace('dark:border-emerald-500', 'dark:border-slate-800');
-            }
-        }
-
-        // --- DRAW SKELETAL LINES (TEAL) & JOINTS (RED) ---
         function drawSkeletalLandmarks(lms) {
             overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
             if (!lms || lms.length === 0) return;
-
-            const HAND_CONNECTIONS = [
-                [0, 1], [1, 2], [2, 3], [3, 4],
-                [0, 5], [5, 6], [6, 7], [7, 8],
-                [5, 9], [9, 10], [10, 11], [11, 12],
-                [9, 13], [13, 14], [14, 15], [15, 16],
-                [13, 17], [0, 17], [17, 18], [18, 19], [19, 20]
-            ];
-
-            overlayCtx.lineWidth = 3;
-            overlayCtx.strokeStyle = '#00FFFF';
-            HAND_CONNECTIONS.forEach(([s, e]) => {
-                if (lms[s] && lms[e]) {
-                    overlayCtx.beginPath();
-                    overlayCtx.moveTo(lms[s].x * overlayCanvas.width, lms[s].y * overlayCanvas.height);
-                    overlayCtx.lineTo(lms[e].x * overlayCanvas.width, lms[e].y * overlayCanvas.height);
-                    overlayCtx.stroke();
-                }
-            });
-
-            lms.forEach(pt => {
-                overlayCtx.beginPath();
-                overlayCtx.arc(pt.x * overlayCanvas.width, pt.y * overlayCanvas.height, 4.5, 0, 2 * Math.PI);
-                overlayCtx.fillStyle = '#EF4444';
-                overlayCtx.fill();
-            });
+            const HAND_CONNECTIONS = [[0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [5, 6], [6, 7], [7, 8], [5, 9], [9, 10], [10, 11], [11, 12], [9, 13], [13, 14], [14, 15], [15, 16], [13, 17], [0, 17], [17, 18], [18, 19], [19, 20]];
+            overlayCtx.lineWidth = 3; overlayCtx.strokeStyle = '#00FFFF';
+            HAND_CONNECTIONS.forEach(([s, e]) => { if (lms[s] && lms[e]) { overlayCtx.beginPath(); overlayCtx.moveTo(lms[s].x * overlayCanvas.width, lms[s].y * overlayCanvas.height); overlayCtx.lineTo(lms[e].x * overlayCanvas.width, lms[e].y * overlayCanvas.height); overlayCtx.stroke(); } });
+            lms.forEach(pt => { overlayCtx.beginPath(); overlayCtx.arc(pt.x * overlayCanvas.width, pt.y * overlayCanvas.height, 4.5, 0, 2 * Math.PI); overlayCtx.fillStyle = '#EF4444'; overlayCtx.fill(); });
         }
 
-        // --- GESTURE SPEECH & SENTENCE LOGIC ---
-        function handleRecognizedGestureActions(word) {
-            const ignore = ["No hand detected", "Sign not recognized...", "Hold sign in view..."];
-            if (ignore.includes(word) || !word) return;
-
-            triggerHaptic([60]);
-
-            const isQueueing = document.getElementById('queue-sentence-toggle').checked;
-            if (isQueueing) {
-                if (sentenceBuilderList[sentenceBuilderList.length - 1] !== word) {
-                    sentenceBuilderList.push(word);
-                    renderSentenceBuilder();
-                }
-            } else {
-                if (isSpokenAudioOn) {
-                    speakTextWithSynthesis(word);
-                }
-            }
-
-            if (isAutoSaveOn && lastAutoSavedWord !== word) {
-                lastAutoSavedWord = word;
-                executeSaveConversation(word, "Sign to Text");
-            }
-        }
-
-        function renderSentenceBuilder() {
+        // --- SENTENCE BUILDER ---
+        window.renderSentenceBuilder = function() {
             const box = document.getElementById('sentence-builder-box');
-            if (sentenceBuilderList.length === 0) {
-                box.innerHTML = `<span class="text-slate-400 italic">Queue is empty. Check the box above to build sentences...</span>`;
-            } else {
-                box.innerHTML = sentenceBuilderList.map(w => `
-                    <span class="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/60 text-teal-800 dark:text-teal-200 rounded font-bold">${w}</span>
-                `).join('');
-            }
-        }
+            if (window.sentenceBuilderList.length === 0) box.innerHTML = `<span class="text-slate-400 italic">Queue is empty. Check the box above to build sentences...</span>`;
+            else box.innerHTML = window.sentenceBuilderList.map(w => `<span class="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/60 text-teal-800 dark:text-teal-200 rounded font-bold">${w}</span>`).join('');
+        };
+        window.speakSentenceBuilder = function() { if (window.sentenceBuilderList.length === 0) return; const full = window.sentenceBuilderList.join(' '); window.speakTextWithSynthesis(full); window.executeSaveConversation(full, "Sign to Text"); };
+        window.clearSentenceBuilder = function() { window.sentenceBuilderList = []; window.renderSentenceBuilder(); };
 
-        function speakSentenceBuilder() {
-            if (sentenceBuilderList.length === 0) return;
-            const full = sentenceBuilderList.join(' ');
-            speakTextWithSynthesis(full);
-            executeSaveConversation(full, "Sign to Text");
-        }
+        window.toggleSpokenAudio = function() { window.isSpokenAudioOn = !window.isSpokenAudioOn; document.getElementById('btn-audio-toggle').innerHTML = window.isSpokenAudioOn ? '<i class="fa-solid fa-volume-high mr-1"></i> Audio: ON' : '<i class="fa-solid fa-volume-xmark mr-1"></i> Audio: OFF'; };
+        window.toggleAutoSaveState = function() { window.isAutoSaveOn = !window.isAutoSaveOn; const btn = document.getElementById('btn-auto-save'); btn.innerText = `Auto-Save: ${window.isAutoSaveOn ? 'ON' : 'OFF'}`; btn.className = window.isAutoSaveOn ? "px-3 py-1.5 bg-teal-600 text-white rounded-lg text-xs font-bold" : "px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"; };
+        window.copyCurrentTranslation = function() { const t = signOutputText.innerText; navigator.clipboard.writeText(t); alert(`Copied "${t}" to clipboard!`); };
 
-        function clearSentenceBuilder() {
-            sentenceBuilderList = [];
-            renderSentenceBuilder();
-        }
-
-        function toggleSpokenAudio() {
-            isSpokenAudioOn = !isSpokenAudioOn;
-            const btn = document.getElementById('btn-audio-toggle');
-            btn.innerHTML = isSpokenAudioOn ? '<i class="fa-solid fa-volume-high mr-1"></i> Audio: ON' : '<i class="fa-solid fa-volume-xmark mr-1"></i> Audio: OFF';
-        }
-
-        function toggleAutoSaveState() {
-            isAutoSaveOn = !isAutoSaveOn;
-            const btn = document.getElementById('btn-auto-save');
-            btn.innerText = `Auto-Save: ${isAutoSaveOn ? 'ON' : 'OFF'}`;
-            btn.className = isAutoSaveOn ? "px-3 py-1.5 bg-teal-600 text-white rounded-lg text-xs font-bold" : "px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200";
-        }
-
-        function copyCurrentTranslation() {
-            const t = signOutputText.innerText;
-            navigator.clipboard.writeText(t);
-            alert(`Copied "${t}" to clipboard!`);
-        }
-
-        function speakTextWithSynthesis(phrase) {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            const utt = new SpeechSynthesisUtterance(phrase);
-            const gender = document.getElementById('tts-gender').value;
-            const rate = parseFloat(document.getElementById('tts-speed').value);
-            utt.rate = rate;
-
+        window.speakTextWithSynthesis = function(phrase) {
+            if (!('speechSynthesis' in window)) return; window.speechSynthesis.cancel();
+            const utt = new SpeechSynthesisUtterance(phrase); utt.rate = parseFloat(document.getElementById('tts-speed').value);
             const voices = window.speechSynthesis.getVoices();
-            if (gender === 'female') {
-                const f = voices.find(v => v.name.includes("Female") || v.name.includes("Zira") || v.name.includes("Samantha"));
-                if (f) utt.voice = f;
-            } else {
-                const m = voices.find(v => v.name.includes("Male") || v.name.includes("David") || v.name.includes("Alex"));
-                if (m) utt.voice = m;
-            }
+            if (document.getElementById('tts-gender').value === 'female') { const f = voices.find(v => v.name.includes("Female") || v.name.includes("Zira") || v.name.includes("Samantha")); if (f) utt.voice = f; } 
+            else { const m = voices.find(v => v.name.includes("Male") || v.name.includes("David") || v.name.includes("Alex")); if (m) utt.voice = m; }
             window.speechSynthesis.speak(utt);
-        }
+        };
 
-        // ================= MODULE 2: 3D AVATAR & PROMPT BOX ENGINE =================
-        function initAvatarCanvas() {
-            const isDark = document.documentElement.classList.contains('dark');
-            avatarCtx.fillStyle = isDark ? "#0f172a" : "#f1f5f9";
-            avatarCtx.fillRect(0, 0, avatarCanvas.width, avatarCanvas.height);
-            drawStylizedAvatar(avatarGender, 0);
-        }
+        // --- AVATAR & PROMPT BOX ---
+        window.initAvatarCanvas = function() { const isDark = document.documentElement.classList.contains('dark'); avatarCtx.fillStyle = isDark ? "#0f172a" : "#f1f5f9"; avatarCtx.fillRect(0, 0, avatarCanvas.width, avatarCanvas.height); window.drawStylizedAvatar(window.avatarGender, 0); };
+        window.switchAvatarGender = function(val) { window.avatarGender = val; window.drawStylizedAvatar(window.avatarGender, window.avatarAnimationAngle); };
+        document.getElementById('avatar-speed-slider').addEventListener('input', (e) => { document.getElementById('avatar-speed-label').innerText = `${e.target.value}x`; });
+        window.runAvatarAnimation = function() { if (window.avatarAnimReqId) cancelAnimationFrame(window.avatarAnimReqId); const speed = parseFloat(document.getElementById('avatar-speed-slider').value); window.avatarAnimationAngle += 0.05 * speed; window.drawStylizedAvatar(window.avatarGender, window.avatarAnimationAngle); if (window.activeWorkspace === 'Text2Sign') window.avatarAnimReqId = requestAnimationFrame(window.runAvatarAnimation); };
+        window.replayCurrentAvatarAnimation = function() { window.avatarAnimationAngle = 0; window.runAvatarAnimation(); const prompt = document.getElementById('t2s-prompt-input').value; if (prompt) window.speakTextWithSynthesis(prompt); };
 
-        function switchAvatarGender(val) {
-            avatarGender = val;
-            drawStylizedAvatar(avatarGender, avatarAnimationAngle);
-        }
+        window.drawStylizedAvatar = function(gender, angle) {
+            const isDark = document.documentElement.classList.contains('dark'); const w = avatarCanvas.width, h = avatarCanvas.height; avatarCtx.clearRect(0, 0, w, h);
+            avatarCtx.fillStyle = isDark ? "#090d16" : "#e2e8f0"; avatarCtx.fillRect(0, 0, w, h);
+            const cx = w / 2; const cy = h / 2 - 20;
+            avatarCtx.beginPath(); avatarCtx.arc(cx, cy - 80, 45, 0, Math.PI * 2); avatarCtx.fillStyle = gender === 'female' ? '#fcd34d' : '#f59e0b'; avatarCtx.fill();
+            avatarCtx.beginPath(); avatarCtx.roundRect(cx - 50, cy - 30, 100, 140, [20, 20, 5, 5]); avatarCtx.fillStyle = gender === 'female' ? '#4f46e5' : '#0d9488'; avatarCtx.fill();
+            const handSwing = Math.sin(angle) * 35; const handSwing2 = Math.cos(angle) * 35;
+            avatarCtx.beginPath(); avatarCtx.arc(cx - 70 + handSwing, cy + 30 + handSwing2, 16, 0, Math.PI * 2); avatarCtx.fillStyle = "#fde68a"; avatarCtx.fill(); avatarCtx.lineWidth = 4; avatarCtx.strokeStyle = "#4338ca"; avatarCtx.stroke();
+            avatarCtx.beginPath(); avatarCtx.arc(cx + 70 - handSwing, cy + 30 - handSwing2, 16, 0, Math.PI * 2); avatarCtx.fillStyle = "#fde68a"; avatarCtx.fill(); avatarCtx.stroke();
+        };
 
-        document.getElementById('avatar-speed-slider').addEventListener('input', (e) => {
-            document.getElementById('avatar-speed-label').innerText = `${e.target.value}x`;
-        });
+        window.autoResizeTextarea = function(el) { el.style.height = 'auto'; el.style.height = (el.scrollHeight) + 'px'; };
+        window.injectPresetPhrase = function(txt) { const el = document.getElementById('t2s-prompt-input'); el.value = txt; window.autoResizeTextarea(el); window.generateAndSaveSignAvatar(); };
+        window.generateAndSaveSignAvatar = function() { const el = document.getElementById('t2s-prompt-input'); const val = el.value.trim(); if (!val) { alert("Please enter or speak a phrase."); return; } window.replayCurrentAvatarAnimation(); window.speakTextWithSynthesis(val); window.executeSaveConversation(val, "Text to Sign"); el.value = ''; window.autoResizeTextarea(el); };
 
-        function runAvatarAnimation() {
-            if (avatarAnimReqId) cancelAnimationFrame(avatarAnimReqId);
-            const speed = parseFloat(document.getElementById('avatar-speed-slider').value);
-            avatarAnimationAngle += 0.05 * speed;
-            drawStylizedAvatar(avatarGender, avatarAnimationAngle);
-            if (activeWorkspace === 'Text2Sign') {
-                avatarAnimReqId = requestAnimationFrame(runAvatarAnimation);
+        // --- MICROPHONE ---
+        window.toggleAudioRecording = function() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SpeechRec) { alert("Speech Recognition not supported on this browser."); return; }
+            if (!window.audioRecognitionInstance) {
+                window.audioRecognitionInstance = new SpeechRec(); window.audioRecognitionInstance.continuous = false; window.audioRecognitionInstance.interimResults = false; window.audioRecognitionInstance.lang = 'en-IN';
+                window.audioRecognitionInstance.onstart = () => { window.isRecordingMicrophone = true; document.getElementById('mic-icon').className = "fa-solid fa-microphone text-rose-500 animate-pulse"; document.getElementById('waveformCanvas').classList.remove('opacity-0'); document.getElementById('waveformCanvas').classList.add('opacity-100'); };
+                window.audioRecognitionInstance.onresult = (e) => { const el = document.getElementById('t2s-prompt-input'); el.value = e.results[0][0].transcript; window.autoResizeTextarea(el); };
+                window.audioRecognitionInstance.onend = () => { window.isRecordingMicrophone = false; document.getElementById('mic-icon').className = "fa-solid fa-microphone text-base"; document.getElementById('waveformCanvas').classList.remove('opacity-100'); document.getElementById('waveformCanvas').classList.add('opacity-0'); };
             }
-        }
+            if (window.isRecordingMicrophone) window.audioRecognitionInstance.stop(); else window.audioRecognitionInstance.start();
+        };
 
-        function replayCurrentAvatarAnimation() {
-            avatarAnimationAngle = 0;
-            runAvatarAnimation();
-            const prompt = document.getElementById('t2s-prompt-input').value;
-            if (prompt) speakTextWithSynthesis(prompt);
-        }
-
-        function drawStylizedAvatar(gender, angle) {
-            const isDark = document.documentElement.classList.contains('dark');
-            const w = avatarCanvas.width, h = avatarCanvas.height;
-            avatarCtx.clearRect(0, 0, w, h);
-
-            avatarCtx.fillStyle = isDark ? "#090d16" : "#e2e8f0";
-            avatarCtx.fillRect(0, 0, w, h);
-
-            const cx = w / 2;
-            const cy = h / 2 - 20;
-
-            avatarCtx.beginPath();
-            avatarCtx.arc(cx, cy - 80, 45, 0, Math.PI * 2);
-            avatarCtx.fillStyle = gender === 'female' ? '#fcd34d' : '#f59e0b';
-            avatarCtx.fill();
-
-            avatarCtx.beginPath();
-            avatarCtx.roundRect(cx - 50, cy - 30, 100, 140, [20, 20, 5, 5]);
-            avatarCtx.fillStyle = gender === 'female' ? '#4f46e5' : '#0d9488';
-            avatarCtx.fill();
-
-            const handSwing = Math.sin(angle) * 35;
-            const handSwing2 = Math.cos(angle) * 35;
-
-            avatarCtx.beginPath();
-            avatarCtx.arc(cx - 70 + handSwing, cy + 30 + handSwing2, 16, 0, Math.PI * 2);
-            avatarCtx.fillStyle = "#fde68a";
-            avatarCtx.fill();
-            avatarCtx.lineWidth = 4;
-            avatarCtx.strokeStyle = "#4338ca";
-            avatarCtx.stroke();
-
-            avatarCtx.beginPath();
-            avatarCtx.arc(cx + 70 - handSwing, cy + 30 - handSwing2, 16, 0, Math.PI * 2);
-            avatarCtx.fillStyle = "#fde68a";
-            avatarCtx.fill();
-            avatarCtx.stroke();
-        }
-
-        // --- 21st.dev Style Prompt Box Utilities ---
-        function autoResizeTextarea(el) {
-            el.style.height = 'auto';
-            el.style.height = (el.scrollHeight) + 'px';
-        }
-
-        function injectPresetPhrase(txt) {
-            const el = document.getElementById('t2s-prompt-input');
-            el.value = txt;
-            autoResizeTextarea(el);
-            generateAndSaveSignAvatar();
-        }
-
-        function generateAndSaveSignAvatar() {
-            const el = document.getElementById('t2s-prompt-input');
-            const val = el.value.trim();
-            if (!val) { alert("Please enter or speak a phrase."); return; }
-
-            replayCurrentAvatarAnimation();
-            speakTextWithSynthesis(val);
-            executeSaveConversation(val, "Text to Sign");
-            
-            el.value = '';
-            autoResizeTextarea(el);
-        }
-
-        // --- MICROPHONE SPEECH-TO-TEXT ---
-        function toggleAudioRecording() {
-            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRec) { alert("Speech Recognition not supported on this browser."); return; }
-
-            if (!audioRecognitionInstance) {
-                audioRecognitionInstance = new SpeechRec();
-                audioRecognitionInstance.continuous = false;
-                audioRecognitionInstance.interimResults = false;
-                audioRecognitionInstance.lang = 'en-IN';
-
-                audioRecognitionInstance.onstart = () => {
-                    isRecordingMicrophone = true;
-                    document.getElementById('mic-icon').className = "fa-solid fa-microphone text-rose-500 animate-pulse";
-                    document.getElementById('waveformCanvas').classList.remove('opacity-0');
-                    document.getElementById('waveformCanvas').classList.add('opacity-100');
-                };
-
-                audioRecognitionInstance.onresult = (e) => {
-                    const transcript = e.results[0][0].transcript;
-                    const el = document.getElementById('t2s-prompt-input');
-                    el.value = transcript;
-                    autoResizeTextarea(el);
-                };
-
-                audioRecognitionInstance.onend = () => {
-                    isRecordingMicrophone = false;
-                    document.getElementById('mic-icon').className = "fa-solid fa-microphone text-base";
-                    document.getElementById('waveformCanvas').classList.remove('opacity-100');
-                    document.getElementById('waveformCanvas').classList.add('opacity-0');
-                };
-            }
-
-            if (isRecordingMicrophone) {
-                audioRecognitionInstance.stop();
-            } else {
-                audioRecognitionInstance.start();
-            }
-        }
-
-        // --- DYNAMIC AUDIO WAVEFORM SIMULATOR ---
-        function initAudioWaveform() {
-            const cv = document.getElementById('waveformCanvas');
-            const ctx = cv.getContext('2d');
+        window.initAudioWaveform = function() {
+            const cv = document.getElementById('waveformCanvas'); const ctx = cv.getContext('2d');
             function renderWave() {
                 ctx.clearRect(0, 0, cv.width, cv.height);
-                if(isRecordingMicrophone) {
-                    ctx.fillStyle = "#6366f1";
-                    const bars = 8;
-                    for (let i = 0; i < bars; i++) {
-                        const h = Math.random() * 16 + 4;
-                        ctx.fillRect(i * 6, (cv.height - h) / 2, 3, h);
-                    }
-                }
+                if(window.isRecordingMicrophone) { ctx.fillStyle = "#6366f1"; for (let i = 0; i < 8; i++) { const h = Math.random() * 16 + 4; ctx.fillRect(i * 10, (cv.height - h) / 2, 4, h); } }
                 requestAnimationFrame(renderWave);
             }
             renderWave();
-        }
+        };
 
-        // ================= CONVERSATION DB & EXPORTS =================
-        async function executeSaveConversation(txt, mode) {
-            try {
-                await fetch(`${API_BASE_URL}/save_chat`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: currentUser.email,
-                        mode_used: mode,
-                        transcript: txt
-                    })
-                });
-                refreshMasterConversations();
-            } catch (e) { console.error("Save failed", e); }
-        }
+        // --- DB EXPORTS & HISTORY ---
+        window.executeSaveConversation = async function(txt, mode) { try { await fetch(`${API_BASE_URL}/save_chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentUser.email, mode_used: mode, transcript: txt }) }); window.refreshMasterConversations(); } catch (e) {} };
+        window.saveChatManual = function() { const t = signOutputText.innerText; const ignore = ["Waiting for camera...", "No hand detected", "Sign not recognized...", "Hold sign in view..."]; if (ignore.includes(t) || !t) { alert("No valid translation to save."); return; } window.executeSaveConversation(t, "Sign to Text"); };
 
-        async function refreshMasterConversations() {
+        window.refreshMasterConversations = async function() {
             try {
-                const res = await fetch(`${API_BASE_URL}/history/${currentUser.email}`);
-                const data = await res.json();
-                masterHistoryRecords = data.history || [];
-                renderSidebarHistory();
-                applyHistoryFilterAndSearch();
+                const res = await fetch(`${API_BASE_URL}/history/${currentUser.email}`); const data = await res.json();
+                window.masterHistoryRecords = data.history || []; window.renderSidebarHistory(); window.applyHistoryFilterAndSearch();
             } catch (e) {}
-        }
+        };
 
-        function renderSidebarHistory() {
-            const s2tList = document.getElementById('sign2text-sidebar-list');
-            const t2sList = document.getElementById('text2sign-sidebar-list');
-
-            const s2tItems = masterHistoryRecords.filter(r => r.mode_used === "Sign to Text");
-            const t2sItems = masterHistoryRecords.filter(r => r.mode_used === "Text to Sign");
-
+        window.renderSidebarHistory = function() {
+            const s2tList = document.getElementById('sign2text-sidebar-list'); const t2sList = document.getElementById('text2sign-sidebar-list');
+            const s2tItems = window.masterHistoryRecords.filter(r => r.mode_used === "Sign to Text"); const t2sItems = window.masterHistoryRecords.filter(r => r.mode_used === "Text to Sign");
             s2tList.innerHTML = s2tItems.length ? s2tItems.map(itemToSidebarCard).join('') : '<p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>';
             t2sList.innerHTML = t2sItems.length ? t2sItems.map(itemToSidebarCard).join('') : '<p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>';
-        }
+        };
 
         function itemToSidebarCard(item) {
-            return `
-                <div class="p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
-                    <div class="flex justify-between text-[10px] text-slate-400 font-bold mb-1">
-                        <span>${item.timestamp}</span>
-                        <button onclick="deleteSingleHistoryItem('${item.id}')" class="text-red-500 hover:underline">Delete</button>
-                    </div>
-                    <p class="font-extrabold text-slate-800 dark:text-slate-100">${item.transcript}</p>
-                </div>
-            `;
+            return `<div class="p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs"><div class="flex justify-between text-[10px] text-slate-400 font-bold mb-1"><span>${item.timestamp}</span><button onclick="deleteSingleHistoryItem('${item.id}')" class="text-red-500 hover:underline">Delete</button></div><p class="font-extrabold text-slate-800 dark:text-slate-100">${item.transcript}</p></div>`;
         }
 
-        // --- MASTER HISTORY VIEW FILTERING ---
-        let currentMasterTab = "All";
-
-        function setMasterFilter(mode) {
-            currentMasterTab = mode;
-            ['tab-all', 'tab-s2t', 'tab-t2s'].forEach(id => {
-                document.getElementById(id).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700";
-            });
-
+        window.currentMasterTab = "All";
+        window.setMasterFilter = function(mode) {
+            window.currentMasterTab = mode;
+            ['tab-all', 'tab-s2t', 'tab-t2s'].forEach(id => { document.getElementById(id).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700"; });
             if (mode === 'All') document.getElementById('tab-all').className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
             if (mode === 'Sign to Text') document.getElementById('tab-s2t').className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
             if (mode === 'Text to Sign') document.getElementById('tab-t2s').className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
+            window.applyHistoryFilterAndSearch();
+        };
 
-            applyHistoryFilterAndSearch();
-        }
-
-        function applyHistoryFilterAndSearch() {
+        window.applyHistoryFilterAndSearch = function() {
             const query = (document.getElementById('history-search-input')?.value || "").toLowerCase();
-            const s2tCount = masterHistoryRecords.filter(r => r.mode_used === "Sign to Text").length;
-            const t2sCount = masterHistoryRecords.filter(r => r.mode_used === "Text to Sign").length;
+            const s2tCount = window.masterHistoryRecords.filter(r => r.mode_used === "Sign to Text").length;
+            const t2sCount = window.masterHistoryRecords.filter(r => r.mode_used === "Text to Sign").length;
 
-            if (document.getElementById('cnt-all')) document.getElementById('cnt-all').innerText = masterHistoryRecords.length;
+            if (document.getElementById('cnt-all')) document.getElementById('cnt-all').innerText = window.masterHistoryRecords.length;
             if (document.getElementById('cnt-s2t')) document.getElementById('cnt-s2t').innerText = s2tCount;
             if (document.getElementById('cnt-t2s')) document.getElementById('cnt-t2s').innerText = t2sCount;
 
-            let filtered = masterHistoryRecords;
-            if (currentMasterTab !== 'All') {
-                filtered = filtered.filter(r => r.mode_used === currentMasterTab);
-            }
-            if (query) {
-                filtered = filtered.filter(r => r.transcript.toLowerCase().includes(query) || r.timestamp.includes(query));
-            }
+            let filtered = window.masterHistoryRecords;
+            if (window.currentMasterTab !== 'All') filtered = filtered.filter(r => r.mode_used === window.currentMasterTab);
+            if (query) filtered = filtered.filter(r => r.transcript.toLowerCase().includes(query) || r.timestamp.includes(query));
 
-            const box = document.getElementById('master-history-container');
-            if (!box) return;
+            const box = document.getElementById('master-history-container'); if (!box) return;
+            if (filtered.length === 0) box.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-10">No matching conversations found.</p>`;
+            else box.innerHTML = filtered.map(r => `<div class="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-start gap-4"><div><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${r.mode_used === 'Sign to Text' ? 'bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300' : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300'}">${r.mode_used}</span><span class="text-[11px] text-slate-400 font-bold">${r.timestamp}</span></div><p class="text-sm font-bold text-slate-900 dark:text-slate-100">${r.transcript}</p></div><button onclick="deleteSingleHistoryItem('${r.id}')" class="text-xs text-rose-500 hover:text-rose-700 font-bold shrink-0"><i class="fa-solid fa-trash-can"></i></button></div>`).join('');
+        };
 
-            if (filtered.length === 0) {
-                box.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-10">No matching conversations found.</p>`;
-            } else {
-                box.innerHTML = filtered.map(r => `
-                    <div class="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-start gap-4">
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${r.mode_used === 'Sign to Text' ? 'bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300' : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300'}">
-                                    ${r.mode_used}
-                                </span>
-                                <span class="text-[11px] text-slate-400 font-bold">${r.timestamp}</span>
-                            </div>
-                            <p class="text-sm font-bold text-slate-900 dark:text-slate-100">${r.transcript}</p>
-                        </div>
-                        <button onclick="deleteSingleHistoryItem('${r.id}')" class="text-xs text-rose-500 hover:text-rose-700 font-bold shrink-0">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                `).join('');
-            }
-        }
+        window.deleteSingleHistoryItem = async function(id) { if (!confirm("Delete this conversation record?")) return; try { await fetch(`${API_BASE_URL}/clear_history`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentUser.email, item_id: id }) }); window.refreshMasterConversations(); } catch (e) { alert("Failed to delete."); } };
+        window.clearAllConversationsPrompt = async function() { if (!confirm("Are you sure you want to completely wipe all your stored history?")) return; try { await fetch(`${API_BASE_URL}/clear_history`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentUser.email, item_id: null }) }); window.refreshMasterConversations(); } catch (e) { alert("Failed to clear."); } };
 
-        async function deleteSingleHistoryItem(id) {
-            if (!confirm("Delete this conversation record?")) return;
-            try {
-                await fetch(`${API_BASE_URL}/clear_history`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: currentUser.email, item_id: id })
-                });
-                refreshMasterConversations();
-            } catch (e) { alert("Failed to delete."); }
-        }
-
-        async function clearAllConversationsPrompt() {
-            if (!confirm("Are you sure you want to completely wipe all your stored history?")) return;
-            try {
-                await fetch(`${API_BASE_URL}/clear_history`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: currentUser.email, item_id: null })
-                });
-                refreshMasterConversations();
-            } catch (e) { alert("Failed to clear."); }
-        }
-
-        // --- OFFICIAL METADATA TRANSCRIPT EXPORTER ---
-        function exportData(format) {
-            if (masterHistoryRecords.length === 0) {
-                alert("No conversation history available to export.");
-                return;
-            }
-
+        window.exportData = function(format) {
+            if (window.masterHistoryRecords.length === 0) { alert("No conversation history available to export."); return; }
             const sessionDate = new Date().toISOString().split('T')[0];
-            const metaHeader = `================================================================================
-OFFICIAL ISL TRANSLATION TRANSCRIPT | SMART INDIA HACKATHON 2026
-Team: TheHomoSapiens | Lead Developer: Sayan Chakraborty
-User ID: ${currentUser.unique_id}
-User Name: ${currentUser.name}
-Export Date: ${sessionDate}
-Total Records: ${masterHistoryRecords.length}
-================================================================================\n\n`;
-
-            let bodyContent = "";
-            masterHistoryRecords.forEach((r, idx) => {
-                bodyContent += `[Record #${idx + 1}] [${r.timestamp}] [Mode: ${r.mode_used}]\nTranscript: "${r.transcript}"\n--------------------------------------------------------------------------------\n`;
-            });
-
+            const metaHeader = `================================================================================\nOFFICIAL ISL TRANSLATION TRANSCRIPT | SMART INDIA HACKATHON 2026\nTeam: TheHomoSapiens | Lead Developer: Sayan Chakraborty\nUser ID: ${currentUser.unique_id}\nUser Name: ${currentUser.name}\nExport Date: ${sessionDate}\nTotal Records: ${window.masterHistoryRecords.length}\n================================================================================\n\n`;
+            let bodyContent = ""; window.masterHistoryRecords.forEach((r, idx) => { bodyContent += `[Record #${idx + 1}] [${r.timestamp}] [Mode: ${r.mode_used}]\nTranscript: "${r.transcript}"\n--------------------------------------------------------------------------------\n`; });
             const fullText = metaHeader + bodyContent;
 
-            if (format === 'txt') {
-                downloadFileBlob(fullText, `ISL_Transcript_${sessionDate}.txt`, "text/plain");
-            } else if (format === 'word') {
-                const docHtml = `
-                    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                    <head><title>ISL Transcript</title></head>
-                    <body style="font-family: Arial; padding: 20px;">
-                        <pre style="white-space: pre-wrap; font-size: 11pt;">${fullText}</pre>
-                    </body>
-                    </html>
-                `;
-                downloadFileBlob(docHtml, `ISL_Transcript_${sessionDate}.doc`, "application/msword");
-            } else if (format === 'pdf') {
+            if (format === 'txt') window.downloadFileBlob(fullText, `ISL_Transcript_${sessionDate}.txt`, "text/plain");
+            else if (format === 'word') { const docHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><title>ISL Transcript</title></head><body style="font-family: Arial; padding: 20px;"><pre style="white-space: pre-wrap; font-size: 11pt;">${fullText}</pre></body></html>`; window.downloadFileBlob(docHtml, `ISL_Transcript_${sessionDate}.doc`, "application/msword"); } 
+            else if (format === 'pdf') {
                 const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <html>
-                    <head>
-                        <title>ISL Transcript - ${currentUser.unique_id}</title>
-                        <style>
-                            body { font-family: 'Helvetica', Arial, sans-serif; padding: 40px; color: #1e293b; }
-                            .header { border-bottom: 2px solid #0d9488; padding-bottom: 12px; margin-bottom: 20px; }
-                            .record { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; }
-                            .meta { font-size: 11px; color: #64748b; font-weight: bold; }
-                            .text { font-size: 14px; font-weight: bold; margin-top: 4px; }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="header">
-                            <h2>TheHomoSapiens | ISL Translation Transcript</h2>
-                            <p style="font-size: 12px; margin: 0;">User: ${currentUser.name} | ID: ${currentUser.unique_id} | Date: ${sessionDate}</p>
-                        </div>
-                        ${masterHistoryRecords.map(r => `
-                            <div class="record">
-                                <div class="meta">[${r.timestamp}] - Mode:${r.mode_used}</div>
-                                <div class="text">${r.transcript}</div>
-                            </div>
-                        `).join('')}
-                    </body>
-                    </html>
-                `);
-                printWindow.document.close();
-                printWindow.focus();
-                setTimeout(() => { printWindow.print(); }, 500);
+                printWindow.document.write(`<html><head><title>ISL Transcript - ${currentUser.unique_id}</title><style>body { font-family: 'Helvetica', Arial, sans-serif; padding: 40px; color: #1e293b; } .header { border-bottom: 2px solid #0d9488; padding-bottom: 12px; margin-bottom: 20px; } .record { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; } .meta { font-size: 11px; color: #64748b; font-weight: bold; } .text { font-size: 14px; font-weight: bold; margin-top: 4px; }</style></head><body><div class="header"><h2>TheHomoSapiens | ISL Translation Transcript</h2><p style="font-size: 12px; margin: 0;">User: ${currentUser.name} | ID: ${currentUser.unique_id} | Date: ${sessionDate}</p></div>${window.masterHistoryRecords.map(r => `<div class="record"><div class="meta">[${r.timestamp}] - Mode:${r.mode_used}</div><div class="text">${r.transcript}</div></div>`).join('')}</body></html>`);
+                printWindow.document.close(); printWindow.focus(); setTimeout(() => { printWindow.print(); }, 500);
             }
-        }
+        };
 
-        function downloadFileBlob(content, fileName, mimeType) {
-            const blob = new Blob([content], { type: mimeType });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
+        window.downloadFileBlob = function(content, fileName, mimeType) { const blob = new Blob([content], { type: mimeType }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = fileName; a.click(); URL.revokeObjectURL(url); };
     </script>
 </body>
 </html>

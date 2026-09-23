@@ -1,23 +1,14 @@
 import os
-import cv2
 import uuid
-import numpy as np
-import base64
-import urllib.request
 import datetime
 import jwt
 import bcrypt
 import asyncio
-import threading
-from typing import Optional, List
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from typing import Optional
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from motor.motor_asyncio import AsyncIOMotorClient
-
-import mediapipe as mp
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
 
 # ==========================================
 # 1. DATABASE & CONFIGURATION
@@ -28,7 +19,6 @@ db = client.sih_database
 
 SECRET_KEY = "sih2026_super_secret_key_isl"
 
-# --- Models ---
 class UserRegister(BaseModel):
     name: str
     dob: str
@@ -61,14 +51,13 @@ class PasswordChange(BaseModel):
 
 class ChatSave(BaseModel):
     email: str
-    mode_used: str  # "Sign to Text" or "Text to Sign"
+    mode_used: str 
     transcript: str
 
 class HistoryClearRequest(BaseModel):
     email: str
-    item_id: Optional[str] = None  # None = clear all
+    item_id: Optional[str] = None 
 
-# --- Helper Password Utilities ---
 def hash_password(password: str) -> str:
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
@@ -77,43 +66,7 @@ def verify_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
 
 # ==========================================
-# 2. MEDIAPIPE ISL GESTURE AI (THREAD-SAFE)
-# ==========================================
-MODEL_URL = "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task"
-MODEL_PATH = "gesture_recognizer.task"
-
-if not os.path.exists(MODEL_PATH):
-    print("Downloading pre-trained gesture model...")
-    urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
-
-base_options = python.BaseOptions(model_asset_path=MODEL_PATH)
-options = vision.GestureRecognizerOptions(
-    base_options=base_options,
-    num_hands=1,
-    min_hand_detection_confidence=0.80,
-    min_hand_presence_confidence=0.80,
-    min_tracking_confidence=0.80
-)
-recognizer = vision.GestureRecognizer.create_from_options(options)
-recognizer_lock = threading.Lock()
-
-def process_frame_sync(mp_image):
-    with recognizer_lock:
-        return recognizer.recognize(mp_image)
-
-gesture_map = {
-    "Thumb_Up": "Good / Yes", "Thumb_Down": "Bad / No",
-    "Victory": "Victory / Two", "Open_Palm": "Stop / Wait",
-    "Closed_Fist": "Solid / Fist", "ILoveYou": "I Love You",
-    "Pointing_Up": "One / Attention", "PointingAtUser": "You",
-    "Call_Me": "Call Me", "Rock_On": "Rock On",
-    "Fist_Bump": "Friendship", "High_Five": "Hello / High Five",
-    "PinchedHand": "Little / Specific", "Pinching": "Small",
-    "PinchedFingers": "Please / Request", "None": "Sign not recognized..."
-}
-
-# ==========================================
-# 3. FASTAPI SERVER & APIS
+# 2. FASTAPI SERVER & APIS
 # ==========================================
 app = FastAPI(title="TheHomoSapiens SIH 2026 API")
 
@@ -127,9 +80,8 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"status": "Active", "message": "TheHomoSapiens Backend is running securely!"}
+    return {"status": "Active", "message": "TheHomoSapiens Backend is awake!"}
 
-# --- Auth Endpoints ---
 @app.post("/api/register")
 async def register(user: UserRegister):
     existing = await db.users.find_one({"$or": [{"email": user.email}, {"mobile": user.mobile}]})
@@ -170,13 +122,12 @@ async def login(credentials: UserLogin):
 async def reset_password(data: PasswordReset):
     db_user = await db.users.find_one({"$or": [{"email": data.identifier}, {"mobile": data.identifier}]})
     if not db_user:
-        raise HTTPException(status_code=404, detail="Account with that Email or Mobile does not exist.")
+        raise HTTPException(status_code=404, detail="Account does not exist.")
     
     hashed = await asyncio.to_thread(hash_password, data.new_password)
     await db.users.update_one({"_id": db_user["_id"]}, {"$set": {"password": hashed}})
     return {"message": "Password reset successfully. Please log in."}
 
-# --- Profile Endpoints ---
 @app.get("/api/user/{email}")
 async def get_user_profile(email: str):
     db_user = await db.users.find_one({"email": email})
@@ -194,45 +145,25 @@ async def get_user_profile(email: str):
 @app.post("/api/update_user")
 async def update_profile(data: UserUpdate):
     db_user = await db.users.find_one({"email": data.original_email})
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found.")
-    
     is_valid = await asyncio.to_thread(verify_password, data.current_password, db_user["password"])
     if not is_valid:
         raise HTTPException(status_code=401, detail="Authentication failed. Incorrect current password.")
     
     if data.email != data.original_email:
-        duplicate = await db.users.find_one({"email": data.email})
-        if duplicate:
-            raise HTTPException(status_code=400, detail="New email already used by another account.")
+        if await db.users.find_one({"email": data.email}):
+            raise HTTPException(status_code=400, detail="New email already used.")
             
-    updates = {
-        "name": data.name,
-        "dob": data.dob,
-        "mobile": data.mobile,
-        "email": data.email,
-        "profile_picture": data.profile_picture
-    }
+    updates = {"name": data.name, "dob": data.dob, "mobile": data.mobile, "email": data.email, "profile_picture": data.profile_picture}
     await db.users.update_one({"email": data.original_email}, {"$set": updates})
     
     if data.email != data.original_email:
         await db.conversations.update_many({"email": data.original_email}, {"$set": {"email": data.email}})
         
-    return {
-        "message": "Profile updated successfully!",
-        "new_name": data.name,
-        "new_email": data.email,
-        "new_dob": data.dob,
-        "new_mobile": data.mobile,
-        "new_profile_picture": data.profile_picture
-    }
+    return {"message": "Profile updated successfully!", "new_name": data.name, "new_email": data.email, "new_dob": data.dob, "new_mobile": data.mobile, "new_profile_picture": data.profile_picture}
 
 @app.post("/api/change_password")
 async def change_password(data: PasswordChange):
     db_user = await db.users.find_one({"email": data.email})
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found.")
-        
     is_valid = await asyncio.to_thread(verify_password, data.current_password, db_user["password"])
     if not is_valid:
         raise HTTPException(status_code=401, detail="Incorrect current password.")
@@ -241,7 +172,6 @@ async def change_password(data: PasswordChange):
     await db.users.update_one({"email": data.email}, {"$set": {"password": hashed}})
     return {"message": "Password updated successfully!"}
 
-# --- Conversation Endpoints ---
 @app.post("/api/save_chat")
 async def save_chat(chat: ChatSave):
     db_user = await db.users.find_one({"email": chat.email})
@@ -255,21 +185,13 @@ async def save_chat(chat: ChatSave):
         "timestamp": datetime.datetime.utcnow()
     }
     await db.conversations.insert_one(doc)
-    return {"message": "Conversation saved successfully."}
+    return {"message": "Conversation saved."}
 
 @app.get("/api/history/{email}")
 async def fetch_history(email: str):
     cursor = db.conversations.find({"email": email}).sort("timestamp", -1)
     records = await cursor.to_list(length=200)
-    history = []
-    for r in records:
-        history.append({
-            "id": str(r["_id"]),
-            "unique_id": r.get("unique_id", "THS-USER"),
-            "mode_used": r.get("mode_used", "General"),
-            "transcript": r.get("transcript", ""),
-            "timestamp": r["timestamp"].strftime("%Y-%m-%d %H:%M:%S") if "timestamp" in r else ""
-        })
+    history = [{"id": str(r["_id"]), "unique_id": r.get("unique_id", "THS-USER"), "mode_used": r.get("mode_used", "General"), "transcript": r.get("transcript", ""), "timestamp": r["timestamp"].strftime("%Y-%m-%d %H:%M:%S")} for r in records]
     return {"history": history}
 
 @app.post("/api/clear_history")
@@ -277,51 +199,6 @@ async def clear_history(req: HistoryClearRequest):
     from bson import ObjectId
     if req.item_id:
         await db.conversations.delete_one({"_id": ObjectId(req.item_id), "email": req.email})
-        return {"message": "Record deleted."}
     else:
         await db.conversations.delete_many({"email": req.email})
-        return {"message": "All history wiped."}
-
-# ==========================================
-# 4. REAL-TIME AI WEBSOCKET TRANSLATOR
-# ==========================================
-@app.websocket("/ws/translate")
-async def websocket_translate(websocket: WebSocket):
-    await websocket.accept()
-    try:
-        while True:
-            data = await websocket.receive_text()
-            if "," not in data:
-                continue
-            header, encoded = data.split(",", 1)
-            img_bytes = base64.b64decode(encoded)
-            np_arr = np.frombuffer(img_bytes, np.uint8)
-            frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-            
-            if frame is None:
-                continue
-
-            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame_rgb)
-            
-            result = await asyncio.to_thread(process_frame_sync, mp_image)
-            
-            resp = {
-                "translation": "No hand detected",
-                "landmarks": [],
-                "confidence": 0.0
-            }
-            
-            if result.hand_landmarks:
-                lms = result.hand_landmarks[0]
-                resp["landmarks"] = [{"x": lm.x, "y": lm.y, "z": lm.z} for lm in lms]
-                resp["confidence"] = 0.85
-                if result.gestures and len(result.gestures[0]) > 0:
-                    top_g = result.gestures[0][0].category_name
-                    score = float(result.gestures[0][0].score)
-                    resp["confidence"] = round(score, 2)
-                    resp["translation"] = gesture_map.get(top_g, "Sign not recognized...") if top_g not in ["", "None"] else "Sign not recognized..."
-            
-            await websocket.send_json(resp)
-    except WebSocketDisconnect:
-        pass
+    return {"message": "History cleared."}
