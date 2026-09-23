@@ -533,7 +533,6 @@
     <script type="module">
         import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/vision_bundle.mjs";
 
-        // === MUST UPDATE THESE IF HOSTING BACKEND ELSEWHERE ===
         const API_BASE_URL = "https://thehomosapiens-sih2026.onrender.com/api";
         const ROOT_URL = "https://thehomosapiens-sih2026.onrender.com/";
 
@@ -578,15 +577,17 @@
                         delegate: "GPU"
                     },
                     runningMode: "VIDEO",
-                    numHands: 2, // Enable two hand tracking
+                    numHands: 2,
                     minHandDetectionConfidence: 0.6,
                     minHandPresenceConfidence: 0.6,
                     minTrackingConfidence: 0.6
                 });
 
                 const b = document.getElementById('ws-badge');
-                b.className = "flex items-center gap-1.5 px-2 py-0.5 bg-teal-50 dark:bg-teal-950/50 border border-teal-200 dark:border-teal-900 rounded text-[10px] font-bold text-teal-600 dark:text-teal-400";
-                b.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> ALGORITHMIC ASL READY';
+                if (b) {
+                    b.className = "flex items-center gap-1.5 px-2 py-0.5 bg-teal-50 dark:bg-teal-950/50 border border-teal-200 dark:border-teal-900 rounded text-[10px] font-bold text-teal-600 dark:text-teal-400";
+                    b.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> ALGORITHMIC ASL READY';
+                }
             } catch(e) {
                 console.error("AI Initialization Failed", e);
             }
@@ -636,25 +637,26 @@
                 if (results.landmarks && results.landmarks.length > 0) {
                     lostHandGraceFrames = 0;
                     const numHands = results.landmarks.length;
-                    document.getElementById('hand-count-badge').innerText = `${numHands} Hand${numHands > 1 ? 's' : ''}`;
+                    const badgeElem = document.getElementById('hand-count-badge');
+                    if (badgeElem) badgeElem.innerText = `${numHands} Hand${numHands > 1 ? 's' : ''}`;
 
                     for (let i = 0; i < numHands; i++) {
                         const hType = results.handedness[i][0].categoryName;
                         drawSkeletalLandmarks(results.landmarks[i], hType);
                     }
 
-                    // Decode dominant hand (first detected)
                     const hType = results.handedness[0][0].categoryName;
                     const detectedGesture = detectASL(results.landmarks[0], hType);
 
                     window.updateConfidenceDisplay(0.95);
 
+                    const subInfo = document.getElementById('sub-hand-info');
                     if (detectedGesture !== "None") {
                         predictionBuffer.push(detectedGesture);
-                        document.getElementById('sub-hand-info').innerText = `Detected via ${hType} Hand Algorithmic Logic`;
+                        if (subInfo) subInfo.innerText = `Detected via ${hType} Hand Algorithmic Logic`;
                     } else {
                         predictionBuffer.push("None");
-                        document.getElementById('sub-hand-info').innerText = "Hold steady in frame";
+                        if (subInfo) subInfo.innerText = "Hold steady in frame";
                     }
 
                     if (predictionBuffer.length > PREDICTION_BUFFER_SIZE) {
@@ -685,8 +687,10 @@
                         predictionBuffer = [];
                         currentCandidateWord = "";
                         signOutputText.innerText = "No hand detected";
-                        document.getElementById('sub-hand-info').innerText = "Bring one or both hands into camera frame";
-                        document.getElementById('hand-count-badge').innerText = "0 Hands";
+                        const subInfo = document.getElementById('sub-hand-info');
+                        if (subInfo) subInfo.innerText = "Bring one or both hands into camera frame";
+                        const badgeElem = document.getElementById('hand-count-badge');
+                        if (badgeElem) badgeElem.innerText = "0 Hands";
                         window.updateConfidenceDisplay(0);
                     }
                 }
@@ -706,7 +710,8 @@
                 wordAlreadyTriggered = true;
                 window.triggerHaptic([60]);
 
-                const isQueueing = document.getElementById('queue-sentence-toggle').checked;
+                const queueToggle = document.getElementById('queue-sentence-toggle');
+                const isQueueing = queueToggle ? queueToggle.checked : false;
                 if (isQueueing) {
                     if (window.sentenceBuilderList[window.sentenceBuilderList.length - 1] !== word) {
                         window.sentenceBuilderList.push(word);
@@ -763,7 +768,19 @@
             }
         }
 
-        // --- GLOBAL BINDINGS ---
+        // --- CAMERA CONTROLS ---
+        window.stopCamera = function() {
+            if (window.cameraStream) {
+                window.cameraStream.getTracks().forEach(t => t.stop());
+                window.cameraStream = null;
+            }
+        };
+
+        window.flipCameraFacingMode = function() {
+            window.currentFacingMode = window.currentFacingMode === "user" ? "environment" : "user";
+            window.startCamera();
+        };
+
         window.startCamera = async function() {
             try {
                 if (window.cameraStream) window.stopCamera();
@@ -772,18 +789,22 @@
                 });
                 video.srcObject = window.cameraStream;
                 video.classList.remove('hidden');
-                document.getElementById('camera-loading').classList.add('hidden');
+                const loadingElem = document.getElementById('camera-loading');
+                if (loadingElem) loadingElem.classList.add('hidden');
 
                 video.onloadedmetadata = () => {
                     video.play();
                     overlayCanvas.width = video.videoWidth;
                     overlayCanvas.height = video.videoHeight;
-                    signOutputText.innerText = "Bring hands in view...";
+                    if (signOutputText) signOutputText.innerText = "Bring hands in view...";
                     lastVideoTime = -1;
                     predictWebcam();
                 };
             } catch (err) {
-                document.getElementById('camera-loading').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500 text-3xl mb-2"></i><p class="text-xs font-bold text-slate-300">Camera Access Denied.</p>`;
+                const loadingElem = document.getElementById('camera-loading');
+                if (loadingElem) {
+                    loadingElem.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500 text-3xl mb-2"></i><p class="text-xs font-bold text-slate-300">Camera Access Denied.</p>`;
+                }
             }
         };
 
@@ -796,31 +817,42 @@
             const saved = localStorage.getItem("ths_theme") || "light";
             if (saved === "dark") {
                 document.documentElement.classList.add("dark");
-                document.getElementById('theme-icon').className = "fa-solid fa-sun text-amber-400";
+                const themeIcon = document.getElementById('theme-icon');
+                if (themeIcon) themeIcon.className = "fa-solid fa-sun text-amber-400";
             } else {
                 document.documentElement.classList.remove("dark");
-                document.getElementById('theme-icon').className = "fa-solid fa-moon text-slate-600 dark:text-slate-300";
+                const themeIcon = document.getElementById('theme-icon');
+                if (themeIcon) themeIcon.className = "fa-solid fa-moon text-slate-600 dark:text-slate-300";
             }
         };
 
         window.toggleDarkMode = function() {
             const isDark = document.documentElement.classList.toggle("dark");
             localStorage.setItem("ths_theme", isDark ? "dark" : "light");
-            document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-amber-400" : "fa-solid fa-moon text-slate-600 dark:text-slate-300";
+            const themeIcon = document.getElementById('theme-icon');
+            if (themeIcon) themeIcon.className = isDark ? "fa-solid fa-sun text-amber-400" : "fa-solid fa-moon text-slate-600 dark:text-slate-300";
             if(window.activeWorkspace === 'Text2Sign') window.drawStylizedAvatar(window.avatarGender, window.avatarAnimationAngle);
         };
 
         window.checkBackendOnlineStatus = function() {
             fetch(ROOT_URL)
                 .then(r => {
-                    document.getElementById('be-icon').className = "fa-solid fa-circle text-emerald-500 text-[10px]";
-                    document.getElementById('be-text').innerText = "SERVER ONLINE";
-                    document.getElementById('be-text').className = "text-emerald-600 dark:text-emerald-400 text-[11px] tracking-wide uppercase";
+                    const beIcon = document.getElementById('be-icon');
+                    const beText = document.getElementById('be-text');
+                    if (beIcon) beIcon.className = "fa-solid fa-circle text-emerald-500 text-[10px]";
+                    if (beText) {
+                        beText.innerText = "SERVER ONLINE";
+                        beText.className = "text-emerald-600 dark:text-emerald-400 text-[11px] tracking-wide uppercase";
+                    }
                 })
                 .catch(() => {
-                    document.getElementById('be-icon').className = "fa-solid fa-circle text-rose-500 text-[10px]";
-                    document.getElementById('be-text').innerText = "SERVER OFFLINE";
-                    document.getElementById('be-text').className = "text-rose-600 dark:text-rose-400 text-[11px] tracking-wide uppercase";
+                    const beIcon = document.getElementById('be-icon');
+                    const beText = document.getElementById('be-text');
+                    if (beIcon) beIcon.className = "fa-solid fa-circle text-rose-500 text-[10px]";
+                    if (beText) {
+                        beText.innerText = "SERVER OFFLINE";
+                        beText.className = "text-rose-600 dark:text-rose-400 text-[11px] tracking-wide uppercase";
+                    }
                 });
         };
 
@@ -835,7 +867,10 @@
             return age >= 0 ? age : 0;
         };
 
-        window.calculateDisplayAge = function(val, targetElementId) { document.getElementById(targetElementId).innerText = `Age: ${window.calculateAgeFromDob(val)} years old`; };
+        window.calculateDisplayAge = function(val, targetElementId) { 
+            const target = document.getElementById(targetElementId);
+            if (target) target.innerText = `Age: ${window.calculateAgeFromDob(val)} years old`; 
+        };
 
         window.compressAndSetAvatar = function(input, previewId, target) {
             const file = input.files[0]; if (!file) return;
@@ -848,8 +883,10 @@
                     if (w > h && w > MAX) { h *= MAX / w; w = MAX; } else if (h > MAX) { w *= MAX / h; h = MAX; }
                     canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
                     const b64 = canvas.toDataURL("image/jpeg", 0.75);
-                    document.getElementById(previewId).src = b64;
-                    if (target === 'reg') window.regPfpBase64 = b64; if (target === 'upd') window.updPfpBase64 = b64;
+                    const previewElem = document.getElementById(previewId);
+                    if (previewElem) previewElem.src = b64;
+                    if (target === 'reg') window.regPfpBase64 = b64; 
+                    if (target === 'upd') window.updPfpBase64 = b64;
                 };
                 img.src = e.target.result;
             };
@@ -858,222 +895,634 @@
 
         window.toggleInputPwd = function(inputId, btn) {
             const el = document.getElementById(inputId); const icon = btn.querySelector('i');
-            if (el.type === 'password') { el.type = 'text'; icon.className = 'fa-solid fa-eye-slash'; }
-            else { el.type = 'password'; icon.className = 'fa-solid fa-eye'; }
+            if (el.type === 'password') { el.type = 'text'; if (icon) icon.className = 'fa-solid fa-eye-slash'; }
+            else { el.type = 'password'; if (icon) icon.className = 'fa-solid fa-eye'; }
         };
 
         window.switchAuth = function(type) {
-            document.getElementById('auth-view').classList.remove('hidden'); document.getElementById('home-view').classList.add('hidden'); document.getElementById('workspace-sign2text').classList.add('hidden'); document.getElementById('workspace-text2sign').classList.add('hidden'); document.getElementById('master-history-view').classList.add('hidden'); document.getElementById('nav-user-container').classList.add('hidden');
-            if (type === 'login') { document.getElementById('form-login').classList.remove('hidden'); document.getElementById('form-register').classList.add('hidden'); }
-            else { document.getElementById('form-login').classList.add('hidden'); document.getElementById('form-register').classList.remove('hidden'); }
+            document.getElementById('auth-view').classList.remove('hidden'); 
+            document.getElementById('home-view').classList.add('hidden'); 
+            document.getElementById('workspace-sign2text').classList.add('hidden'); 
+            document.getElementById('workspace-text2sign').classList.add('hidden'); 
+            document.getElementById('master-history-view').classList.add('hidden'); 
+            document.getElementById('nav-user-container').classList.add('hidden');
+            
+            if (type === 'login') { 
+                document.getElementById('form-login').classList.remove('hidden'); 
+                document.getElementById('form-register').classList.add('hidden'); 
+            } else { 
+                document.getElementById('form-login').classList.add('hidden'); 
+                document.getElementById('form-register').classList.remove('hidden'); 
+            }
         };
 
         window.goHome = function() {
-            window.stopCamera(); window.activeWorkspace = ""; document.getElementById('dropdown-menu').classList.add('hidden');
-            document.getElementById('auth-view').classList.add('hidden'); document.getElementById('workspace-sign2text').classList.add('hidden'); document.getElementById('workspace-text2sign').classList.add('hidden'); document.getElementById('master-history-view').classList.add('hidden'); document.getElementById('home-view').classList.remove('hidden');
-            document.getElementById('nav-user-container').classList.remove('hidden'); document.getElementById('btn-back-home').classList.add('hidden');
-            window.updateNavUserUI(); window.refreshMasterConversations();
+            window.stopCamera(); 
+            window.activeWorkspace = ""; 
+            const dropdown = document.getElementById('dropdown-menu');
+            if (dropdown) dropdown.classList.add('hidden');
+            
+            document.getElementById('auth-view').classList.add('hidden'); 
+            document.getElementById('workspace-sign2text').classList.add('hidden'); 
+            document.getElementById('workspace-text2sign').classList.add('hidden'); 
+            document.getElementById('master-history-view').classList.add('hidden'); 
+            document.getElementById('home-view').classList.remove('hidden');
+            
+            document.getElementById('nav-user-container').classList.remove('hidden'); 
+            document.getElementById('btn-back-home').classList.add('hidden');
+            window.updateNavUserUI(); 
+            window.refreshMasterConversations();
         };
 
         window.openWorkspace = function(mode) {
-            window.activeWorkspace = mode; document.getElementById('home-view').classList.add('hidden'); document.getElementById('master-history-view').classList.add('hidden'); document.getElementById('btn-back-home').classList.remove('hidden');
-            if (mode === 'Sign2Text') { document.getElementById('workspace-sign2text').classList.remove('hidden'); document.getElementById('workspace-text2sign').classList.add('hidden'); window.startCamera(); } 
-            else { document.getElementById('workspace-sign2text').classList.add('hidden'); document.getElementById('workspace-text2sign').classList.remove('hidden'); window.runAvatarAnimation(); }
+            window.activeWorkspace = mode; 
+            document.getElementById('home-view').classList.add('hidden'); 
+            document.getElementById('master-history-view').classList.add('hidden'); 
+            document.getElementById('btn-back-home').classList.remove('hidden');
+            
+            if (mode === 'Sign2Text') { 
+                document.getElementById('workspace-sign2text').classList.remove('hidden'); 
+                document.getElementById('workspace-text2sign').classList.add('hidden'); 
+                window.startCamera(); 
+            } else { 
+                document.getElementById('workspace-sign2text').classList.add('hidden'); 
+                document.getElementById('workspace-text2sign').classList.remove('hidden'); 
+                window.runAvatarAnimation(); 
+            }
             window.renderSidebarHistory();
         };
 
         window.openMasterHistoryView = function() {
-            document.getElementById('home-view').classList.add('hidden'); document.getElementById('workspace-sign2text').classList.add('hidden'); document.getElementById('workspace-text2sign').classList.add('hidden'); document.getElementById('master-history-view').classList.remove('hidden'); document.getElementById('btn-back-home').classList.remove('hidden');
+            document.getElementById('home-view').classList.add('hidden'); 
+            document.getElementById('workspace-sign2text').classList.add('hidden'); 
+            document.getElementById('workspace-text2sign').classList.add('hidden'); 
+            document.getElementById('master-history-view').classList.remove('hidden'); 
+            document.getElementById('btn-back-home').classList.remove('hidden');
             window.setMasterFilter('All');
         };
 
-        window.toggleUserDropdown = function() { document.getElementById('dropdown-menu').classList.toggle('hidden'); };
+        window.toggleUserDropdown = function() { 
+            const dropdown = document.getElementById('dropdown-menu');
+            if (dropdown) dropdown.classList.toggle('hidden'); 
+        };
 
         window.updateNavUserUI = function() {
-            document.getElementById('nav-user-name').innerText = currentUser.name || "User";
+            const userNameElem = document.getElementById('nav-user-name');
+            if (userNameElem) userNameElem.innerText = currentUser.name || "User";
             const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'User')}&background=0d9488&color=fff`;
-            document.getElementById('nav-pfp').src = currentUser.profile_picture || fallback;
+            const pfpElem = document.getElementById('nav-pfp');
+            if (pfpElem) pfpElem.src = currentUser.profile_picture || fallback;
         };
 
         window.logout = function() {
-            localStorage.clear(); currentUser = { unique_id: "", email: "", name: "", dob: "", mobile: "", profile_picture: "", token: "" };
-            window.switchAuth('login'); document.getElementById('dropdown-menu').classList.add('hidden');
+            localStorage.clear(); 
+            currentUser = { unique_id: "", email: "", name: "", dob: "", mobile: "", profile_picture: "", token: "" };
+            window.switchAuth('login'); 
+            const dropdown = document.getElementById('dropdown-menu');
+            if (dropdown) dropdown.classList.add('hidden');
         };
 
         window.setBtnLoading = function(btn, isLoading, text="Processing...") {
-            if(isLoading) { btn.dataset.original = btn.innerText; btn.innerText = text; btn.disabled = true; btn.classList.add('cursor-not-allowed'); } 
-            else { btn.innerText = btn.dataset.original || btn.innerText; btn.disabled = false; btn.classList.remove('cursor-not-allowed'); }
+            if(!btn) return;
+            if(isLoading) { 
+                btn.dataset.original = btn.innerText; 
+                btn.innerText = text; 
+                btn.disabled = true; 
+                btn.classList.add('cursor-not-allowed'); 
+            } else { 
+                btn.innerText = btn.dataset.original || btn.innerText; 
+                btn.disabled = false; 
+                btn.classList.remove('cursor-not-allowed'); 
+            }
         };
 
         // --- AUTH FORMS ---
         document.getElementById('form-login').addEventListener('submit', async (e) => {
-            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); window.setBtnLoading(btn, true, "Logging in...");
+            e.preventDefault(); 
+            const btn = e.target.querySelector('button[type="submit"]'); 
+            window.setBtnLoading(btn, true, "Logging in...");
             try {
-                const res = await fetch(`${API_BASE_URL}/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ identifier: document.getElementById('login-id').value.trim(), password: document.getElementById('login-pwd').value }) });
+                const res = await fetch(`${API_BASE_URL}/login`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ 
+                        identifier: document.getElementById('login-id').value.trim(), 
+                        password: document.getElementById('login-pwd').value 
+                    }) 
+                });
                 const d = await res.json();
-                if (res.ok) { window.saveSessionUser(d); window.goHome(); } else alert(d.detail || "Login failed");
-            } catch (err) { alert("Unable to connect to backend. Please ensure the server is awake."); }
+                if (res.ok) { 
+                    window.saveSessionUser(d); 
+                    window.goHome(); 
+                } else {
+                    alert(d.detail || "Login failed");
+                }
+            } catch (err) { 
+                alert("Unable to connect to backend. Please ensure the server is awake."); 
+            }
             finally { window.setBtnLoading(btn, false); }
         });
 
         document.getElementById('form-register').addEventListener('submit', async (e) => {
-            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); window.setBtnLoading(btn, true, "Registering...");
-            if (document.getElementById('reg-pwd').value !== document.getElementById('reg-cpwd').value) { alert("Passwords do not match!"); window.setBtnLoading(btn, false); return; }
+            e.preventDefault(); 
+            const btn = e.target.querySelector('button[type="submit"]'); 
+            window.setBtnLoading(btn, true, "Registering...");
+            
+            const pwd = document.getElementById('reg-pwd').value;
+            const cpwd = document.getElementById('reg-cpwd').value;
+            if (pwd !== cpwd) { 
+                alert("Passwords do not match!"); 
+                window.setBtnLoading(btn, false); 
+                return; 
+            }
             try {
-                const res = await fetch(`${API_BASE_URL}/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: document.getElementById('reg-name').value.trim(), dob: document.getElementById('reg-dob').value, email: document.getElementById('reg-email').value.trim(), mobile: document.getElementById('reg-mobile').value.trim(), password: document.getElementById('reg-pwd').value, profile_picture: window.regPfpBase64 }) });
+                const res = await fetch(`${API_BASE_URL}/register`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ 
+                        name: document.getElementById('reg-name').value.trim(), 
+                        dob: document.getElementById('reg-dob').value, 
+                        email: document.getElementById('reg-email').value.trim(), 
+                        mobile: document.getElementById('reg-mobile').value.trim(), 
+                        password: pwd, 
+                        profile_picture: window.regPfpBase64 
+                    }) 
+                });
                 const d = await res.json();
-                if (res.ok) { alert("Account registered successfully!"); window.switchAuth('login'); } else alert(d.detail || "Registration failed");
-            } catch (err) { alert("Network error registering account."); }
+                if (res.ok) { 
+                    alert("Account registered successfully!"); 
+                    window.switchAuth('login'); 
+                } else {
+                    alert(d.detail || "Registration failed");
+                }
+            } catch (err) { 
+                alert("Network error registering account."); 
+            }
             finally { window.setBtnLoading(btn, false); }
         });
 
         window.saveSessionUser = function(d) {
-            localStorage.setItem("ths_uid", d.unique_id); localStorage.setItem("ths_email", d.email); localStorage.setItem("ths_name", d.name); localStorage.setItem("ths_dob", d.dob || ""); localStorage.setItem("ths_mobile", d.mobile || ""); localStorage.setItem("ths_pfp", d.profile_picture || ""); localStorage.setItem("ths_token", d.token);
-            currentUser = { unique_id: d.unique_id, email: d.email, name: d.name, dob: d.dob || "", mobile: d.mobile || "", profile_picture: d.profile_picture || "", token: d.token };
+            localStorage.setItem("ths_uid", d.unique_id); 
+            localStorage.setItem("ths_email", d.email); 
+            localStorage.setItem("ths_name", d.name); 
+            localStorage.setItem("ths_dob", d.dob || ""); 
+            localStorage.setItem("ths_mobile", d.mobile || ""); 
+            localStorage.setItem("ths_pfp", d.profile_picture || ""); 
+            localStorage.setItem("ths_token", d.token);
+            
+            currentUser = { 
+                unique_id: d.unique_id, 
+                email: d.email, 
+                name: d.name, 
+                dob: d.dob || "", 
+                mobile: d.mobile || "", 
+                profile_picture: d.profile_picture || "", 
+                token: d.token 
+            };
         };
 
         // --- MODALS ---
-        window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); };
+        window.closeModal = function(id) { 
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add('hidden'); 
+        };
 
         window.openReadOnlyProfile = function() {
-            document.getElementById('dropdown-menu').classList.add('hidden'); document.getElementById('modal-ro-profile').classList.remove('hidden');
+            const dropdown = document.getElementById('dropdown-menu');
+            if (dropdown) dropdown.classList.add('hidden'); 
+            const modal = document.getElementById('modal-ro-profile');
+            if (modal) modal.classList.remove('hidden');
+            
             const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0d9488&color=fff`;
-            document.getElementById('ro-pfp').src = currentUser.profile_picture || fallback; document.getElementById('ro-name').innerText = currentUser.name; document.getElementById('ro-uid').innerText = `ID: ${currentUser.unique_id}`; document.getElementById('ro-dob').innerText = currentUser.dob || "Not Provided"; document.getElementById('ro-age').innerText = `${window.calculateAgeFromDob(currentUser.dob)} Years`; document.getElementById('ro-mobile').innerText = currentUser.mobile || "Not Provided"; document.getElementById('ro-email').innerText = currentUser.email;
+            const roPfp = document.getElementById('ro-pfp');
+            const roName = document.getElementById('ro-name');
+            const roUid = document.getElementById('ro-uid');
+            const roDob = document.getElementById('ro-dob');
+            const roAge = document.getElementById('ro-age');
+            const roMobile = document.getElementById('ro-mobile');
+            const roEmail = document.getElementById('ro-email');
+
+            if (roPfp) roPfp.src = currentUser.profile_picture || fallback; 
+            if (roName) roName.innerText = currentUser.name; 
+            if (roUid) roUid.innerText = `ID: ${currentUser.unique_id}`; 
+            if (roDob) roDob.innerText = currentUser.dob || "Not Provided"; 
+            if (roAge) roAge.innerText = `${window.calculateAgeFromDob(currentUser.dob)} Years`; 
+            if (roMobile) roMobile.innerText = currentUser.mobile || "Not Provided"; 
+            if (roEmail) roEmail.innerText = currentUser.email;
         };
 
         window.openUpdateModal = function() {
-            document.getElementById('dropdown-menu').classList.add('hidden'); document.getElementById('modal-update-profile').classList.remove('hidden');
-            document.getElementById('upd-name').value = currentUser.name; document.getElementById('upd-dob').value = currentUser.dob; document.getElementById('upd-mobile').value = currentUser.mobile; document.getElementById('upd-email').value = currentUser.email; document.getElementById('upd-current-pwd').value = "";
+            const dropdown = document.getElementById('dropdown-menu');
+            if (dropdown) dropdown.classList.add('hidden'); 
+            const modal = document.getElementById('modal-update-profile');
+            if (modal) modal.classList.remove('hidden');
+            
+            const updName = document.getElementById('upd-name');
+            const updDob = document.getElementById('upd-dob');
+            const updMobile = document.getElementById('upd-mobile');
+            const updEmail = document.getElementById('upd-email');
+            const updCurrentPwd = document.getElementById('upd-current-pwd');
+
+            if (updName) updName.value = currentUser.name; 
+            if (updDob) updDob.value = currentUser.dob; 
+            if (updMobile) updMobile.value = currentUser.mobile; 
+            if (updEmail) updEmail.value = currentUser.email; 
+            if (updCurrentPwd) updCurrentPwd.value = "";
+            
             window.updPfpBase64 = currentUser.profile_picture;
             const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0d9488&color=fff`;
-            document.getElementById('upd-pfp-preview').src = window.updPfpBase64 || fallback;
+            const updPreview = document.getElementById('upd-pfp-preview');
+            if (updPreview) updPreview.src = window.updPfpBase64 || fallback;
         };
 
         document.getElementById('form-update-profile').addEventListener('submit', async (e) => {
-            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); window.setBtnLoading(btn, true, "Saving...");
+            e.preventDefault(); 
+            const btn = e.target.querySelector('button[type="submit"]'); 
+            window.setBtnLoading(btn, true, "Saving...");
             try {
-                const res = await fetch(`${API_BASE_URL}/update_user`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ original_email: currentUser.email, current_password: document.getElementById('upd-current-pwd').value, name: document.getElementById('upd-name').value.trim(), dob: document.getElementById('upd-dob').value, mobile: document.getElementById('upd-mobile').value.trim(), email: document.getElementById('upd-email').value.trim(), profile_picture: window.updPfpBase64 }) });
+                const res = await fetch(`${API_BASE_URL}/update_user`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ 
+                        original_email: currentUser.email, 
+                        current_password: document.getElementById('upd-current-pwd').value, 
+                        name: document.getElementById('upd-name').value.trim(), 
+                        dob: document.getElementById('upd-dob').value, 
+                        mobile: document.getElementById('upd-mobile').value.trim(), 
+                        email: document.getElementById('upd-email').value.trim(), 
+                        profile_picture: window.updPfpBase64 
+                    }) 
+                });
                 const d = await res.json();
                 if (res.ok) {
-                    alert("Profile updated!"); currentUser.name = d.new_name; currentUser.email = d.new_email; currentUser.dob = d.new_dob; currentUser.mobile = d.new_mobile; currentUser.profile_picture = d.new_profile_picture;
-                    window.saveSessionUser({ ...currentUser, token: currentUser.token }); window.updateNavUserUI(); window.closeModal('modal-update-profile');
-                } else alert(d.detail || "Update failed");
-            } catch (err) { alert("Server error updating profile."); }
+                    alert("Profile updated!"); 
+                    currentUser.name = d.new_name; 
+                    currentUser.email = d.new_email; 
+                    currentUser.dob = d.new_dob; 
+                    currentUser.mobile = d.new_mobile; 
+                    currentUser.profile_picture = d.new_profile_picture;
+                    window.saveSessionUser({ ...currentUser, token: currentUser.token }); 
+                    window.updateNavUserUI(); 
+                    window.closeModal('modal-update-profile');
+                } else {
+                    alert(d.detail || "Update failed");
+                }
+            } catch (err) { 
+                alert("Server error updating profile."); 
+            }
             finally { window.setBtnLoading(btn, false); }
         });
 
-        window.openPasswordModal = function() { document.getElementById('dropdown-menu').classList.add('hidden'); document.getElementById('modal-change-password').classList.remove('hidden'); document.getElementById('cp-current').value = ""; document.getElementById('cp-new').value = ""; document.getElementById('cp-confirm').value = ""; };
+        window.openPasswordModal = function() { 
+            const dropdown = document.getElementById('dropdown-menu');
+            if (dropdown) dropdown.classList.add('hidden'); 
+            const modal = document.getElementById('modal-change-password');
+            if (modal) modal.classList.remove('hidden'); 
+            
+            const cpCur = document.getElementById('cp-current');
+            const cpNew = document.getElementById('cp-new');
+            const cpConf = document.getElementById('cp-confirm');
+            if (cpCur) cpCur.value = ""; 
+            if (cpNew) cpNew.value = ""; 
+            if (cpConf) cpConf.value = ""; 
+        };
 
         document.getElementById('form-change-password').addEventListener('submit', async (e) => {
-            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); window.setBtnLoading(btn, true, "Updating...");
-            const n = document.getElementById('cp-new').value; if (n !== document.getElementById('cp-confirm').value) { alert("New passwords do not match!"); window.setBtnLoading(btn, false); return; }
+            e.preventDefault(); 
+            const btn = e.target.querySelector('button[type="submit"]'); 
+            window.setBtnLoading(btn, true, "Updating...");
+            
+            const n = document.getElementById('cp-new').value; 
+            const c = document.getElementById('cp-confirm').value;
+            if (n !== c) { 
+                alert("New passwords do not match!"); 
+                window.setBtnLoading(btn, false); 
+                return; 
+            }
             try {
-                const res = await fetch(`${API_BASE_URL}/change_password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentUser.email, current_password: document.getElementById('cp-current').value, new_password: n }) });
-                if (res.ok) { alert("Password changed successfully!"); window.closeModal('modal-change-password'); } else alert((await res.json()).detail || "Password change failed");
-            } catch (err) { alert("Server error."); }
+                const res = await fetch(`${API_BASE_URL}/change_password`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ 
+                        email: currentUser.email, 
+                        current_password: document.getElementById('cp-current').value, 
+                        new_password: n 
+                    }) 
+                });
+                if (res.ok) { 
+                    alert("Password changed successfully!"); 
+                    window.closeModal('modal-change-password'); 
+                } else {
+                    alert((await res.json()).detail || "Password change failed");
+                }
+            } catch (err) { 
+                alert("Server error."); 
+            }
             finally { window.setBtnLoading(btn, false); }
         });
 
-        window.openResetPasswordModal = function() { document.getElementById('modal-reset-pwd').classList.remove('hidden'); };
+        window.openResetPasswordModal = function() { 
+            const modal = document.getElementById('modal-reset-pwd');
+            if (modal) modal.classList.remove('hidden'); 
+        };
 
         document.getElementById('form-reset-password').addEventListener('submit', async (e) => {
-            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); window.setBtnLoading(btn, true, "Resetting...");
+            e.preventDefault(); 
+            const btn = e.target.querySelector('button[type="submit"]'); 
+            window.setBtnLoading(btn, true, "Resetting...");
             try {
-                const res = await fetch(`${API_BASE_URL}/reset_password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ identifier: document.getElementById('rst-id').value.trim(), new_password: document.getElementById('rst-pwd').value }) });
-                if (res.ok) { alert((await res.json()).message); window.closeModal('modal-reset-pwd'); } else alert((await res.json()).detail || "Reset failed");
-            } catch (err) { alert("Network error."); }
+                const res = await fetch(`${API_BASE_URL}/reset_password`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ 
+                        identifier: document.getElementById('rst-id').value.trim(), 
+                        new_password: document.getElementById('rst-pwd').value 
+                    }) 
+                });
+                if (res.ok) { 
+                    alert((await res.json()).message); 
+                    window.closeModal('modal-reset-pwd'); 
+                } else {
+                    alert((await res.json()).detail || "Reset failed");
+                }
+            } catch (err) { 
+                alert("Network error."); 
+            }
             finally { window.setBtnLoading(btn, false); }
         });
 
         window.updateConfidenceDisplay = function(conf) {
-            const pct = Math.round(conf * 100); const dot = document.getElementById('ai-conf-dot'); const txt = document.getElementById('ai-conf-text'); const border = document.getElementById('camera-border');
-            txt.innerText = `Confidence: ${pct}%`;
-            if (pct > 75) { dot.className = "w-2 h-2 rounded-full bg-emerald-400"; border.classList.replace('border-slate-300', 'border-emerald-500'); border.classList.replace('dark:border-slate-800', 'dark:border-emerald-500'); } 
-            else if (pct > 40) { dot.className = "w-2 h-2 rounded-full bg-amber-400"; border.classList.replace('border-emerald-500', 'border-slate-300'); border.classList.replace('dark:border-emerald-500', 'dark:border-slate-800'); } 
-            else { dot.className = "w-2 h-2 rounded-full bg-slate-400"; border.classList.replace('border-emerald-500', 'border-slate-300'); border.classList.replace('dark:border-emerald-500', 'dark:border-slate-800'); }
+            const pct = Math.round(conf * 100); 
+            const dot = document.getElementById('ai-conf-dot'); 
+            const txt = document.getElementById('ai-conf-text'); 
+            const border = document.getElementById('camera-border');
+            
+            if (txt) txt.innerText = `Confidence: ${pct}%`;
+            if (pct > 75) { 
+                if (dot) dot.className = "w-2 h-2 rounded-full bg-emerald-400"; 
+                if (border) {
+                    border.classList.replace('border-slate-300', 'border-emerald-500'); 
+                    border.classList.replace('dark:border-slate-800', 'dark:border-emerald-500'); 
+                }
+            } else if (pct > 40) { 
+                if (dot) dot.className = "w-2 h-2 rounded-full bg-amber-400"; 
+                if (border) {
+                    border.classList.replace('border-emerald-500', 'border-slate-300'); 
+                    border.classList.replace('dark:border-emerald-500', 'dark:border-slate-800'); 
+                }
+            } else { 
+                if (dot) dot.className = "w-2 h-2 rounded-full bg-slate-400"; 
+                if (border) {
+                    border.classList.replace('border-emerald-500', 'border-slate-300'); 
+                    border.classList.replace('dark:border-emerald-500', 'dark:border-slate-800'); 
+                }
+            }
         };
 
         // --- SENTENCE BUILDER ---
         window.renderSentenceBuilder = function() {
             const box = document.getElementById('sentence-builder-box');
-            if (window.sentenceBuilderList.length === 0) box.innerHTML = `<span class="text-slate-400 italic">Queue is empty. Check the box above to build sentences...</span>`;
-            else box.innerHTML = window.sentenceBuilderList.map(w => `<span class="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/60 text-teal-800 dark:text-teal-200 rounded font-bold">${w}</span>`).join('');
+            if (!box) return;
+            if (window.sentenceBuilderList.length === 0) {
+                box.innerHTML = `<span class="text-slate-400 italic">Queue is empty. Check the box above to build sentences...</span>`;
+            } else {
+                box.innerHTML = window.sentenceBuilderList.map(w => `<span class="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/60 text-teal-800 dark:text-teal-200 rounded font-bold">${w}</span>`).join('');
+            }
         };
-        window.speakSentenceBuilder = function() { if (window.sentenceBuilderList.length === 0) return; const full = window.sentenceBuilderList.join(' '); window.speakTextWithSynthesis(full); window.executeSaveConversation(full, "Sign to Text"); };
-        window.clearSentenceBuilder = function() { window.sentenceBuilderList = []; window.renderSentenceBuilder(); };
 
-        window.toggleSpokenAudio = function() { window.isSpokenAudioOn = !window.isSpokenAudioOn; document.getElementById('btn-audio-toggle').innerHTML = window.isSpokenAudioOn ? '<i class="fa-solid fa-volume-high mr-1"></i> Audio: ON' : '<i class="fa-solid fa-volume-xmark mr-1"></i> Audio: OFF'; };
-        window.toggleAutoSaveState = function() { window.isAutoSaveOn = !window.isAutoSaveOn; const btn = document.getElementById('btn-auto-save'); btn.innerText = `Auto-Save: ${window.isAutoSaveOn ? 'ON' : 'OFF'}`; btn.className = window.isAutoSaveOn ? "px-3 py-1.5 bg-teal-600 text-white rounded-lg text-xs font-bold" : "px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"; };
-        window.copyCurrentTranslation = function() { const t = signOutputText.innerText; navigator.clipboard.writeText(t); alert(`Copied "${t}" to clipboard!`); };
+        window.speakSentenceBuilder = function() { 
+            if (window.sentenceBuilderList.length === 0) return; 
+            const full = window.sentenceBuilderList.join(' '); 
+            window.speakTextWithSynthesis(full); 
+            window.executeSaveConversation(full, "Sign to Text"); 
+        };
+
+        window.clearSentenceBuilder = function() { 
+            window.sentenceBuilderList = []; 
+            window.renderSentenceBuilder(); 
+        };
+
+        window.toggleSpokenAudio = function() { 
+            window.isSpokenAudioOn = !window.isSpokenAudioOn; 
+            const audioToggle = document.getElementById('btn-audio-toggle');
+            if (audioToggle) {
+                audioToggle.innerHTML = window.isSpokenAudioOn ? '<i class="fa-solid fa-volume-high mr-1"></i> Audio: ON' : '<i class="fa-solid fa-volume-xmark mr-1"></i> Audio: OFF'; 
+            }
+        };
+
+        window.toggleAutoSaveState = function() { 
+            window.isAutoSaveOn = !window.isAutoSaveOn; 
+            const btn = document.getElementById('btn-auto-save'); 
+            if (btn) {
+                btn.innerText = `Auto-Save: ${window.isAutoSaveOn ? 'ON' : 'OFF'}`; 
+                btn.className = window.isAutoSaveOn ? "px-3 py-1.5 bg-teal-600 text-white rounded-lg text-xs font-bold" : "px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"; 
+            }
+        };
+
+        window.copyCurrentTranslation = function() { 
+            const t = signOutputText ? signOutputText.innerText : ""; 
+            navigator.clipboard.writeText(t); 
+            alert(`Copied "${t}" to clipboard!`); 
+        };
 
         window.speakTextWithSynthesis = function(phrase) {
-            if (!('speechSynthesis' in window)) return; window.speechSynthesis.cancel();
-            const utt = new SpeechSynthesisUtterance(phrase); utt.rate = parseFloat(document.getElementById('tts-speed').value);
+            if (!('speechSynthesis' in window)) return; 
+            window.speechSynthesis.cancel();
+            const utt = new SpeechSynthesisUtterance(phrase); 
+            const speedSelect = document.getElementById('tts-speed');
+            utt.rate = speedSelect ? parseFloat(speedSelect.value) : 1.0;
+            
             const voices = window.speechSynthesis.getVoices();
-            if (document.getElementById('tts-gender').value === 'female') { const f = voices.find(v => v.name.includes("Female") || v.name.includes("Zira") || v.name.includes("Samantha")); if (f) utt.voice = f; } 
-            else { const m = voices.find(v => v.name.includes("Male") || v.name.includes("David") || v.name.includes("Alex")); if (m) utt.voice = m; }
+            const genderSelect = document.getElementById('tts-gender');
+            const targetGender = genderSelect ? genderSelect.value : 'female';
+
+            if (targetGender === 'female') { 
+                const f = voices.find(v => v.name.includes("Female") || v.name.includes("Zira") || v.name.includes("Samantha")); 
+                if (f) utt.voice = f; 
+            } else { 
+                const m = voices.find(v => v.name.includes("Male") || v.name.includes("David") || v.name.includes("Alex")); 
+                if (m) utt.voice = m; 
+            }
             window.speechSynthesis.speak(utt);
         };
 
         // --- AVATAR & PROMPT BOX ---
-        window.initAvatarCanvas = function() { const isDark = document.documentElement.classList.contains('dark'); avatarCtx.fillStyle = isDark ? "#0f172a" : "#f1f5f9"; avatarCtx.fillRect(0, 0, avatarCanvas.width, avatarCanvas.height); window.drawStylizedAvatar(window.avatarGender, 0); };
-        window.switchAvatarGender = function(val) { window.avatarGender = val; window.drawStylizedAvatar(window.avatarGender, window.avatarAnimationAngle); };
-        document.getElementById('avatar-speed-slider').addEventListener('input', (e) => { document.getElementById('avatar-speed-label').innerText = `${e.target.value}x`; });
-        window.runAvatarAnimation = function() { if (window.avatarAnimReqId) cancelAnimationFrame(window.avatarAnimReqId); const speed = parseFloat(document.getElementById('avatar-speed-slider').value); window.avatarAnimationAngle += 0.05 * speed; window.drawStylizedAvatar(window.avatarGender, window.avatarAnimationAngle); if (window.activeWorkspace === 'Text2Sign') window.avatarAnimReqId = requestAnimationFrame(window.runAvatarAnimation); };
-        window.replayCurrentAvatarAnimation = function() { window.avatarAnimationAngle = 0; window.runAvatarAnimation(); const prompt = document.getElementById('t2s-prompt-input').value; if (prompt) window.speakTextWithSynthesis(prompt); };
-
-        window.drawStylizedAvatar = function(gender, angle) {
-            const isDark = document.documentElement.classList.contains('dark'); const w = avatarCanvas.width, h = avatarCanvas.height; avatarCtx.clearRect(0, 0, w, h);
-            avatarCtx.fillStyle = isDark ? "#090d16" : "#e2e8f0"; avatarCtx.fillRect(0, 0, w, h);
-            const cx = w / 2; const cy = h / 2 - 20;
-            avatarCtx.beginPath(); avatarCtx.arc(cx, cy - 80, 45, 0, Math.PI * 2); avatarCtx.fillStyle = gender === 'female' ? '#fcd34d' : '#f59e0b'; avatarCtx.fill();
-            avatarCtx.beginPath(); avatarCtx.roundRect(cx - 50, cy - 30, 100, 140, [20, 20, 5, 5]); avatarCtx.fillStyle = gender === 'female' ? '#4f46e5' : '#0d9488'; avatarCtx.fill();
-            const handSwing = Math.sin(angle) * 35; const handSwing2 = Math.cos(angle) * 35;
-            avatarCtx.beginPath(); avatarCtx.arc(cx - 70 + handSwing, cy + 30 + handSwing2, 16, 0, Math.PI * 2); avatarCtx.fillStyle = "#fde68a"; avatarCtx.fill(); avatarCtx.lineWidth = 4; avatarCtx.strokeStyle = "#4338ca"; avatarCtx.stroke();
-            avatarCtx.beginPath(); avatarCtx.arc(cx + 70 - handSwing, cy + 30 - handSwing2, 16, 0, Math.PI * 2); avatarCtx.fillStyle = "#fde68a"; avatarCtx.fill(); avatarCtx.stroke();
+        window.initAvatarCanvas = function() { 
+            const isDark = document.documentElement.classList.contains('dark'); 
+            avatarCtx.fillStyle = isDark ? "#0f172a" : "#f1f5f9"; 
+            avatarCtx.fillRect(0, 0, avatarCanvas.width, avatarCanvas.height); 
+            window.drawStylizedAvatar(window.avatarGender, 0); 
         };
 
-        window.autoResizeTextarea = function(el) { el.style.height = 'auto'; el.style.height = (el.scrollHeight) + 'px'; };
-        window.injectPresetPhrase = function(txt) { const el = document.getElementById('t2s-prompt-input'); el.value = txt; window.autoResizeTextarea(el); window.generateAndSaveSignAvatar(); };
-        window.generateAndSaveSignAvatar = function() { const el = document.getElementById('t2s-prompt-input'); const val = el.value.trim(); if (!val) { alert("Please enter or speak a phrase."); return; } window.replayCurrentAvatarAnimation(); window.speakTextWithSynthesis(val); window.executeSaveConversation(val, "Text to Sign"); el.value = ''; window.autoResizeTextarea(el); };
+        window.switchAvatarGender = function(val) { 
+            window.avatarGender = val; 
+            window.drawStylizedAvatar(window.avatarGender, window.avatarAnimationAngle); 
+        };
+
+        const avatarSlider = document.getElementById('avatar-speed-slider');
+        if (avatarSlider) {
+            avatarSlider.addEventListener('input', (e) => { 
+                const lbl = document.getElementById('avatar-speed-label');
+                if (lbl) lbl.innerText = `${e.target.value}x`; 
+            });
+        }
+
+        window.runAvatarAnimation = function() { 
+            if (window.avatarAnimReqId) cancelAnimationFrame(window.avatarAnimReqId); 
+            const speedElem = document.getElementById('avatar-speed-slider');
+            const speed = speedElem ? parseFloat(speedElem.value) : 1.0; 
+            window.avatarAnimationAngle += 0.05 * speed; 
+            window.drawStylizedAvatar(window.avatarGender, window.avatarAnimationAngle); 
+            if (window.activeWorkspace === 'Text2Sign') window.avatarAnimReqId = requestAnimationFrame(window.runAvatarAnimation); 
+        };
+
+        window.replayCurrentAvatarAnimation = function() { 
+            window.avatarAnimationAngle = 0; 
+            window.runAvatarAnimation(); 
+            const prompt = document.getElementById('t2s-prompt-input');
+            if (prompt && prompt.value) window.speakTextWithSynthesis(prompt.value); 
+        };
+
+        window.drawStylizedAvatar = function(gender, angle) {
+            const isDark = document.documentElement.classList.contains('dark'); 
+            const w = avatarCanvas.width, h = avatarCanvas.height; 
+            avatarCtx.clearRect(0, 0, w, h);
+            avatarCtx.fillStyle = isDark ? "#090d16" : "#e2e8f0"; 
+            avatarCtx.fillRect(0, 0, w, h);
+            
+            const cx = w / 2; const cy = h / 2 - 20;
+            avatarCtx.beginPath(); avatarCtx.arc(cx, cy - 80, 45, 0, Math.PI * 2); 
+            avatarCtx.fillStyle = gender === 'female' ? '#fcd34d' : '#f59e0b'; 
+            avatarCtx.fill();
+            
+            avatarCtx.beginPath(); avatarCtx.roundRect(cx - 50, cy - 30, 100, 140, [20, 20, 5, 5]); 
+            avatarCtx.fillStyle = gender === 'female' ? '#4f46e5' : '#0d9488'; 
+            avatarCtx.fill();
+            
+            const handSwing = Math.sin(angle) * 35; const handSwing2 = Math.cos(angle) * 35;
+            avatarCtx.beginPath(); avatarCtx.arc(cx - 70 + handSwing, cy + 30 + handSwing2, 16, 0, Math.PI * 2); 
+            avatarCtx.fillStyle = "#fde68a"; avatarCtx.fill(); 
+            avatarCtx.lineWidth = 4; avatarCtx.strokeStyle = "#4338ca"; avatarCtx.stroke();
+            
+            avatarCtx.beginPath(); avatarCtx.arc(cx + 70 - handSwing, cy + 30 - handSwing2, 16, 0, Math.PI * 2); 
+            avatarCtx.fillStyle = "#fde68a"; avatarCtx.fill(); avatarCtx.stroke();
+        };
+
+        window.autoResizeTextarea = function(el) { 
+            el.style.height = 'auto'; 
+            el.style.height = (el.scrollHeight) + 'px'; 
+        };
+
+        window.injectPresetPhrase = function(txt) { 
+            const el = document.getElementById('t2s-prompt-input'); 
+            if (el) {
+                el.value = txt; 
+                window.autoResizeTextarea(el); 
+                window.generateAndSaveSignAvatar(); 
+            }
+        };
+
+        window.generateAndSaveSignAvatar = function() { 
+            const el = document.getElementById('t2s-prompt-input'); 
+            if (!el) return;
+            const val = el.value.trim(); 
+            if (!val) { alert("Please enter or speak a phrase."); return; } 
+            window.replayCurrentAvatarAnimation(); 
+            window.speakTextWithSynthesis(val); 
+            window.executeSaveConversation(val, "Text to Sign"); 
+            el.value = ''; 
+            window.autoResizeTextarea(el); 
+        };
 
         // --- MICROPHONE ---
         window.toggleAudioRecording = function() {
-            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SpeechRec) { alert("Speech Recognition not supported on this browser."); return; }
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition; 
+            if (!SpeechRec) { alert("Speech Recognition not supported on this browser."); return; }
             if (!window.audioRecognitionInstance) {
-                window.audioRecognitionInstance = new SpeechRec(); window.audioRecognitionInstance.continuous = false; window.audioRecognitionInstance.interimResults = false; window.audioRecognitionInstance.lang = 'en-IN';
-                window.audioRecognitionInstance.onstart = () => { window.isRecordingMicrophone = true; document.getElementById('mic-icon').className = "fa-solid fa-microphone text-rose-500 animate-pulse"; document.getElementById('waveformCanvas').classList.remove('opacity-0'); document.getElementById('waveformCanvas').classList.add('opacity-100'); };
-                window.audioRecognitionInstance.onresult = (e) => { const el = document.getElementById('t2s-prompt-input'); el.value = e.results[0][0].transcript; window.autoResizeTextarea(el); };
-                window.audioRecognitionInstance.onend = () => { window.isRecordingMicrophone = false; document.getElementById('mic-icon').className = "fa-solid fa-microphone text-base"; document.getElementById('waveformCanvas').classList.remove('opacity-100'); document.getElementById('waveformCanvas').classList.add('opacity-0'); };
+                window.audioRecognitionInstance = new SpeechRec(); 
+                window.audioRecognitionInstance.continuous = false; 
+                window.audioRecognitionInstance.interimResults = false; 
+                window.audioRecognitionInstance.lang = 'en-IN';
+                
+                window.audioRecognitionInstance.onstart = () => { 
+                    window.isRecordingMicrophone = true; 
+                    const micIcon = document.getElementById('mic-icon');
+                    const wf = document.getElementById('waveformCanvas');
+                    if (micIcon) micIcon.className = "fa-solid fa-microphone text-rose-500 animate-pulse"; 
+                    if (wf) {
+                        wf.classList.remove('opacity-0'); 
+                        wf.classList.add('opacity-100'); 
+                    }
+                };
+                window.audioRecognitionInstance.onresult = (e) => { 
+                    const el = document.getElementById('t2s-prompt-input'); 
+                    if (el) {
+                        el.value = e.results[0][0].transcript; 
+                        window.autoResizeTextarea(el); 
+                    }
+                };
+                window.audioRecognitionInstance.onend = () => { 
+                    window.isRecordingMicrophone = false; 
+                    const micIcon = document.getElementById('mic-icon');
+                    const wf = document.getElementById('waveformCanvas');
+                    if (micIcon) micIcon.className = "fa-solid fa-microphone text-base"; 
+                    if (wf) {
+                        wf.classList.remove('opacity-100'); 
+                        wf.classList.add('opacity-0'); 
+                    }
+                };
             }
             if (window.isRecordingMicrophone) window.audioRecognitionInstance.stop(); else window.audioRecognitionInstance.start();
         };
 
         window.initAudioWaveform = function() {
-            const cv = document.getElementById('waveformCanvas'); const ctx = cv.getContext('2d');
+            const cv = document.getElementById('waveformCanvas'); 
+            if (!cv) return;
+            const ctx = cv.getContext('2d');
             function renderWave() {
                 ctx.clearRect(0, 0, cv.width, cv.height);
-                if(window.isRecordingMicrophone) { ctx.fillStyle = "#6366f1"; for (let i = 0; i < 8; i++) { const h = Math.random() * 16 + 4; ctx.fillRect(i * 10, (cv.height - h) / 2, 4, h); } }
+                if(window.isRecordingMicrophone) { 
+                    ctx.fillStyle = "#6366f1"; 
+                    for (let i = 0; i < 8; i++) { 
+                        const h = Math.random() * 16 + 4; 
+                        ctx.fillRect(i * 10, (cv.height - h) / 2, 4, h); 
+                    } 
+                }
                 requestAnimationFrame(renderWave);
             }
             renderWave();
         };
 
         // --- DB EXPORTS & HISTORY ---
-        window.executeSaveConversation = async function(txt, mode) { try { await fetch(`${API_BASE_URL}/save_chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentUser.email, mode_used: mode, transcript: txt }) }); window.refreshMasterConversations(); } catch (e) {} };
+        window.executeSaveConversation = async function(txt, mode) { 
+            try { 
+                await fetch(`${API_BASE_URL}/save_chat`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ email: currentUser.email, mode_used: mode, transcript: txt }) 
+                }); 
+                window.refreshMasterConversations(); 
+            } catch (e) {} 
+        };
 
         window.refreshMasterConversations = async function() {
             try {
-                const res = await fetch(`${API_BASE_URL}/history/${currentUser.email}`); const data = await res.json();
-                window.masterHistoryRecords = data.history || []; window.renderSidebarHistory(); window.applyHistoryFilterAndSearch();
+                const res = await fetch(`${API_BASE_URL}/history/${currentUser.email}`); 
+                const data = await res.json();
+                window.masterHistoryRecords = data.history || []; 
+                window.renderSidebarHistory(); 
+                window.applyHistoryFilterAndSearch();
             } catch (e) {}
         };
 
         window.renderSidebarHistory = function() {
-            const s2tList = document.getElementById('sign2text-sidebar-list'); const t2sList = document.getElementById('text2sign-sidebar-list');
-            const s2tItems = window.masterHistoryRecords.filter(r => r.mode_used === "Sign to Text"); const t2sItems = window.masterHistoryRecords.filter(r => r.mode_used === "Text to Sign");
-            s2tList.innerHTML = s2tItems.length ? s2tItems.map(itemToSidebarCard).join('') : '<p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>';
-            t2sList.innerHTML = t2sItems.length ? t2sItems.map(itemToSidebarCard).join('') : '<p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>';
+            const s2tList = document.getElementById('sign2text-sidebar-list'); 
+            const t2sList = document.getElementById('text2sign-sidebar-list');
+            const s2tItems = window.masterHistoryRecords.filter(r => r.mode_used === "Sign to Text"); 
+            const t2sItems = window.masterHistoryRecords.filter(r => r.mode_used === "Text to Sign");
+            
+            if (s2tList) s2tList.innerHTML = s2tItems.length ? s2tItems.map(itemToSidebarCard).join('') : '<p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>';
+            if (t2sList) t2sList.innerHTML = t2sItems.length ? t2sItems.map(itemToSidebarCard).join('') : '<p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>';
         };
 
         function itemToSidebarCard(item) {
@@ -1083,51 +1532,110 @@
         window.currentMasterTab = "All";
         window.setMasterFilter = function(mode) {
             window.currentMasterTab = mode;
-            ['tab-all', 'tab-s2t', 'tab-t2s'].forEach(id => { document.getElementById(id).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700"; });
-            if (mode === 'All') document.getElementById('tab-all').className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
-            if (mode === 'Sign to Text') document.getElementById('tab-s2t').className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
-            if (mode === 'Text to Sign') document.getElementById('tab-t2s').className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
+            ['tab-all', 'tab-s2t', 'tab-t2s'].forEach(id => { 
+                const elem = document.getElementById(id);
+                if (elem) elem.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700"; 
+            });
+            if (mode === 'All') {
+                const tabAll = document.getElementById('tab-all');
+                if (tabAll) tabAll.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
+            }
+            if (mode === 'Sign to Text') {
+                const tabS2t = document.getElementById('tab-s2t');
+                if (tabS2t) tabS2t.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
+            }
+            if (mode === 'Text to Sign') {
+                const tabT2s = document.getElementById('tab-t2s');
+                if (tabT2s) tabT2s.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
+            }
             window.applyHistoryFilterAndSearch();
         };
 
         window.applyHistoryFilterAndSearch = function() {
-            const query = (document.getElementById('history-search-input')?.value || "").toLowerCase();
+            const searchInput = document.getElementById('history-search-input');
+            const query = (searchInput ? searchInput.value : "").toLowerCase();
             const s2tCount = window.masterHistoryRecords.filter(r => r.mode_used === "Sign to Text").length;
             const t2sCount = window.masterHistoryRecords.filter(r => r.mode_used === "Text to Sign").length;
 
-            if (document.getElementById('cnt-all')) document.getElementById('cnt-all').innerText = window.masterHistoryRecords.length;
-            if (document.getElementById('cnt-s2t')) document.getElementById('cnt-s2t').innerText = s2tCount;
-            if (document.getElementById('cnt-t2s')) document.getElementById('cnt-t2s').innerText = t2sCount;
+            const cntAll = document.getElementById('cnt-all');
+            const cntS2t = document.getElementById('cnt-s2t');
+            const cntT2s = document.getElementById('cnt-t2s');
+
+            if (cntAll) cntAll.innerText = window.masterHistoryRecords.length;
+            if (cntS2t) cntS2t.innerText = s2tCount;
+            if (cntT2s) cntT2s.innerText = t2sCount;
 
             let filtered = window.masterHistoryRecords;
             if (window.currentMasterTab !== 'All') filtered = filtered.filter(r => r.mode_used === window.currentMasterTab);
             if (query) filtered = filtered.filter(r => r.transcript.toLowerCase().includes(query) || r.timestamp.includes(query));
 
-            const box = document.getElementById('master-history-container'); if (!box) return;
-            if (filtered.length === 0) box.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-10">No matching conversations found.</p>`;
-            else box.innerHTML = filtered.map(r => `<div class="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-start gap-4"><div><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${r.mode_used === 'Sign to Text' ? 'bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300' : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300'}">${r.mode_used}</span><span class="text-[11px] text-slate-400 font-bold">${r.timestamp}</span></div><p class="text-sm font-bold text-slate-900 dark:text-slate-100">${r.transcript}</p></div><button onclick="deleteSingleHistoryItem('${r.id}')" class="text-xs text-rose-500 hover:text-rose-700 font-bold shrink-0"><i class="fa-solid fa-trash-can"></i></button></div>`).join('');
+            const box = document.getElementById('master-history-container'); 
+            if (!box) return;
+            if (filtered.length === 0) {
+                box.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-10">No matching conversations found.</p>`;
+            } else {
+                box.innerHTML = filtered.map(r => `<div class="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-start gap-4"><div><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${r.mode_used === 'Sign to Text' ? 'bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300' : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300'}">${r.mode_used}</span><span class="text-[11px] text-slate-400 font-bold">${r.timestamp}</span></div><p class="text-sm font-bold text-slate-900 dark:text-slate-100">${r.transcript}</p></div><button onclick="deleteSingleHistoryItem('${r.id}')" class="text-xs text-rose-500 hover:text-rose-700 font-bold shrink-0"><i class="fa-solid fa-trash-can"></i></button></div>`).join('');
+            }
         };
 
-        window.deleteSingleHistoryItem = async function(id) { if (!confirm("Delete this conversation record?")) return; try { await fetch(`${API_BASE_URL}/clear_history`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentUser.email, item_id: id }) }); window.refreshMasterConversations(); } catch (e) { alert("Failed to delete."); } };
-        window.clearAllConversationsPrompt = async function() { if (!confirm("Are you sure you want to completely wipe all your stored history?")) return; try { await fetch(`${API_BASE_URL}/clear_history`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: currentUser.email, item_id: null }) }); window.refreshMasterConversations(); } catch (e) { alert("Failed to clear."); } };
+        window.deleteSingleHistoryItem = async function(id) { 
+            if (!confirm("Delete this conversation record?")) return; 
+            try { 
+                await fetch(`${API_BASE_URL}/clear_history`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ email: currentUser.email, item_id: id }) 
+                }); 
+                window.refreshMasterConversations(); 
+            } catch (e) { 
+                alert("Failed to delete."); 
+            } 
+        };
+
+        window.clearAllConversationsPrompt = async function() { 
+            if (!confirm("Are you sure you want to completely wipe all your stored history?")) return; 
+            try { 
+                await fetch(`${API_BASE_URL}/clear_history`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ email: currentUser.email, item_id: null }) 
+                }); 
+                window.refreshMasterConversations(); 
+            } catch (e) { 
+                alert("Failed to clear."); 
+            } 
+        };
 
         window.exportData = function(format) {
             if (window.masterHistoryRecords.length === 0) { alert("No conversation history available to export."); return; }
             const sessionDate = new Date().toISOString().split('T')[0];
             const metaHeader = `================================================================================\nOFFICIAL ASL TRANSLATION TRANSCRIPT | SMART INDIA HACKATHON 2026\nTeam: TheHomoSapiens | Lead Developer: Sayan Chakraborty\nUser ID: ${currentUser.unique_id}\nUser Name: ${currentUser.name}\nExport Date: ${sessionDate}\nTotal Records: ${window.masterHistoryRecords.length}\n================================================================================\n\n`;
-            let bodyContent = ""; window.masterHistoryRecords.forEach((r, idx) => { bodyContent += `[Record #${idx + 1}] [${r.timestamp}] [Mode: ${r.mode_used}]\nTranscript: "${r.transcript}"\n--------------------------------------------------------------------------------\n`; });
+            let bodyContent = ""; 
+            window.masterHistoryRecords.forEach((r, idx) => { 
+                bodyContent += `[Record #${idx + 1}] [${r.timestamp}] [Mode: ${r.mode_used}]\nTranscript: "${r.transcript}"\n--------------------------------------------------------------------------------\n`; 
+            });
             const fullText = metaHeader + bodyContent;
 
             if (format === 'txt') window.downloadFileBlob(fullText, `ASL_Transcript_${sessionDate}.txt`, "text/plain");
-            else if (format === 'word') { const docHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><title>ASL Transcript</title></head><body style="font-family: Arial; padding: 20px;"><pre style="white-space: pre-wrap; font-size: 11pt;">${fullText}</pre></body></html>`; window.downloadFileBlob(docHtml, `ASL_Transcript_${sessionDate}.doc`, "application/msword"); } 
-            else if (format === 'pdf') {
+            else if (format === 'word') { 
+                const docHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><title>ASL Transcript</title></head><body style="font-family: Arial; padding: 20px;"><pre style="white-space: pre-wrap; font-size: 11pt;">${fullText}</pre></body></html>`; 
+                window.downloadFileBlob(docHtml, `ASL_Transcript_${sessionDate}.doc`, "application/msword"); 
+            } else if (format === 'pdf') {
                 const printWindow = window.open('', '_blank');
                 printWindow.document.write(`<html><head><title>ASL Transcript - ${currentUser.unique_id}</title><style>body { font-family: 'Helvetica', Arial, sans-serif; padding: 40px; color: #1e293b; } .header { border-bottom: 2px solid #0d9488; padding-bottom: 12px; margin-bottom: 20px; } .record { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; } .meta { font-size: 11px; color: #64748b; font-weight: bold; } .text { font-size: 14px; font-weight: bold; margin-top: 4px; }</style></head><body><div class="header"><h2>TheHomoSapiens | ASL Translation Transcript</h2><p style="font-size: 12px; margin: 0;">User: ${currentUser.name} | ID: ${currentUser.unique_id} | Date: ${sessionDate}</p></div>${window.masterHistoryRecords.map(r => `<div class="record"><div class="meta">[${r.timestamp}] - Mode:${r.mode_used}</div><div class="text">${r.transcript}</div></div>`).join('')}</body></html>`);
                 printWindow.document.close(); printWindow.focus(); setTimeout(() => { printWindow.print(); }, 500);
             }
         };
 
-        window.downloadFileBlob = function(content, fileName, mimeType) { const blob = new Blob([content], { type: mimeType }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = fileName; a.click(); URL.revokeObjectURL(url); };
+        window.downloadFileBlob = function(content, fileName, mimeType) { 
+            const blob = new Blob([content], { type: mimeType }); 
+            const url = URL.createObjectURL(blob); 
+            const a = document.createElement('a'); 
+            a.href = url; 
+            a.download = fileName; 
+            a.click(); 
+            URL.revokeObjectURL(url); 
+        };
     </script>
 </body>
 </html>
