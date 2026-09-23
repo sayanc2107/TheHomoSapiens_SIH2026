@@ -17,7 +17,7 @@ MONGO_URL = "mongodb+srv://sayan2008c_db_user:IoeLEYRREtrqTnmS@cluster0.njngnoe.
 client = AsyncIOMotorClient(MONGO_URL, serverSelectionTimeoutMS=5000)
 db = client.sih_database
 
-SECRET_KEY = "sih2026_super_secret_key_isl"
+SECRET_KEY = "sih2026_super_secret_key_isl_12345"
 
 class UserRegister(BaseModel):
     name: str
@@ -73,7 +73,7 @@ app = FastAPI(title="TheHomoSapiens SIH 2026 API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
