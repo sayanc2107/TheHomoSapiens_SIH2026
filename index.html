@@ -109,11 +109,11 @@
     <!-- ================= AUTHENTICATION VIEWS ================= -->
     <div id="auth-container" class="relative w-full h-screen flex-grow">
         
-        <!-- LOGIN VIEW (image_810241.png) -->
+        <!-- LOGIN VIEW -->
         <div id="login-view" class="absolute inset-0 bg-navy flex flex-col justify-center items-center p-4 transition-opacity duration-300 z-20">
             <div class="absolute top-6 right-6 flex items-center gap-2 text-white font-semibold text-lg md:text-xl">
-                <span>Ingoude Company</span>
-                <i class="fa-solid fa-chart-simple text-xl"></i>
+                <span>TheHomoSapiens</span>
+                <i class="fa-solid fa-hands-asl-interpreting text-xl"></i>
             </div>
 
             <div class="bg-mint rounded-[2.5rem] p-8 md:p-10 w-full max-w-[400px] shadow-2xl relative mt-8">
@@ -141,17 +141,17 @@
                 <div class="text-white text-xs md:text-sm font-light leading-snug cursor-pointer hover:text-mint transition-colors" onclick="switchAuth('register')">
                     Don't have an account?<br><span class="font-bold underline">Sign Up now</span>
                 </div>
-                <button onclick="doLogin(event)" class="bg-[#f8f9fc] text-navy font-extrabold text-lg md:text-xl py-2 px-8 rounded-full shadow-lg hover:scale-105 transition-transform">LOGIN</button>
+                <button onclick="doLogin(event)" class="bg-[#f8f9fc] text-navy font-extrabold text-lg md:text-xl py-2 px-8 rounded-full shadow-lg hover:scale-105 transition-transform" id="btn-login-main">LOGIN</button>
             </div>
         </div>
 
-        <!-- REGISTER VIEW (image_810246.png) -->
+        <!-- REGISTER VIEW -->
         <div id="register-view" class="absolute inset-0 bg-bgGray flex flex-col justify-center items-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none z-10 overflow-y-auto pt-10 pb-10">
             <div class="wave-top fixed"></div>
             <div class="wave-bottom fixed"></div>
 
             <div class="relative z-10 flex items-center gap-2 mb-4 text-[#333] font-bold text-xl md:text-2xl tracking-tight">
-                <i class="fa-solid fa-dharmachakra text-orangeBtn text-3xl"></i> Ingoude<br>Company
+                <i class="fa-solid fa-hands-asl-interpreting text-orangeBtn text-3xl"></i> TheHomoSapiens
             </div>
 
             <div class="bg-darkCard rounded-[2rem] p-6 md:p-8 w-full max-w-[400px] shadow-2xl relative z-10 text-white">
@@ -202,7 +202,7 @@
                         <button type="button" onclick="toggleInputPwd('reg-cpwd', this)" class="absolute right-3 top-[1.65rem] text-gray-400 hover:text-white"><i class="fa-solid fa-eye"></i></button>
                     </div>
 
-                    <button type="submit" class="w-full bg-orangeBtn hover:bg-[#d05637] text-darkCard font-bold text-base py-2.5 rounded-lg shadow-md transition-colors mt-2">Sign Up</button>
+                    <button type="submit" id="btn-reg-main" class="w-full bg-orangeBtn hover:bg-[#d05637] text-darkCard font-bold text-base py-2.5 rounded-lg shadow-md transition-colors mt-2">Sign Up</button>
                 </form>
 
                 <div class="text-left mt-4 text-xs text-gray-300">
@@ -384,6 +384,7 @@
                 <div id="master-hist-box" class="space-y-3 overflow-y-auto max-h-[500px] pr-2"></div>
             </div>
         </div>
+
     </main>
 
     <!-- ================= ALL APPLICATION MODALS ================= -->
@@ -420,7 +421,7 @@
                 </div>
                 <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Email</label><input type="email" id="upd-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
                 <div class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-lg mt-2">
-                    <label class="block text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-1.5">Current Password (Required to Save)</label>
+                    <label class="block text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-1.5">Current Password (Required)</label>
                     <input type="password" id="upd-pwd-verify" required class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-red-300 rounded text-xs outline-none text-slate-800 dark:text-slate-100">
                 </div>
                 <button type="submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Verify & Save</button>
@@ -434,15 +435,15 @@
             <button onclick="closeModal('modal-change-password')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Change Password</h3>
             <form onsubmit="handleChangePassword(event)" class="space-y-3">
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current Password</label><input type="password" id="cp-cur" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-cur', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label><input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm New Password</label><input type="password" id="cp-conf" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-conf', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current</label><input type="password" id="cp-cur" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-cur', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New</label><input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm</label><input type="password" id="cp-conf" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-conf', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
                 <button type="submit" class="w-full mt-2 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl transition">Change Password</button>
             </form>
         </div>
     </div>
 
-    <!-- 4. RESET PASSWORD MODAL (FIXED & FULLY RESTORED) -->
+    <!-- 4. RESET PASSWORD MODAL -->
     <div id="modal-reset-pwd" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-reset-pwd')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -809,6 +810,9 @@
             const pwd = document.getElementById('login-pwd').value;
             if (!id || !pwd) { alert("Please enter your credentials."); return; }
 
+            const btn = document.getElementById('btn-login-main');
+            if (btn) { btn.innerText = "WAIT..."; btn.disabled = true; }
+
             try {
                 const res = await fetch(`${API_BASE_URL}/login`, {
                     method: 'POST',
@@ -836,20 +840,33 @@
                 currentUser.mobile = !id.includes('@') ? id : "";
             }
 
+            if (btn) { btn.innerText = "LOGIN"; btn.disabled = false; }
             document.getElementById('auth-container').classList.add('hidden');
             document.getElementById('global-nav').classList.remove('hidden');
             document.getElementById('global-nav').classList.add('flex');
             document.getElementById('app-container').classList.remove('hidden');
             document.getElementById('nav-user-name').innerText = currentUser.name;
-            document.getElementById('nav-pfp').src = currentUser.profile_picture;
+            document.getElementById('nav-pfp').src = currentUser.profile_picture || window.pfpBase64;
             window.goHome();
         };
 
         window.doRegister = async function(e) {
             e.preventDefault();
+            
+            const btn = document.getElementById('btn-reg-main');
+            const originalText = btn.innerText;
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+
             const p1 = document.getElementById('reg-pwd').value;
             const p2 = document.getElementById('reg-cpwd').value;
-            if (p1 !== p2) { alert("Passwords do not match!"); return; }
+            
+            if (p1 !== p2) { 
+                alert("Passwords do not match!"); 
+                btn.innerText = originalText;
+                btn.disabled = false;
+                return; 
+            }
 
             const payload = {
                 name: document.getElementById('reg-name').value.trim(),
@@ -857,7 +874,7 @@
                 email: document.getElementById('reg-email').value.trim(),
                 mobile: document.getElementById('reg-mobile').value.trim(),
                 password: p1,
-                profile_picture: window.pfpBase64
+                profile_picture: window.pfpBase64 || "https://ui-avatars.com/api/?name=User&background=e26241&color=fff"
             };
 
             try {
@@ -869,16 +886,26 @@
                 const d = await res.json();
                 if (res.ok) {
                     alert("Account successfully created!");
+                    completeRegistration(payload);
+                } else {
+                    alert(d.detail || "Registration failed. Please try again.");
                 }
             } catch(err) {
-                alert("Account created successfully (Stored in Session)!");
+                alert("Account created successfully (Stored locally for offline mode)!");
+                completeRegistration(payload);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
             }
+        };
 
+        function completeRegistration(payload) {
             currentUser = { ...currentUser, ...payload, unique_id: "UID-" + Math.floor(Math.random() * 9000 + 1000) };
             saveSessionUser(currentUser);
             window.switchAuth('login');
-            document.getElementById('login-id').value = payload.email || payload.mobile;
-        };
+            const loginIdInput = document.getElementById('login-id');
+            if (loginIdInput) loginIdInput.value = payload.email || payload.mobile;
+        }
 
         // --- RESET PASSWORD LOGIC (RESTORED) ---
         window.openResetPasswordModal = function() {
