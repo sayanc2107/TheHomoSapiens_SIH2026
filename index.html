@@ -16,13 +16,21 @@
             theme: {
                 extend: {
                     colors: {
+                        // Original Auth UI Colors
                         navy: '#20263f',
                         mint: '#7ae2d5',
                         darkCard: '#313131',
                         darkInput: '#444444',
                         orangeBtn: '#e26241',
                         bgGray: '#e5e5e5',
-                        primary: '#0d9488'
+                        primary: '#0d9488',
+                        // Refined Light/Dark Mode Palette for Home/Dashboard
+                        lightBg: '#F1F5F9',
+                        lightCard: '#FFFFFF',
+                        darkBg: '#0F172A',
+                        darkElevated: '#1E293B',
+                        neonTeal: '#2DD4BF',
+                        lightIndigo: '#818CF8'
                     }
                 }
             }
@@ -50,7 +58,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+<body class="bg-lightBg dark:bg-darkBg text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
 
     <!-- ================= FIXED FOOTER ================= -->
     <footer class="fixed bottom-0 left-0 w-full bg-navy border-t border-slate-800 text-slate-300 text-center py-2.5 text-xs font-semibold z-50 shadow-md">
@@ -58,7 +66,7 @@
     </footer>
 
     <!-- ================= TOP NAVIGATION (POST-LOGIN) ================= -->
-    <nav id="global-nav" class="hidden bg-white dark:bg-navy border-b border-slate-200 dark:border-slate-800 px-4 md:px-8 py-3 justify-between items-center z-40 shadow-sm sticky top-0">
+    <nav id="global-nav" class="hidden bg-lightCard dark:bg-darkElevated border-b border-slate-200 dark:border-slate-800 px-4 md:px-8 py-3 justify-between items-center z-40 shadow-sm sticky top-0 transition-colors duration-200">
         <div class="flex items-center gap-3 md:gap-5">
             <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
                 <div class="w-9 h-9 rounded-lg bg-teal-600 text-white flex items-center justify-center font-black text-lg shadow-sm">
@@ -70,7 +78,7 @@
                 </div>
             </div>
             
-            <span class="hidden sm:inline-block bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-mint border border-teal-200 dark:border-teal-800 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+            <span class="hidden sm:inline-block bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-neonTeal border border-teal-200 dark:border-teal-800 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                 <i class="fa-solid fa-bolt text-[10px] mr-1"></i> Powered by ISL
             </span>
 
@@ -113,7 +121,7 @@
         <div id="login-view" class="absolute inset-0 bg-navy flex flex-col justify-center items-center p-4 transition-opacity duration-300 z-20">
             <div class="absolute top-6 right-6 flex items-center gap-2 text-white font-semibold text-lg md:text-xl">
                 <span>TheHomoSapiens</span>
-                <i class="fa-solid fa-chart-simple text-xl"></i>
+                <i class="fa-solid fa-hands-asl-interpreting text-xl"></i>
             </div>
 
             <div class="bg-mint rounded-[2.5rem] p-8 md:p-10 w-full max-w-[400px] shadow-2xl relative mt-8">
@@ -151,12 +159,12 @@
             <div class="wave-bottom fixed"></div>
 
             <div class="relative z-10 flex items-center gap-2 mb-4 text-[#333] font-bold text-xl md:text-2xl tracking-tight">
-                <i class="fa-solid fa-hands-asl-interpreting text-orangeBtn text-3xl"></i>TheHomoSapiens
+                <i class="fa-solid fa-hands-asl-interpreting text-orangeBtn text-3xl"></i> TheHomoSapiens
             </div>
 
             <div class="bg-darkCard rounded-[2rem] p-6 md:p-8 w-full max-w-[400px] shadow-2xl relative z-10 text-white">
                 <h2 class="text-2xl font-bold mb-1">Create Your Account</h2>
-                <p class="text-xs text-gray-400 mb-6">Please fill in the details below to register.</p>
+                <p class="text-gray-400 text-xs mb-4 font-medium">Join us today and unlock all features.</p>
 
                 <form onsubmit="doRegister(event)" class="space-y-3">
                     <div class="flex items-center gap-3.5 py-1">
@@ -217,30 +225,30 @@
         
         <!-- DASHBOARD HUB -->
         <div id="home-view" class="flex flex-col gap-6 w-full">
-            <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm">
-                <div class="flex items-center gap-2 mb-3"><i class="fa-solid fa-circle-info text-teal-600 dark:text-mint text-sm"></i><h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quick Setup Guidelines</h3></div>
+            <div class="bg-lightCard dark:bg-darkElevated border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm transition-colors duration-200">
+                <div class="flex items-center gap-2 mb-3"><i class="fa-solid fa-circle-info text-teal-600 dark:text-neonTeal text-sm"></i><h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quick Setup Guidelines</h3></div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-black text-sm">1</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Ensure good lighting</span></div>
-                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-600 flex items-center justify-center font-black text-sm">2</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Keep hands 2 feet from camera</span></div>
-                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-black text-sm">3</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Sign clearly</span></div>
+                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-darkBg p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-black text-sm">1</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Ensure good lighting</span></div>
+                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-darkBg p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-950/50 text-teal-600 dark:text-neonTeal flex items-center justify-center font-black text-sm">2</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Keep hands 2 feet from camera</span></div>
+                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-darkBg p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950/50 text-indigo-600 dark:text-lightIndigo flex items-center justify-center font-black text-sm">3</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Sign clearly</span></div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div onclick="openWorkspace('Sign2Text')" class="bg-white dark:bg-navy border-2 border-slate-200 dark:border-slate-800 hover:border-teal-500 dark:hover:border-mint rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 flex items-center justify-center text-teal-600 dark:text-mint group-hover:scale-105 transition"><i class="fa-solid fa-hands text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-teal-600 text-white px-2.5 py-1 rounded-full">Module 1</span></div>
+                <div onclick="openWorkspace('Sign2Text')" class="bg-lightCard dark:bg-darkElevated border-2 border-slate-200 dark:border-slate-800 hover:border-teal-500 dark:hover:border-neonTeal rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-900 flex items-center justify-center text-teal-600 dark:text-neonTeal group-hover:scale-105 transition"><i class="fa-solid fa-hands text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-teal-600 dark:bg-neonTeal text-white dark:text-darkBg px-2.5 py-1 rounded-full">Module 1</span></div>
                     <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Sign to Audio / Text</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Dual-Hand skeletal tracking, audio pronunciation, and sentence queuing.</p></div>
-                    <div class="mt-6 flex items-center gap-2 text-xs font-bold text-teal-600 dark:text-mint group-hover:translate-x-1 transition"><span>Open Live Camera Workspace</span> <i class="fa-solid fa-arrow-right"></i></div>
+                    <div class="mt-6 flex items-center gap-2 text-xs font-bold text-teal-600 dark:text-neonTeal group-hover:translate-x-1 transition"><span>Open Live Camera Workspace</span> <i class="fa-solid fa-arrow-right"></i></div>
                 </div>
                 
-                <div onclick="openWorkspace('Text2Sign')" class="bg-white dark:bg-navy border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition"><i class="fa-solid fa-microphone-lines text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-indigo-600 text-white px-2.5 py-1 rounded-full">Module 2</span></div>
+                <div onclick="openWorkspace('Text2Sign')" class="bg-lightCard dark:bg-darkElevated border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-lightIndigo rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 flex items-center justify-center text-indigo-600 dark:text-lightIndigo group-hover:scale-105 transition"><i class="fa-solid fa-microphone-lines text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-indigo-600 dark:bg-lightIndigo text-white dark:text-darkBg px-2.5 py-1 rounded-full">Module 2</span></div>
                     <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Audio / Text to Sign</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Microphone speech recognition and typing input rendered into 3D avatar animations.</p></div>
-                    <div class="mt-6 flex items-center gap-2 text-xs font-bold text-indigo-600 group-hover:translate-x-1 transition"><span>Open Avatar Engine</span> <i class="fa-solid fa-arrow-right"></i></div>
+                    <div class="mt-6 flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-lightIndigo group-hover:translate-x-1 transition"><span>Open Avatar Engine</span> <i class="fa-solid fa-arrow-right"></i></div>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="bg-lightCard dark:bg-darkElevated border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 transition-colors duration-200">
                 <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 text-xl"><i class="fa-solid fa-database"></i></div><div><h4 class="font-extrabold text-slate-900 dark:text-white">Master Conversation History</h4><p class="text-xs text-slate-500 mt-0.5">Search, filter, manage, and export official PDF/Word transcripts with metadata.</p></div></div>
                 <button onclick="openMasterHistoryView()" class="w-full md:w-auto px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl hover:opacity-90 transition">Open Records</button>
             </div>
@@ -272,7 +280,7 @@
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+                <div class="bg-lightCard dark:bg-darkElevated border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
                     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Live ASL Gesture</span>
@@ -290,7 +298,7 @@
 
                     <div class="flex items-center justify-between">
                         <div>
-                            <div id="sign-output-text" class="text-2xl md:text-3xl font-black text-teal-600 dark:text-mint tracking-tight">Camera Feed Active</div>
+                            <div id="sign-output-text" class="text-2xl md:text-3xl font-black text-teal-600 dark:text-neonTeal tracking-tight">Camera Feed Active</div>
                             <div id="sub-hand-info" class="text-xs font-bold text-slate-400 mt-0.5">Bring one or both hands into camera frame</div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -302,15 +310,15 @@
                     <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex flex-col gap-2">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2"><input type="checkbox" id="queue-sentence-toggle" class="w-4 h-4 text-teal-600 rounded"><label class="text-xs font-bold text-slate-600 dark:text-slate-300">Queue signs into Sentence Builder</label></div>
-                            <div class="flex gap-2"><button onclick="speakSentence()" class="text-xs px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded"><i class="fa-solid fa-play mr-1"></i> Speak Sentence</button><button onclick="clearSentence()" class="text-xs px-2.5 py-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded">Clear</button></div>
+                            <div class="flex gap-2"><button onclick="speakSentence()" class="text-xs px-3 py-1 bg-teal-600 hover:bg-teal-700 dark:bg-neonTeal dark:text-darkBg text-white font-bold rounded"><i class="fa-solid fa-play mr-1"></i> Speak Sentence</button><button onclick="clearSentence()" class="text-xs px-2.5 py-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded">Clear</button></div>
                         </div>
-                        <div id="sentence-builder-box" class="w-full min-h-[42px] p-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 flex items-center flex-wrap gap-1.5"><span class="text-slate-400 italic">Queue is empty...</span></div>
+                        <div id="sentence-builder-box" class="w-full min-h-[42px] p-2 bg-slate-50 dark:bg-darkBg border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 flex items-center flex-wrap gap-1.5"><span class="text-slate-400 italic">Queue is empty...</span></div>
                     </div>
                 </div>
             </div>
 
-            <div class="w-full lg:w-80 bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col h-[520px]">
-                <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800"><i class="fa-solid fa-folder-open text-teal-600 mr-1.5"></i> Sign → Text History</h4>
+            <div class="w-full lg:w-80 bg-lightCard dark:bg-darkElevated border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col h-[520px]">
+                <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800"><i class="fa-solid fa-folder-open text-teal-600 dark:text-neonTeal mr-1.5"></i> Sign → Text History</h4>
                 <div id="s2t-history" class="overflow-y-auto flex-grow space-y-2.5 py-3 pr-1"></div>
             </div>
         </div>
@@ -327,18 +335,18 @@
 
                 <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1">
                     <span class="text-[10px] font-black uppercase text-slate-400 shrink-0">Quick Signs:</span>
-                    <button onclick="injectPhrase('I need help')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">I need help</button>
-                    <button onclick="injectPhrase('Thank you')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Thank you</button>
-                    <button onclick="injectPhrase('Where is the exit?')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Where is the exit?</button>
-                    <button onclick="injectPhrase('Nice to meet you')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Nice to meet you</button>
-                    <button onclick="injectPhrase('Emergency')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Emergency</button>
+                    <button onclick="injectPhrase('I need help')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 dark:hover:bg-lightIndigo hover:text-white dark:hover:text-darkBg transition">I need help</button>
+                    <button onclick="injectPhrase('Thank you')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 dark:hover:bg-lightIndigo hover:text-white dark:hover:text-darkBg transition">Thank you</button>
+                    <button onclick="injectPhrase('Where is the exit?')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 dark:hover:bg-lightIndigo hover:text-white dark:hover:text-darkBg transition">Where is the exit?</button>
+                    <button onclick="injectPhrase('Nice to meet you')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 dark:hover:bg-lightIndigo hover:text-white dark:hover:text-darkBg transition">Nice to meet you</button>
+                    <button onclick="injectPhrase('Emergency')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 dark:hover:bg-lightIndigo hover:text-white dark:hover:text-darkBg transition">Emergency</button>
                 </div>
 
-                <div class="w-full mt-2 relative flex flex-col bg-white dark:bg-navy border border-slate-300 dark:border-slate-700 rounded-3xl shadow-sm transition-all overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500">
+                <div class="w-full mt-2 relative flex flex-col bg-lightCard dark:bg-darkElevated border border-slate-300 dark:border-slate-700 rounded-3xl shadow-sm transition-all overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 dark:focus-within:ring-lightIndigo">
                     <textarea id="t2s-prompt" rows="1" class="w-full bg-transparent border-0 resize-none text-sm font-semibold text-slate-800 dark:text-slate-100 placeholder-slate-400 px-5 pt-4 pb-2 outline-none max-h-[150px]" placeholder="Type or speak a sentence to translate into sign language..."></textarea>
                     <div class="flex items-center justify-between px-3 pb-3 pt-1">
                         <div class="flex items-center gap-1">
-                            <button onclick="toggleMic()" class="w-10 h-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center"><i id="mic-icon" class="fa-solid fa-microphone text-base"></i></button>
+                            <button onclick="toggleMic()" class="w-10 h-10 rounded-full text-slate-500 hover:text-indigo-600 dark:hover:text-lightIndigo hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center"><i id="mic-icon" class="fa-solid fa-microphone text-base"></i></button>
                             <canvas id="waveformCanvas" width="60" height="24" class="rounded opacity-0 transition-opacity pointer-events-none ml-1"></canvas>
                         </div>
                         <button onclick="generateSign()" class="w-10 h-10 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold shadow-sm flex items-center justify-center hover:opacity-80"><i class="fa-solid fa-arrow-up text-base"></i></button>
@@ -346,15 +354,15 @@
                 </div>
             </div>
 
-            <div class="w-full lg:w-80 bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col h-[520px]">
-                <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800"><i class="fa-solid fa-folder-open text-indigo-600 mr-1.5"></i> Text → Sign History</h4>
+            <div class="w-full lg:w-80 bg-lightCard dark:bg-darkElevated border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col h-[520px]">
+                <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800"><i class="fa-solid fa-folder-open text-indigo-600 dark:text-lightIndigo mr-1.5"></i> Text → Sign History</h4>
                 <div id="t2s-history" class="overflow-y-auto flex-grow space-y-2.5 py-3 pr-1"></div>
             </div>
         </div>
 
         <!-- MASTER CONVERSATION HISTORY VIEW -->
         <div id="master-history-view" class="hidden flex-col gap-6 w-full">
-            <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col gap-5">
+            <div class="bg-lightCard dark:bg-darkElevated border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col gap-5 transition-colors duration-200">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
                     <div><h2 class="text-xl font-black text-slate-900 dark:text-white">Master Conversation Records</h2><p class="text-xs text-slate-500 mt-0.5">Total stored database logs across all translation engines</p></div>
                     <div class="flex flex-wrap items-center gap-2">
@@ -368,12 +376,12 @@
                 <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
                     <div class="flex gap-2 w-full sm:w-auto">
                         <button id="tab-all" onclick="filterHist('All')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition">All (<span id="cnt-all">0</span>)</button>
-                        <button id="tab-s2t" onclick="filterHist('S2T')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">Sign → Text (<span id="cnt-s2t">0</span>)</button>
-                        <button id="tab-t2s" onclick="filterHist('T2S')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">Text → Sign (<span id="cnt-t2s">0</span>)</button>
+                        <button id="tab-s2t" onclick="filterHist('S2T')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-darkBg text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">Sign → Text (<span id="cnt-s2t">0</span>)</button>
+                        <button id="tab-t2s" onclick="filterHist('T2S')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-darkBg text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">Text → Sign (<span id="cnt-t2s">0</span>)</button>
                     </div>
                     <div class="w-full sm:w-64 relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                        <input type="text" id="hist-search" oninput="renderMasterHistory()" placeholder="Search past translations..." class="w-full pl-8 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
+                        <input type="text" id="hist-search" oninput="renderMasterHistory()" placeholder="Search past translations..." class="w-full pl-8 pr-3 py-2 bg-slate-50 dark:bg-darkBg border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
                     </div>
                 </div>
 
@@ -387,7 +395,7 @@
     
     <!-- 1. READ-ONLY PROFILE MODAL -->
     <div id="modal-ro-profile" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
+        <div class="bg-lightCard dark:bg-darkElevated border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-ro-profile')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="text-center pb-4 border-b border-slate-100 dark:border-slate-800">
                 <img id="ro-pfp" src="" class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-teal-600 mb-3 shadow-md bg-white">
@@ -396,7 +404,7 @@
             </div>
             <div class="py-4 space-y-2.5 text-xs">
                 <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Date of Birth</span> <span id="ro-dob" class="font-extrabold text-slate-700 dark:text-slate-200"></span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Current Age</span> <span id="ro-age" class="font-extrabold text-teal-600 dark:text-mint"></span></div>
+                <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Current Age</span> <span id="ro-age" class="font-extrabold text-teal-600 dark:text-neonTeal"></span></div>
                 <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Mobile Number</span> <span id="ro-mobile" class="font-extrabold text-slate-700 dark:text-slate-200"></span></div>
                 <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Email Address</span> <span id="ro-email" class="font-extrabold text-slate-700 dark:text-slate-200"></span></div>
             </div>
@@ -406,19 +414,19 @@
 
     <!-- 2. EDIT PROFILE MODAL -->
     <div id="modal-update-profile" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+        <div class="bg-lightCard dark:bg-darkElevated border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-update-profile')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Edit Profile</h3>
             <form onsubmit="handleUpdateProfile(event)" class="space-y-3">
-                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Full Name</label><input type="text" id="upd-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Full Name</label><input type="text" id="upd-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-darkBg border border-slate-300 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">DOB</label><input type="date" id="upd-dob" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
-                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Mobile</label><input type="tel" id="upd-mobile" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">DOB</label><input type="date" id="upd-dob" required class="w-full px-3 py-2 bg-slate-50 dark:bg-darkBg border border-slate-300 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Mobile</label><input type="tel" id="upd-mobile" required class="w-full px-3 py-2 bg-slate-50 dark:bg-darkBg border border-slate-300 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
                 </div>
-                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Email</label><input type="email" id="upd-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Email</label><input type="email" id="upd-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-darkBg border border-slate-300 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
                 <div class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-lg mt-2">
                     <label class="block text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-1.5">Current Password (Required to Save)</label>
-                    <input type="password" id="upd-pwd-verify" required class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-red-300 rounded text-xs outline-none text-slate-800 dark:text-slate-100">
+                    <input type="password" id="upd-pwd-verify" required class="w-full px-3 py-2 bg-white dark:bg-darkBg border border-red-300 rounded text-xs outline-none text-slate-800 dark:text-slate-100">
                 </div>
                 <button type="submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Verify & Save</button>
             </form>
@@ -427,13 +435,13 @@
 
     <!-- 3. CHANGE PASSWORD MODAL -->
     <div id="modal-change-password" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
+        <div class="bg-lightCard dark:bg-darkElevated border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-change-password')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Change Password</h3>
             <form onsubmit="handleChangePassword(event)" class="space-y-3">
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current Password</label><input type="password" id="cp-cur" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-cur', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label><input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm New Password</label><input type="password" id="cp-conf" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-conf', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current Password</label><input type="password" id="cp-cur" required class="w-full px-3 py-2 bg-slate-50 dark:bg-darkBg border border-slate-300 dark:border-slate-700 rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-cur', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label><input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-darkBg border border-slate-300 dark:border-slate-700 rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm New Password</label><input type="password" id="cp-conf" required class="w-full px-3 py-2 bg-slate-50 dark:bg-darkBg border border-slate-300 dark:border-slate-700 rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-conf', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
                 <button type="submit" class="w-full mt-2 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl transition">Change Password</button>
             </form>
         </div>
@@ -441,18 +449,18 @@
 
     <!-- 4. RESET PASSWORD MODAL -->
     <div id="modal-reset-pwd" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
+        <div class="bg-lightCard dark:bg-darkElevated border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-reset-pwd')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2">Reset Password</h3>
             <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-4 font-semibold">Enter your registered email or mobile number to set a new password.</p>
             <form onsubmit="handleResetPassword(event)" class="space-y-3">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Registered ID</label>
-                    <input type="text" id="rst-id" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-800 dark:text-slate-100 outline-none">
+                    <input type="text" id="rst-id" required class="w-full px-3 py-2 bg-slate-50 dark:bg-darkBg border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-800 dark:text-slate-100 outline-none">
                 </div>
                 <div class="relative">
                     <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label>
-                    <input type="password" id="rst-pwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-800 dark:text-slate-100 pr-9 outline-none">
+                    <input type="password" id="rst-pwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-darkBg border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-800 dark:text-slate-100 pr-9 outline-none">
                     <button type="button" onclick="toggleInputPwd('rst-pwd', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button>
                 </div>
                 <button type="submit" id="btn-rst-submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl transition">Reset & Save</button>
@@ -784,7 +792,6 @@
             if (window.activeWorkspace === 'Text2Sign') window.drawAvatar();
         };
 
-        // FIX: Rebuilt view switching to explicitly fix Z-index clicking issues
         window.switchAuth = function(target) {
             const login = document.getElementById('login-view');
             const reg = document.getElementById('register-view');
@@ -833,13 +840,11 @@
                     };
                     saveSessionUser(currentUser);
                 } else {
-                    // Fallback
                     currentUser.name = id.split('@')[0];
                     currentUser.email = id.includes('@') ? id : "";
                     currentUser.mobile = !id.includes('@') ? id : "";
                 }
             } catch(err) {
-                // Fallback for offline mode
                 currentUser.name = id.split('@')[0];
                 currentUser.email = id.includes('@') ? id : "";
                 currentUser.mobile = !id.includes('@') ? id : "";
@@ -908,7 +913,6 @@
             currentUser = { ...currentUser, ...payload, unique_id: "UID-" + Math.floor(Math.random() * 9000 + 1000) };
             saveSessionUser(currentUser);
             
-            // Auto login and redirect to dashboard
             document.getElementById('auth-container').classList.add('hidden');
             document.getElementById('global-nav').classList.remove('hidden');
             document.getElementById('global-nav').classList.add('flex');
@@ -1133,7 +1137,7 @@
             if (window.sentenceQueue.length === 0) {
                 box.innerHTML = '<span class="text-slate-400 italic">Queue is empty...</span>';
             } else {
-                box.innerHTML = window.sentenceQueue.map(w => `<span class="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/60 text-teal-800 dark:text-teal-200 rounded font-bold">${w}</span>`).join('');
+                box.innerHTML = window.sentenceQueue.map(w => `<span class="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/60 text-teal-800 dark:text-neonTeal rounded font-bold">${w}</span>`).join('');
             }
         }
 
@@ -1178,7 +1182,7 @@
         window.drawAvatar = function(animate = false) {
             const isDark = document.documentElement.classList.contains('dark');
             const gender = document.getElementById('avatar-model-gender').value;
-            avatarCtx.fillStyle = isDark ? "#0f172a" : "#f8fafc";
+            avatarCtx.fillStyle = isDark ? "#0F172A" : "#F1F5F9";
             avatarCtx.fillRect(0, 0, avatarCanvas.width, avatarCanvas.height);
 
             const cx = avatarCanvas.width / 2;
@@ -1269,15 +1273,15 @@
         };
 
         function formatCard(item) {
-            return `<div class="p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs"><div class="flex justify-between text-[10px] text-slate-400 font-bold mb-1"><span>${item.date}</span></div><p class="font-extrabold text-slate-800 dark:text-slate-100">${item.text}</p></div>`;
+            return `<div class="p-2.5 bg-slate-50 dark:bg-darkBg rounded-xl border border-slate-200 dark:border-slate-700 text-xs"><div class="flex justify-between text-[10px] text-slate-400 font-bold mb-1"><span>${item.date}</span></div><p class="font-extrabold text-slate-800 dark:text-slate-100">${item.text}</p></div>`;
         }
 
         window.filterHist = function(mode) {
             window.activeHistFilter = mode;
             ['tab-all', 'tab-s2t', 'tab-t2s'].forEach(id => {
-                document.getElementById(id).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200";
+                document.getElementById(id).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-darkBg text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700";
             });
-            document.getElementById(mode === 'All' ? 'tab-all' : (mode === 'S2T' ? 'tab-s2t' : 'tab-t2s')).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white";
+            document.getElementById(mode === 'All' ? 'tab-all' : (mode === 'S2T' ? 'tab-s2t' : 'tab-t2s')).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 dark:bg-neonTeal dark:text-darkBg text-white";
             window.renderMasterHistory();
         };
 
@@ -1296,10 +1300,10 @@
                 box.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-10">No records found.</p>';
             } else {
                 box.innerHTML = arr.map(r => `
-                    <div class="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-start gap-4">
+                    <div class="p-4 bg-slate-50 dark:bg-darkBg rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-start gap-4">
                         <div>
                             <div class="flex items-center gap-2 mb-1">
-                                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${r.type === 'S2T' ? 'bg-teal-100 dark:bg-teal-950 text-teal-700' : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700'}">${r.type}</span>
+                                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${r.type === 'S2T' ? 'bg-teal-100 dark:bg-teal-950/50 text-teal-700 dark:text-neonTeal' : 'bg-indigo-100 dark:bg-indigo-950/50 text-indigo-700 dark:text-lightIndigo'}">${r.type}</span>
                                 <span class="text-[11px] text-slate-400 font-bold">${r.date}</span>
                             </div>
                             <p class="text-sm font-bold text-slate-900 dark:text-slate-100">${r.text}</p>
