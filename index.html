@@ -113,7 +113,7 @@
         <div id="login-view" class="absolute inset-0 bg-navy flex flex-col justify-center items-center p-4 transition-opacity duration-300 z-20">
             <div class="absolute top-6 right-6 flex items-center gap-2 text-white font-semibold text-lg md:text-xl">
                 <span>TheHomoSapiens</span>
-                <i class="fa-solid fa-hands-asl-interpreting text-xl"></i>
+                <i class="fa-solid fa-chart-simple text-xl"></i>
             </div>
 
             <div class="bg-mint rounded-[2.5rem] p-8 md:p-10 w-full max-w-[400px] shadow-2xl relative mt-8">
@@ -208,10 +208,6 @@
                 <div class="text-left mt-4 text-xs text-gray-300">
                     Already have an account? <button onclick="switchAuth('login')" class="text-white font-bold underline hover:text-orangeBtn transition-colors ml-1">Log In</button>
                 </div>
-            </div>
-
-            <div class="relative z-10 text-center mt-5 text-[#333] font-medium text-xs md:text-sm">
-                reallygreatsite.com<br>hello@reallygreatsite.com
             </div>
         </div>
     </div>
@@ -421,7 +417,7 @@
                 </div>
                 <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Email</label><input type="email" id="upd-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
                 <div class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-lg mt-2">
-                    <label class="block text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-1.5">Current Password (Required)</label>
+                    <label class="block text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-1.5">Current Password (Required to Save)</label>
                     <input type="password" id="upd-pwd-verify" required class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-red-300 rounded text-xs outline-none text-slate-800 dark:text-slate-100">
                 </div>
                 <button type="submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Verify & Save</button>
@@ -435,9 +431,9 @@
             <button onclick="closeModal('modal-change-password')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Change Password</h3>
             <form onsubmit="handleChangePassword(event)" class="space-y-3">
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current</label><input type="password" id="cp-cur" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-cur', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New</label><input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm</label><input type="password" id="cp-conf" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-conf', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current Password</label><input type="password" id="cp-cur" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-cur', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label><input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm New Password</label><input type="password" id="cp-conf" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-conf', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
                 <button type="submit" class="w-full mt-2 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl transition">Change Password</button>
             </form>
         </div>
@@ -788,19 +784,27 @@
             if (window.activeWorkspace === 'Text2Sign') window.drawAvatar();
         };
 
+        // FIX: Rebuilt view switching to explicitly fix Z-index clicking issues
         window.switchAuth = function(target) {
             const login = document.getElementById('login-view');
             const reg = document.getElementById('register-view');
+            
             if (target === 'login') {
                 reg.classList.replace('opacity-100', 'opacity-0');
                 reg.classList.add('pointer-events-none');
+                reg.style.zIndex = '10';
+                
                 login.classList.remove('pointer-events-none');
                 login.classList.replace('opacity-0', 'opacity-100');
+                login.style.zIndex = '20';
             } else {
                 login.classList.replace('opacity-100', 'opacity-0');
                 login.classList.add('pointer-events-none');
+                login.style.zIndex = '10';
+                
                 reg.classList.remove('pointer-events-none');
                 reg.classList.replace('opacity-0', 'opacity-100');
+                reg.style.zIndex = '20';
             }
         };
 
@@ -829,12 +833,13 @@
                     };
                     saveSessionUser(currentUser);
                 } else {
-                    // Fallback to local session if backend is in cold sleep
+                    // Fallback
                     currentUser.name = id.split('@')[0];
                     currentUser.email = id.includes('@') ? id : "";
                     currentUser.mobile = !id.includes('@') ? id : "";
                 }
             } catch(err) {
+                // Fallback for offline mode
                 currentUser.name = id.split('@')[0];
                 currentUser.email = id.includes('@') ? id : "";
                 currentUser.mobile = !id.includes('@') ? id : "";
@@ -891,7 +896,7 @@
                     alert(d.detail || "Registration failed. Please try again.");
                 }
             } catch(err) {
-                alert("Account created successfully (Stored locally for offline mode)!");
+                alert("Account created successfully!");
                 completeRegistration(payload);
             } finally {
                 btn.innerText = originalText;
@@ -902,12 +907,17 @@
         function completeRegistration(payload) {
             currentUser = { ...currentUser, ...payload, unique_id: "UID-" + Math.floor(Math.random() * 9000 + 1000) };
             saveSessionUser(currentUser);
-            window.switchAuth('login');
-            const loginIdInput = document.getElementById('login-id');
-            if (loginIdInput) loginIdInput.value = payload.email || payload.mobile;
+            
+            // Auto login and redirect to dashboard
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('global-nav').classList.remove('hidden');
+            document.getElementById('global-nav').classList.add('flex');
+            document.getElementById('app-container').classList.remove('hidden');
+            document.getElementById('nav-user-name').innerText = currentUser.name;
+            document.getElementById('nav-pfp').src = currentUser.profile_picture || window.pfpBase64;
+            window.goHome();
         }
 
-        // --- RESET PASSWORD LOGIC (RESTORED) ---
         window.openResetPasswordModal = function() {
             document.getElementById('modal-reset-pwd').classList.remove('hidden');
             document.getElementById('rst-id').value = document.getElementById('login-id').value.trim();
