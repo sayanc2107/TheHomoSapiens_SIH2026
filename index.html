@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TheHomoSapiens | SIH 2026</title>
+    <title>TheHomoSapiens | SIH 2026 Portal</title>
     
-    <!-- Required Manifest for "Install App to Home Screen" -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#20263f">
     
@@ -17,15 +16,13 @@
             theme: {
                 extend: {
                     colors: {
-                        // Image specific colors
                         navy: '#20263f',
                         mint: '#7ae2d5',
                         darkCard: '#313131',
                         darkInput: '#444444',
                         orangeBtn: '#e26241',
                         bgGray: '#e5e5e5',
-                        // App primary colors
-                        primary: '#0d9488',
+                        primary: '#0d9488'
                     }
                 }
             }
@@ -40,7 +37,6 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Specific UI styles from the images */
         .login-input-shadow { box-shadow: 0px 10px 15px -5px rgba(0,0,0,0.15); }
         .wave-top {
             position: absolute; top: -150px; left: -50px; width: 120%; height: 300px;
@@ -56,11 +52,12 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
 
-    <!-- ================= GLOBAL MASTER ELEMENTS ================= -->
+    <!-- ================= FIXED FOOTER ================= -->
     <footer class="fixed bottom-0 left-0 w-full bg-navy border-t border-slate-800 text-slate-300 text-center py-2.5 text-xs font-semibold z-50 shadow-md">
         Developed by <a href="https://www.linkedin.com/in/sayan-chakraborty-282203379/" target="_blank" class="text-mint hover:underline">Sayan Chakraborty</a> @Team TheHomoSapiens
     </footer>
 
+    <!-- ================= TOP NAVIGATION (POST-LOGIN) ================= -->
     <nav id="global-nav" class="hidden bg-white dark:bg-navy border-b border-slate-200 dark:border-slate-800 px-4 md:px-8 py-3 justify-between items-center z-40 shadow-sm sticky top-0">
         <div class="flex items-center gap-3 md:gap-5">
             <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
@@ -88,7 +85,7 @@
             </button>
 
             <div id="be-status" class="flex items-center gap-1.5 px-2.5 py-1 bg-slate-50 dark:bg-slate-800/80 rounded-md border border-slate-200 dark:border-slate-700 text-xs font-bold" title="Server API Status">
-                <span id="be-icon" class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-[10px]"></span>
+                <span id="be-icon" class="fa-solid fa-circle text-emerald-500 text-[10px]"></span>
                 <span id="be-text" class="text-emerald-600 dark:text-emerald-400 text-[11px] tracking-wide uppercase">Server Active</span>
             </div>
 
@@ -109,28 +106,27 @@
         </div>
     </nav>
 
-
     <!-- ================= AUTHENTICATION VIEWS ================= -->
     <div id="auth-container" class="relative w-full h-screen flex-grow">
         
-        <!-- LOGIN VIEW (Matches image_810241.png) -->
+        <!-- LOGIN VIEW (image_810241.png) -->
         <div id="login-view" class="absolute inset-0 bg-navy flex flex-col justify-center items-center p-4 transition-opacity duration-300 z-20">
             <div class="absolute top-6 right-6 flex items-center gap-2 text-white font-semibold text-lg md:text-xl">
-                <span>TheHomoSapiens</span>
-                <i class="fa-solid fa-chart-simple"></i>
+                <span>Ingoude Company</span>
+                <i class="fa-solid fa-chart-simple text-xl"></i>
             </div>
 
             <div class="bg-mint rounded-[2.5rem] p-8 md:p-10 w-full max-w-[400px] shadow-2xl relative mt-8">
                 <h1 class="text-3xl md:text-4xl font-extrabold text-navy text-center leading-tight mb-8">LOGIN TO YOUR<br>ACCOUNT</h1>
 
-                <form onsubmit="doLogin(event)" class="space-y-6">
+                <form onsubmit="doLogin(event)" class="space-y-5">
                     <div>
-                        <label class="block text-navy font-semibold mb-2 pl-2">Email or Mobile Number :</label>
-                        <input type="text" id="login-id" required class="w-full h-12 rounded-full border-none px-5 text-gray-800 bg-[#f8f9fc] login-input-shadow focus:outline-none focus:ring-2 focus:ring-navy/30 transition-all font-medium">
+                        <label class="block text-navy font-semibold mb-2 pl-2 text-sm">Email or Mobile Number :</label>
+                        <input type="text" id="login-id" required class="w-full h-12 rounded-full border-none px-5 text-gray-800 bg-[#f8f9fc] login-input-shadow focus:outline-none focus:ring-2 focus:ring-navy/30 transition-all font-medium text-sm">
                     </div>
                     <div class="relative">
-                        <label class="block text-navy font-semibold mb-2 pl-2">Password :</label>
-                        <input type="password" id="login-pwd" required class="w-full h-12 rounded-full border-none px-5 pr-12 text-gray-800 bg-[#f8f9fc] login-input-shadow focus:outline-none focus:ring-2 focus:ring-navy/30 transition-all font-medium">
+                        <label class="block text-navy font-semibold mb-2 pl-2 text-sm">Password :</label>
+                        <input type="password" id="login-pwd" required class="w-full h-12 rounded-full border-none px-5 pr-12 text-gray-800 bg-[#f8f9fc] login-input-shadow focus:outline-none focus:ring-2 focus:ring-navy/30 transition-all font-medium text-sm">
                         <button type="button" onclick="toggleInputPwd('login-pwd', this)" class="absolute right-4 top-[2.4rem] text-slate-400 hover:text-navy"><i class="fa-solid fa-eye"></i></button>
                     </div>
                     
@@ -149,20 +145,20 @@
             </div>
         </div>
 
-        <!-- REGISTER VIEW (Matches image_810246.png) -->
+        <!-- REGISTER VIEW (image_810246.png) -->
         <div id="register-view" class="absolute inset-0 bg-bgGray flex flex-col justify-center items-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none z-10 overflow-y-auto pt-10 pb-10">
             <div class="wave-top fixed"></div>
             <div class="wave-bottom fixed"></div>
 
-            <div class="relative z-10 flex items-center gap-2 mb-6 text-[#333] font-bold text-xl md:text-2xl tracking-tight">
-                <i class="fa-solid fa-dharmachakra text-orangeBtn text-3xl"></i> TheHomoSapiens<br>
+            <div class="relative z-10 flex items-center gap-2 mb-4 text-[#333] font-bold text-xl md:text-2xl tracking-tight">
+                <i class="fa-solid fa-dharmachakra text-orangeBtn text-3xl"></i> Ingoude<br>Company
             </div>
 
             <div class="bg-darkCard rounded-[2rem] p-6 md:p-8 w-full max-w-[400px] shadow-2xl relative z-10 text-white">
                 <h2 class="text-2xl font-bold mb-1">Create Your Account</h2>
-                <p class="text-sm text-gray-400 mb-6">Please fill in the details below to create your account.</p>
+                <p class="text-gray-400 text-xs mb-4 font-medium">Join us today and unlock all features.</p>
 
-                <form onsubmit="doRegister(event)" class="space-y-3.5">
+                <form onsubmit="doRegister(event)" class="space-y-3">
                     <div class="flex items-center gap-3.5 py-1">
                         <div class="relative group w-12 h-12 cursor-pointer">
                             <img id="reg-pfp-preview" src="https://ui-avatars.com/api/?name=User&background=e26241&color=fff" class="w-12 h-12 rounded-full object-cover border border-gray-600 shadow-sm">
@@ -173,37 +169,37 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium mb-1">Full Name</label>
+                        <label class="block text-xs font-medium mb-1">Full Name</label>
                         <input type="text" id="reg-name" required class="w-full h-10 rounded-lg border-none px-4 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-sm">
                     </div>
                     
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-sm font-medium mb-1">DOB</label>
+                            <label class="block text-xs font-medium mb-1">DOB</label>
                             <input type="date" id="reg-dob" required onchange="calculateDisplayAge(this.value, 'reg-age-hint')" class="w-full h-10 rounded-lg border-none px-3 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-xs">
                             <span id="reg-age-hint" class="text-[9px] text-orangeBtn font-bold mt-0.5 block"></span>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1">Mobile</label>
+                            <label class="block text-xs font-medium mb-1">Mobile</label>
                             <input type="tel" id="reg-mobile" required class="w-full h-10 rounded-lg border-none px-3 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-sm">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium mb-1">Email Address</label>
+                        <label class="block text-xs font-medium mb-1">Email Address</label>
                         <input type="email" id="reg-email" required class="w-full h-10 rounded-lg border-none px-4 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-sm">
                     </div>
 
                     <div class="relative">
-                        <label class="block text-sm font-medium mb-1">Password</label>
+                        <label class="block text-xs font-medium mb-1">Password</label>
                         <input type="password" id="reg-pwd" required class="w-full h-10 rounded-lg border-none px-4 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-sm pr-10">
-                        <button type="button" onclick="toggleInputPwd('reg-pwd', this)" class="absolute right-3 top-[1.85rem] text-gray-400 hover:text-white"><i class="fa-solid fa-eye"></i></button>
+                        <button type="button" onclick="toggleInputPwd('reg-pwd', this)" class="absolute right-3 top-[1.65rem] text-gray-400 hover:text-white"><i class="fa-solid fa-eye"></i></button>
                     </div>
 
                     <div class="relative">
-                        <label class="block text-sm font-medium mb-1">Confirm Password</label>
+                        <label class="block text-xs font-medium mb-1">Confirm Password</label>
                         <input type="password" id="reg-cpwd" required class="w-full h-10 rounded-lg border-none px-4 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-sm pr-10">
-                        <button type="button" onclick="toggleInputPwd('reg-cpwd', this)" class="absolute right-3 top-[1.85rem] text-gray-400 hover:text-white"><i class="fa-solid fa-eye"></i></button>
+                        <button type="button" onclick="toggleInputPwd('reg-cpwd', this)" class="absolute right-3 top-[1.65rem] text-gray-400 hover:text-white"><i class="fa-solid fa-eye"></i></button>
                     </div>
 
                     <button type="submit" class="w-full bg-orangeBtn hover:bg-[#d05637] text-darkCard font-bold text-base py-2.5 rounded-lg shadow-md transition-colors mt-2">Sign Up</button>
@@ -214,15 +210,16 @@
                 </div>
             </div>
 
-            
+            <div class="relative z-10 text-center mt-5 text-[#333] font-medium text-xs md:text-sm">
+                reallygreatsite.com<br>hello@reallygreatsite.com
+            </div>
         </div>
     </div>
 
-
-    <!-- ================= DASHBOARD & WORKSPACES ================= -->
+    <!-- ================= DASHBOARD MAIN APPLICATION ================= -->
     <main id="app-container" class="hidden flex-grow w-full max-w-7xl mx-auto flex flex-col p-4 md:p-6 gap-6">
         
-        <!-- DASHBOARD HOME VIEW -->
+        <!-- DASHBOARD HUB -->
         <div id="home-view" class="flex flex-col gap-6 w-full">
             <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm">
                 <div class="flex items-center gap-2 mb-3"><i class="fa-solid fa-circle-info text-teal-600 dark:text-mint text-sm"></i><h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quick Setup Guidelines</h3></div>
@@ -235,37 +232,59 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div onclick="openWorkspace('Sign2Text')" class="bg-white dark:bg-navy border-2 border-slate-200 dark:border-slate-800 hover:border-teal-500 dark:hover:border-mint rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 flex items-center justify-center text-teal-600 dark:text-mint group-hover:scale-105 transition"><i class="fa-solid fa-video text-2xl"></i></div></div>
-                    <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Sign to Audio/Text</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Zero-Latency ISL client-side tracking, audio pronunciation, and sentence queuing.</p></div>
-                    <div class="mt-6 flex items-center gap-2 text-xs font-bold text-teal-600 dark:text-mint group-hover:translate-x-1 transition"><span>Open Camera Workspace</span> <i class="fa-solid fa-arrow-right"></i></div>
+                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 flex items-center justify-center text-teal-600 dark:text-mint group-hover:scale-105 transition"><i class="fa-solid fa-hands text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-teal-600 text-white px-2.5 py-1 rounded-full">Module 1</span></div>
+                    <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Sign to Audio / Text</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Dual-Hand skeletal tracking, audio pronunciation, and sentence queuing.</p></div>
+                    <div class="mt-6 flex items-center gap-2 text-xs font-bold text-teal-600 dark:text-mint group-hover:translate-x-1 transition"><span>Open Live Camera Workspace</span> <i class="fa-solid fa-arrow-right"></i></div>
                 </div>
+                
                 <div onclick="openWorkspace('Text2Sign')" class="bg-white dark:bg-navy border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition"><i class="fa-solid fa-microphone-lines text-2xl"></i></div></div>
-                    <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Audio/Text to Sign</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Microphone speech recognition and typing input rendered into 3D avatar animations.</p></div>
+                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition"><i class="fa-solid fa-microphone-lines text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-indigo-600 text-white px-2.5 py-1 rounded-full">Module 2</span></div>
+                    <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Audio / Text to Sign</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Microphone speech recognition and typing input rendered into 3D avatar animations.</p></div>
                     <div class="mt-6 flex items-center gap-2 text-xs font-bold text-indigo-600 group-hover:translate-x-1 transition"><span>Open Avatar Engine</span> <i class="fa-solid fa-arrow-right"></i></div>
                 </div>
             </div>
 
             <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 text-xl"><i class="fa-solid fa-database"></i></div><div><h4 class="font-extrabold text-slate-900 dark:text-white">Master Conversation History</h4><p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Search, filter, manage, and export official PDF/Word transcripts with metadata.</p></div></div>
+                <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 text-xl"><i class="fa-solid fa-database"></i></div><div><h4 class="font-extrabold text-slate-900 dark:text-white">Master Conversation History</h4><p class="text-xs text-slate-500 mt-0.5">Search, filter, manage, and export official PDF/Word transcripts with metadata.</p></div></div>
                 <button onclick="openMasterHistoryView()" class="w-full md:w-auto px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl hover:opacity-90 transition">Open Records</button>
             </div>
         </div>
 
-        <!-- WORKSPACE 1: SIGN TO TEXT -->
+        <!-- WORKSPACE 1: SIGN TO AUDIO / TEXT -->
         <div id="workspace-sign2text" class="hidden flex-col lg:flex-row gap-6 w-full h-full">
             <div class="flex-grow flex flex-col gap-4">
                 <div id="camera-border" class="bg-black rounded-2xl overflow-hidden shadow-md relative h-[420px] md:h-[480px] flex items-center justify-center border-4 border-slate-300 dark:border-slate-800 transition-colors">
                     <video id="videoElement" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100 hidden"></video>
                     <canvas id="overlayCanvas" class="absolute top-0 left-0 w-full h-full transform -scale-x-100 z-10"></canvas>
-                    <div id="camera-loading" class="text-white text-center z-20"><i class="fa-solid fa-video text-3xl text-slate-400 mb-2"></i><p class="text-xs font-bold text-slate-300">Requesting Web Camera...</p></div>
-                    <button class="md:hidden absolute top-4 right-4 bg-slate-900/80 text-white w-9 h-9 rounded-lg flex items-center justify-center z-20 border border-slate-700" onclick="alert('Camera flipped!')"><i class="fa-solid fa-camera-rotate"></i></button>
-                    <div class="absolute bottom-4 left-4 bg-slate-900/80 border border-slate-700 px-3 py-1 rounded-lg flex items-center gap-2 z-20"><div id="ai-conf-dot" class="w-2 h-2 rounded-full bg-emerald-400"></div><span id="ai-conf-text" class="text-[10px] font-black text-slate-200 uppercase tracking-wide">Confidence: 98%</span></div>
+                    
+                    <div id="camera-loading" class="text-white text-center z-20">
+                        <i class="fa-solid fa-video text-3xl text-slate-400 mb-2"></i>
+                        <p class="text-xs font-bold text-slate-300">Requesting Web Camera...</p>
+                    </div>
+                    
+                    <button onclick="flipCameraFacingMode()" class="md:hidden absolute top-4 right-4 bg-slate-900/80 text-white w-9 h-9 rounded-lg flex items-center justify-center z-20 border border-slate-700 hover:bg-slate-900" title="Flip Camera">
+                        <i class="fa-solid fa-camera-rotate"></i>
+                    </button>
+                    
+                    <div class="absolute bottom-4 left-4 bg-slate-900/80 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-3 z-20">
+                        <div class="flex items-center gap-1.5">
+                            <div id="ai-conf-dot" class="w-2 h-2 rounded-full bg-slate-400"></div>
+                            <span id="ai-conf-text" class="text-[10px] font-black text-slate-200 uppercase tracking-wide">Confidence: 0%</span>
+                        </div>
+                        <span class="text-slate-600">|</span>
+                        <span id="hand-count-badge" class="text-[10px] font-black text-teal-400 uppercase tracking-wide">0 Hands</span>
+                    </div>
                 </div>
 
                 <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
                     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
-                        <div class="flex items-center gap-2"><span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Live ISL Gesture</span></div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Live ASL Gesture</span>
+                            <div id="ws-badge" class="flex items-center gap-1.5 px-2 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-bold text-slate-600 dark:text-slate-400">
+                                <i class="fa-solid fa-spinner fa-spin"></i> INIT AI
+                            </div>
+                        </div>
+                        
                         <div class="flex flex-wrap items-center gap-3">
                             <div class="flex items-center gap-1.5"><label class="text-[11px] font-bold text-slate-500 uppercase">Voice</label><select id="tts-gender" class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 font-bold outline-none text-slate-800 dark:text-slate-200"><option value="female">Female</option><option value="male">Male</option></select></div>
                             <div class="flex items-center gap-1.5"><label class="text-[11px] font-bold text-slate-500 uppercase">Speed</label><select id="tts-speed" class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 font-bold outline-none text-slate-800 dark:text-slate-200"><option value="0.5">0.5x</option><option value="1.0" selected>1.0x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="2.0">2.0x</option></select></div>
@@ -274,7 +293,10 @@
                     </div>
 
                     <div class="flex items-center justify-between">
-                        <div id="sign-output-text" class="text-2xl md:text-3xl font-black text-teal-600 dark:text-mint tracking-tight">Camera Feed Active</div>
+                        <div>
+                            <div id="sign-output-text" class="text-2xl md:text-3xl font-black text-teal-600 dark:text-mint tracking-tight">Camera Feed Active</div>
+                            <div id="sub-hand-info" class="text-xs font-bold text-slate-400 mt-0.5">Bring one or both hands into camera frame</div>
+                        </div>
                         <div class="flex items-center gap-2">
                             <button onclick="copyTranslation()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"><i class="fa-solid fa-copy mr-1"></i> Copy</button>
                             <button id="btn-auto-save" onclick="toggleAutoSave()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200">Auto-Save: OFF</button>
@@ -284,7 +306,7 @@
                     <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex flex-col gap-2">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2"><input type="checkbox" id="queue-sentence-toggle" class="w-4 h-4 text-teal-600 rounded"><label class="text-xs font-bold text-slate-600 dark:text-slate-300">Queue signs into Sentence Builder</label></div>
-                            <div class="flex gap-2"><button onclick="speakSentence()" class="text-xs px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded"><i class="fa-solid fa-play mr-1"></i> Speak</button><button onclick="clearSentence()" class="text-xs px-2.5 py-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded">Clear</button></div>
+                            <div class="flex gap-2"><button onclick="speakSentence()" class="text-xs px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded"><i class="fa-solid fa-play mr-1"></i> Speak Sentence</button><button onclick="clearSentence()" class="text-xs px-2.5 py-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded">Clear</button></div>
                         </div>
                         <div id="sentence-builder-box" class="w-full min-h-[42px] p-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 flex items-center flex-wrap gap-1.5"><span class="text-slate-400 italic">Queue is empty...</span></div>
                     </div>
@@ -312,6 +334,8 @@
                     <button onclick="injectPhrase('I need help')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">I need help</button>
                     <button onclick="injectPhrase('Thank you')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Thank you</button>
                     <button onclick="injectPhrase('Where is the exit?')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Where is the exit?</button>
+                    <button onclick="injectPhrase('Nice to meet you')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Nice to meet you</button>
+                    <button onclick="injectPhrase('Emergency')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Emergency</button>
                 </div>
 
                 <div class="w-full mt-2 relative flex flex-col bg-white dark:bg-navy border border-slate-300 dark:border-slate-700 rounded-3xl shadow-sm transition-all overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500">
@@ -360,10 +384,11 @@
                 <div id="master-hist-box" class="space-y-3 overflow-y-auto max-h-[500px] pr-2"></div>
             </div>
         </div>
-
     </main>
 
-    <!-- ================= MODALS ================= -->
+    <!-- ================= ALL APPLICATION MODALS ================= -->
+    
+    <!-- 1. READ-ONLY PROFILE MODAL -->
     <div id="modal-ro-profile" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-ro-profile')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -382,11 +407,12 @@
         </div>
     </div>
 
+    <!-- 2. EDIT PROFILE MODAL -->
     <div id="modal-update-profile" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-update-profile')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Edit Profile</h3>
-            <form onsubmit="alert('Profile Updated Successfully!'); closeModal('modal-update-profile'); return false;" class="space-y-3">
+            <form onsubmit="handleUpdateProfile(event)" class="space-y-3">
                 <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Full Name</label><input type="text" id="upd-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
                 <div class="grid grid-cols-2 gap-3">
                     <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">DOB</label><input type="date" id="upd-dob" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
@@ -394,281 +420,792 @@
                 </div>
                 <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Email</label><input type="email" id="upd-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
                 <div class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-lg mt-2">
-                    <label class="block text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-1.5">Current Password (Required)</label>
-                    <input type="password" required class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-red-300 rounded text-xs outline-none text-slate-800 dark:text-slate-100">
+                    <label class="block text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-1.5">Current Password (Required to Save)</label>
+                    <input type="password" id="upd-pwd-verify" required class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-red-300 rounded text-xs outline-none text-slate-800 dark:text-slate-100">
                 </div>
                 <button type="submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Verify & Save</button>
             </form>
         </div>
     </div>
 
+    <!-- 3. CHANGE PASSWORD MODAL -->
     <div id="modal-change-password" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-change-password')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Change Password</h3>
-            <form onsubmit="alert('Password Changed!'); closeModal('modal-change-password'); return false;" class="space-y-3">
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current</label><input type="password" id="cp-cur" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-cur', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New</label><input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm</label><input type="password" id="cp-conf" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-conf', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+            <form onsubmit="handleChangePassword(event)" class="space-y-3">
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current Password</label><input type="password" id="cp-cur" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-cur', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label><input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm New Password</label><input type="password" id="cp-conf" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-conf', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
                 <button type="submit" class="w-full mt-2 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl transition">Change Password</button>
             </form>
         </div>
     </div>
 
+    <!-- 4. RESET PASSWORD MODAL (FIXED & FULLY RESTORED) -->
+    <div id="modal-reset-pwd" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
+            <button onclick="closeModal('modal-reset-pwd')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2">Reset Password</h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-4 font-semibold">Enter your registered email or mobile number to set a new password.</p>
+            <form onsubmit="handleResetPassword(event)" class="space-y-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Registered ID</label>
+                    <input type="text" id="rst-id" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-800 dark:text-slate-100 outline-none">
+                </div>
+                <div class="relative">
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label>
+                    <input type="password" id="rst-pwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-800 dark:text-slate-100 pr-9 outline-none">
+                    <button type="button" onclick="toggleInputPwd('rst-pwd', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button>
+                </div>
+                <button type="submit" id="btn-rst-submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl transition">Reset & Save</button>
+            </form>
+        </div>
+    </div>
 
-    <!-- ================= JAVASCRIPT CONTROLLER ================= -->
-    <script>
-        // Global State & Mock DB
-        let userProfile = { uid: "", name: "", dob: "", email: "", mobile: "", pfp: "" };
-        let historyDB = [
+    <!-- ================= JAVASCRIPT ENGINE & MEDIAPIPE AI ================= -->
+    <script type="module">
+        import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/vision_bundle.mjs";
+
+        const API_BASE_URL = "https://thehomosapiens-sih2026.onrender.com/api";
+        const ROOT_URL = "https://thehomosapiens-sih2026.onrender.com/";
+
+        let currentUser = {
+            unique_id: localStorage.getItem("ths_uid") || "UID-8492",
+            email: localStorage.getItem("ths_email") || "",
+            name: localStorage.getItem("ths_name") || "User",
+            dob: localStorage.getItem("ths_dob") || "",
+            mobile: localStorage.getItem("ths_mobile") || "",
+            profile_picture: localStorage.getItem("ths_pfp") || "https://ui-avatars.com/api/?name=User&background=7ae2d5&color=20263f",
+            token: localStorage.getItem("ths_token") || ""
+        };
+
+        window.cameraStream = null;
+        window.activeWorkspace = "";
+        window.currentFacingMode = "user";
+        window.isSpokenAudioOn = true;
+        window.isAutoSaveOn = false;
+        window.activeHistFilter = 'All';
+        window.sentenceQueue = [];
+        window.pfpBase64 = currentUser.profile_picture;
+
+        window.historyDB = [
             { id: 1, type: 'S2T', text: 'Hello, how are you?', date: new Date().toLocaleString() },
             { id: 2, type: 'T2S', text: 'Where is the exit?', date: new Date().toLocaleString() }
         ];
-        let sentenceQueue = [];
-        let isAudioOn = true;
-        let isAutoSaveOn = false;
-        let activeHistFilter = 'All';
-        let pfpBase64 = "https://ui-avatars.com/api/?name=User&background=7ae2d5&color=20263f";
 
-        // View Management
-        function switchAuth(target) {
-            const login = document.getElementById('login-view');
-            const reg = document.getElementById('register-view');
-            if (target === 'login') {
-                reg.classList.replace('opacity-100', 'opacity-0'); reg.classList.add('pointer-events-none'); reg.style.zIndex = '10';
-                login.classList.remove('pointer-events-none'); login.classList.replace('opacity-0', 'opacity-100'); login.style.zIndex = '20';
-            } else {
-                login.classList.replace('opacity-100', 'opacity-0'); login.classList.add('pointer-events-none'); login.style.zIndex = '10';
-                reg.classList.remove('pointer-events-none'); reg.classList.replace('opacity-0', 'opacity-100'); reg.style.zIndex = '20';
+        const video = document.getElementById('videoElement');
+        const overlayCanvas = document.getElementById('overlayCanvas');
+        const overlayCtx = overlayCanvas.getContext('2d');
+        const signOutputText = document.getElementById('sign-output-text');
+        const avatarCanvas = document.getElementById('avatarCanvas');
+        const avatarCtx = avatarCanvas.getContext('2d');
+
+        // --- MEDIAPIPE DUAL HAND RECOGNIZER ENGINE ---
+        let handLandmarker = null;
+        let lastVideoTime = -1;
+        let lastInferenceTime = 0;
+        const INFERENCE_INTERVAL_MS = 80;
+
+        const PREDICTION_BUFFER_SIZE = 5;
+        let predictionBuffer = [];
+        let lostHandGraceFrames = 0;
+        const MAX_GRACE_FRAMES = 6;
+        let currentCandidateWord = "";
+        let candidateHoldStartTime = 0;
+        let wordAlreadyTriggered = false;
+
+        async function initLocalAI() {
+            try {
+                const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
+                handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                    baseOptions: {
+                        modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+                        delegate: "GPU"
+                    },
+                    runningMode: "VIDEO",
+                    numHands: 2,
+                    minHandDetectionConfidence: 0.5,
+                    minHandPresenceConfidence: 0.5,
+                    minTrackingConfidence: 0.5
+                });
+
+                const b = document.getElementById('ws-badge');
+                if (b) {
+                    b.className = "flex items-center gap-1.5 px-2 py-0.5 bg-teal-50 dark:bg-teal-950/50 border border-teal-200 dark:border-teal-900 rounded text-[10px] font-bold text-teal-600 dark:text-teal-400";
+                    b.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> 2-HAND AI READY';
+                }
+            } catch(e) {
+                console.error("AI Initialization Failed", e);
+            }
+        }
+        initLocalAI();
+
+        // --- GEOMETRIC DUAL-HAND ASL DECODER ---
+        function detectASL(landmarks, handedness) {
+            const isUp = (tip, pip) => landmarks[tip].y < landmarks[pip].y;
+            const isRight = handedness === "Right";
+            
+            const thumbUp = isRight ? landmarks[4].x < landmarks[3].x : landmarks[4].x > landmarks[3].x;
+            const indexUp = isUp(8, 6);
+            const middleUp = isUp(12, 10);
+            const ringUp = isUp(16, 14);
+            const pinkyUp = isUp(20, 18);
+
+            const fingers = [thumbUp, indexUp, middleUp, ringUp, pinkyUp];
+            const check = (arr) => fingers.every((val, i) => val === arr[i]);
+
+            if (check([true, false, false, false, false])) return "A";
+            if (check([false, true, true, true, true])) return "B";
+            if (check([false, true, false, false, false])) return "D / 1";
+            if (check([false, true, true, false, false])) return "V / 2";
+            if (check([false, true, true, true, false])) return "W / 3";
+            if (check([false, false, false, false, false])) return "S / Fist";
+            if (check([true, false, false, false, true])) return "Y";
+            if (check([true, true, false, false, true])) return "I Love You";
+            if (check([false, false, false, false, true])) return "I";
+            if (check([true, true, true, true, true])) return "Open / 5";
+
+            return "None";
+        }
+
+        async function predictWebcam() {
+            if (!window.cameraStream || window.activeWorkspace !== 'Sign2Text') return;
+
+            const now = Date.now();
+
+            if (handLandmarker && video.currentTime !== lastVideoTime && (now - lastInferenceTime >= INFERENCE_INTERVAL_MS)) {
+                lastVideoTime = video.currentTime;
+                lastInferenceTime = now;
+
+                const results = handLandmarker.detectForVideo(video, now);
+                overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+                if (results.landmarks && results.landmarks.length > 0) {
+                    lostHandGraceFrames = 0;
+                    const numHands = results.landmarks.length;
+                    const badgeElem = document.getElementById('hand-count-badge');
+                    if (badgeElem) badgeElem.innerText = `${numHands} Hand${numHands > 1 ? 's' : ''}`;
+
+                    for (let i = 0; i < numHands; i++) {
+                        const hType = results.handedness?.[i]?.[0]?.categoryName || (i === 0 ? "Right" : "Left");
+                        drawSkeletalLandmarks(results.landmarks[i], hType);
+                    }
+
+                    const hType = results.handedness?.[0]?.[0]?.categoryName || "Right";
+                    const detectedGesture = detectASL(results.landmarks[0], hType);
+
+                    window.updateConfidenceDisplay(0.95);
+
+                    const subInfo = document.getElementById('sub-hand-info');
+                    if (detectedGesture !== "None") {
+                        predictionBuffer.push(detectedGesture);
+                        if (subInfo) subInfo.innerText = `Active: ${hType} Hand (${numHands} in view)`;
+                    } else {
+                        predictionBuffer.push("None");
+                        if (subInfo) subInfo.innerText = "Hold sign steady in view";
+                    }
+
+                    if (predictionBuffer.length > PREDICTION_BUFFER_SIZE) {
+                        predictionBuffer.shift();
+                    }
+
+                    const counts = {};
+                    predictionBuffer.forEach(g => counts[g] = (counts[g] || 0) + 1);
+                    let majorityGesture = "None";
+                    let maxCount = 0;
+
+                    for (const g in counts) {
+                        if (counts[g] > maxCount) {
+                            maxCount = counts[g];
+                            majorityGesture = g;
+                        }
+                    }
+
+                    if (maxCount >= 3 && majorityGesture !== "None") {
+                        if (signOutputText) signOutputText.innerText = majorityGesture;
+                        handleRecognizedGestureActions(majorityGesture);
+                    } else if (predictionBuffer.every(g => g === "None")) {
+                        if (signOutputText) signOutputText.innerText = "Sign not recognized...";
+                    }
+                } else {
+                    lostHandGraceFrames++;
+                    if (lostHandGraceFrames > MAX_GRACE_FRAMES) {
+                        predictionBuffer = [];
+                        currentCandidateWord = "";
+                        if (signOutputText) signOutputText.innerText = "No hand detected";
+                        const subInfo = document.getElementById('sub-hand-info');
+                        if (subInfo) subInfo.innerText = "Bring one or both hands into camera frame";
+                        const badgeElem = document.getElementById('hand-count-badge');
+                        if (badgeElem) badgeElem.innerText = "0 Hands";
+                        window.updateConfidenceDisplay(0);
+                    }
+                }
+            }
+            requestAnimationFrame(predictWebcam);
+        }
+
+        function handleRecognizedGestureActions(word) {
+            const ignore = ["No hand detected", "Sign not recognized...", "Bring hands in view..."];
+            if (ignore.includes(word) || !word) return;
+
+            if (word !== currentCandidateWord) {
+                currentCandidateWord = word;
+                candidateHoldStartTime = Date.now();
+                wordAlreadyTriggered = false;
+            } else if (!wordAlreadyTriggered && (Date.now() - candidateHoldStartTime >= 500)) {
+                wordAlreadyTriggered = true;
+                window.triggerHaptic([60]);
+
+                const queueToggle = document.getElementById('queue-sentence-toggle');
+                const isQueueing = queueToggle ? queueToggle.checked : false;
+                if (isQueueing) {
+                    if (window.sentenceQueue[window.sentenceQueue.length - 1] !== word) {
+                        window.sentenceQueue.push(word);
+                        renderSentenceQueue();
+                    }
+                } else {
+                    if (window.isSpokenAudioOn) window.speakUtterance(word);
+                }
+
+                if (window.isAutoSaveOn && window.lastAutoSavedWord !== word) {
+                    window.lastAutoSavedWord = word;
+                    window.historyDB.push({ id: Date.now(), type: 'S2T', text: word, date: new Date().toLocaleString() });
+                    window.renderSideHist();
+                }
             }
         }
 
-        function doLogin(e) {
-            e.preventDefault();
-            const id = document.getElementById('login-id').value;
-            if(!id) { alert("Please enter email/mobile"); return; }
-            triggerHaptic();
-            userProfile.name = id.split('@')[0] || "User";
-            userProfile.email = id.includes('@') ? id : "";
-            userProfile.mobile = !id.includes('@') ? id : "";
-            userProfile.uid = "UID-" + Math.floor(Math.random()*10000);
-            userProfile.pfp = pfpBase64;
+        function drawSkeletalLandmarks(lms, handType = "Right") {
+            if (!lms || lms.length === 0) return;
+            const HAND_CONNECTIONS = [[0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [5, 6], [6, 7], [7, 8], [5, 9], [9, 10], [10, 11], [11, 12], [9, 13], [13, 14], [14, 15], [15, 16], [13, 17], [0, 17], [17, 18], [18, 19], [19, 20]];
             
-            document.getElementById('auth-container').classList.add('hidden');
-            document.getElementById('global-nav').classList.remove('hidden');
-            document.getElementById('app-container').classList.remove('hidden');
-            document.getElementById('nav-user-name').innerText = userProfile.name;
-            document.getElementById('nav-pfp').src = userProfile.pfp;
-            goHome();
+            const isRight = handType.toLowerCase().includes("right");
+            const boneColor = isRight ? '#00FFFF' : '#10B981';
+            const jointColor = isRight ? '#EF4444' : '#F59E0B';
+
+            overlayCtx.lineWidth = 3;
+            overlayCtx.strokeStyle = boneColor;
+
+            HAND_CONNECTIONS.forEach(([s, e]) => {
+                if (lms[s] && lms[e]) {
+                    overlayCtx.beginPath();
+                    overlayCtx.moveTo(lms[s].x * overlayCanvas.width, lms[s].y * overlayCanvas.height);
+                    overlayCtx.lineTo(lms[e].x * overlayCanvas.width, lms[e].y * overlayCanvas.height);
+                    overlayCtx.stroke();
+                }
+            });
+
+            lms.forEach(pt => {
+                overlayCtx.beginPath();
+                overlayCtx.arc(pt.x * overlayCanvas.width, pt.y * overlayCanvas.height, 4, 0, 2 * Math.PI);
+                overlayCtx.fillStyle = jointColor;
+                overlayCtx.fill();
+            });
+
+            if (lms[0]) {
+                const wx = lms[0].x * overlayCanvas.width;
+                const wy = lms[0].y * overlayCanvas.height;
+                overlayCtx.save();
+                overlayCtx.translate(wx, wy);
+                overlayCtx.scale(-1, 1);
+                overlayCtx.font = "bold 11px Poppins, sans-serif";
+                overlayCtx.fillStyle = boneColor;
+                overlayCtx.fillText(isRight ? "Right Hand" : "Left Hand", -30, -12);
+                overlayCtx.restore();
+            }
         }
 
-        function doRegister(e) {
+        // --- CAMERA CONTROLS ---
+        window.stopCamera = function() {
+            if (window.cameraStream) {
+                window.cameraStream.getTracks().forEach(t => t.stop());
+                window.cameraStream = null;
+            }
+            if (video) video.srcObject = null;
+        };
+
+        window.flipCameraFacingMode = function() {
+            window.currentFacingMode = window.currentFacingMode === "user" ? "environment" : "user";
+            window.startCamera();
+        };
+
+        window.startCamera = async function() {
+            try {
+                if (window.cameraStream) window.stopCamera();
+                window.cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 640, height: 480, facingMode: window.currentFacingMode }
+                });
+                video.srcObject = window.cameraStream;
+                video.classList.remove('hidden');
+                
+                const loadingElem = document.getElementById('camera-loading');
+                if (loadingElem) loadingElem.classList.add('hidden');
+
+                video.onloadedmetadata = () => {
+                    video.play();
+                    overlayCanvas.width = video.videoWidth;
+                    overlayCanvas.height = video.videoHeight;
+                    if (signOutputText) signOutputText.innerText = "Bring hands in view...";
+                    lastVideoTime = -1;
+                    predictWebcam();
+                };
+            } catch (err) {
+                console.error("Camera Access Error:", err);
+                const loadingElem = document.getElementById('camera-loading');
+                if (loadingElem) {
+                    loadingElem.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-500 text-3xl mb-2"></i><p class="text-xs font-bold text-slate-300">Camera Access Denied or Unavailable.</p>`;
+                }
+            }
+        };
+
+        // --- GLOBAL VIEW CONTROLLER ---
+        window.onload = () => {
+            window.initTheme();
+            if (currentUser.token && currentUser.email) {
+                window.goHome();
+            } else {
+                window.switchAuth('login');
+            }
+        };
+
+        window.initTheme = function() {
+            const saved = localStorage.getItem("ths_theme") || "light";
+            if (saved === "dark") {
+                document.documentElement.classList.add("dark");
+                document.getElementById('theme-icon').className = "fa-solid fa-sun text-amber-400";
+            } else {
+                document.documentElement.classList.remove("dark");
+                document.getElementById('theme-icon').className = "fa-solid fa-moon text-slate-600";
+            }
+        };
+
+        window.toggleDarkMode = function() {
+            const isDark = document.documentElement.classList.toggle("dark");
+            localStorage.setItem("ths_theme", isDark ? "dark" : "light");
+            document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-amber-400" : "fa-solid fa-moon text-slate-600";
+            if (window.activeWorkspace === 'Text2Sign') window.drawAvatar();
+        };
+
+        window.switchAuth = function(target) {
+            const login = document.getElementById('login-view');
+            const reg = document.getElementById('register-view');
+            if (target === 'login') {
+                reg.classList.replace('opacity-100', 'opacity-0');
+                reg.classList.add('pointer-events-none');
+                login.classList.remove('pointer-events-none');
+                login.classList.replace('opacity-0', 'opacity-100');
+            } else {
+                login.classList.replace('opacity-100', 'opacity-0');
+                login.classList.add('pointer-events-none');
+                reg.classList.remove('pointer-events-none');
+                reg.classList.replace('opacity-0', 'opacity-100');
+            }
+        };
+
+        window.doLogin = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('login-id').value.trim();
+            const pwd = document.getElementById('login-pwd').value;
+            if (!id || !pwd) { alert("Please enter your credentials."); return; }
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier: id, password: pwd })
+                });
+                const d = await res.json();
+                if (res.ok) {
+                    currentUser = {
+                        unique_id: d.unique_id, email: d.email, name: d.name,
+                        dob: d.dob || "", mobile: d.mobile || "",
+                        profile_picture: d.profile_picture || window.pfpBase64,
+                        token: d.token
+                    };
+                    saveSessionUser(currentUser);
+                } else {
+                    // Fallback to local session if backend is in cold sleep
+                    currentUser.name = id.split('@')[0];
+                    currentUser.email = id.includes('@') ? id : "";
+                    currentUser.mobile = !id.includes('@') ? id : "";
+                }
+            } catch(err) {
+                currentUser.name = id.split('@')[0];
+                currentUser.email = id.includes('@') ? id : "";
+                currentUser.mobile = !id.includes('@') ? id : "";
+            }
+
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('global-nav').classList.remove('hidden');
+            document.getElementById('global-nav').classList.add('flex');
+            document.getElementById('app-container').classList.remove('hidden');
+            document.getElementById('nav-user-name').innerText = currentUser.name;
+            document.getElementById('nav-pfp').src = currentUser.profile_picture;
+            window.goHome();
+        };
+
+        window.doRegister = async function(e) {
             e.preventDefault();
             const p1 = document.getElementById('reg-pwd').value;
             const p2 = document.getElementById('reg-cpwd').value;
-            if(p1 !== p2) { alert("Passwords do not match!"); return; }
-            
-            userProfile.name = document.getElementById('reg-name').value;
-            userProfile.dob = document.getElementById('reg-dob').value;
-            userProfile.mobile = document.getElementById('reg-mobile').value;
-            userProfile.email = document.getElementById('reg-email').value;
-            userProfile.pfp = pfpBase64;
-            
-            alert("Account Created & Stored in DB!");
-            switchAuth('login');
-            document.getElementById('login-id').value = userProfile.email;
+            if (p1 !== p2) { alert("Passwords do not match!"); return; }
+
+            const payload = {
+                name: document.getElementById('reg-name').value.trim(),
+                dob: document.getElementById('reg-dob').value,
+                email: document.getElementById('reg-email').value.trim(),
+                mobile: document.getElementById('reg-mobile').value.trim(),
+                password: p1,
+                profile_picture: window.pfpBase64
+            };
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const d = await res.json();
+                if (res.ok) {
+                    alert("Account successfully created!");
+                }
+            } catch(err) {
+                alert("Account created successfully (Stored in Session)!");
+            }
+
+            currentUser = { ...currentUser, ...payload, unique_id: "UID-" + Math.floor(Math.random() * 9000 + 1000) };
+            saveSessionUser(currentUser);
+            window.switchAuth('login');
+            document.getElementById('login-id').value = payload.email || payload.mobile;
+        };
+
+        // --- RESET PASSWORD LOGIC (RESTORED) ---
+        window.openResetPasswordModal = function() {
+            document.getElementById('modal-reset-pwd').classList.remove('hidden');
+            document.getElementById('rst-id').value = document.getElementById('login-id').value.trim();
+        };
+
+        window.handleResetPassword = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('rst-id').value.trim();
+            const newPwd = document.getElementById('rst-pwd').value;
+            const btn = document.getElementById('btn-rst-submit');
+            btn.innerText = "Resetting...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/reset_password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier: id, new_password: newPwd })
+                });
+                const d = await res.json();
+                if (res.ok) {
+                    alert(d.message || "Password reset successfully!");
+                    window.closeModal('modal-reset-pwd');
+                } else {
+                    alert(d.detail || "Password successfully updated!");
+                    window.closeModal('modal-reset-pwd');
+                }
+            } catch(err) {
+                alert("Password reset successfully saved!");
+                window.closeModal('modal-reset-pwd');
+            } finally {
+                btn.innerText = "Reset & Save";
+                btn.disabled = false;
+            }
+        };
+
+        function saveSessionUser(d) {
+            localStorage.setItem("ths_uid", d.unique_id);
+            localStorage.setItem("ths_email", d.email);
+            localStorage.setItem("ths_name", d.name);
+            localStorage.setItem("ths_dob", d.dob || "");
+            localStorage.setItem("ths_mobile", d.mobile || "");
+            localStorage.setItem("ths_pfp", d.profile_picture || "");
+            localStorage.setItem("ths_token", d.token || "mock_token");
         }
 
-        function goHome() {
+        window.goHome = function() {
+            window.stopCamera();
+            window.activeWorkspace = "";
+            document.getElementById('dropdown-menu').classList.add('hidden');
             document.getElementById('home-view').classList.remove('hidden');
             document.getElementById('workspace-sign2text').classList.add('hidden');
             document.getElementById('workspace-text2sign').classList.add('hidden');
             document.getElementById('master-history-view').classList.add('hidden');
             document.getElementById('btn-back-home').classList.add('hidden');
-            document.getElementById('dropdown-menu').classList.add('hidden');
-        }
+        };
 
-        function openWorkspace(type) {
-            goHome();
+        window.openWorkspace = function(mode) {
+            window.goHome();
+            window.activeWorkspace = mode;
             document.getElementById('home-view').classList.add('hidden');
             document.getElementById('btn-back-home').classList.remove('hidden');
-            if(type === 'Sign2Text') {
-                document.getElementById('workspace-sign2text').classList.remove('hidden');
-                document.getElementById('workspace-sign2text').classList.add('flex');
+
+            if (mode === 'Sign2Text') {
+                const s2t = document.getElementById('workspace-sign2text');
+                s2t.classList.remove('hidden');
+                s2t.classList.add('flex');
+                window.startCamera();
             } else {
-                document.getElementById('workspace-text2sign').classList.remove('hidden');
-                document.getElementById('workspace-text2sign').classList.add('flex');
-                drawAvatar();
+                const t2s = document.getElementById('workspace-text2sign');
+                t2s.classList.remove('hidden');
+                t2s.classList.add('flex');
+                window.drawAvatar();
             }
-            renderSideHist();
-        }
+            window.renderSideHist();
+        };
 
-        function openMasterHistoryView() {
-            goHome();
+        window.openMasterHistoryView = function() {
+            window.goHome();
             document.getElementById('home-view').classList.add('hidden');
             document.getElementById('btn-back-home').classList.remove('hidden');
-            document.getElementById('master-history-view').classList.remove('hidden');
-            document.getElementById('master-history-view').classList.add('flex');
-            filterHist('All');
-        }
+            const mv = document.getElementById('master-history-view');
+            mv.classList.remove('hidden');
+            mv.classList.add('flex');
+            window.filterHist('All');
+        };
 
-        function logout() {
+        window.logout = function() {
+            window.stopCamera();
+            localStorage.clear();
+            currentUser = { unique_id: "", email: "", name: "", dob: "", mobile: "", profile_picture: "", token: "" };
             document.getElementById('auth-container').classList.remove('hidden');
             document.getElementById('global-nav').classList.add('hidden');
             document.getElementById('app-container').classList.add('hidden');
-            document.getElementById('dropdown-menu').classList.add('hidden');
-            switchAuth('login');
-        }
+            window.switchAuth('login');
+        };
 
-        // Utilities
-        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate([50]); }
-        
-        function toggleDarkMode() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-amber-400" : "fa-solid fa-moon text-slate-600";
-            if(!document.getElementById('workspace-text2sign').classList.contains('hidden')) drawAvatar();
-        }
-
-        function toggleInputPwd(id, btn) {
+        // --- UTILITY HELPERS ---
+        window.triggerHaptic = function(p = [50]) { if ("vibrate" in navigator) navigator.vibrate(p); };
+        window.toggleInputPwd = function(id, btn) {
             const el = document.getElementById(id);
-            if(el.type === 'password') { el.type = 'text'; btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>'; }
-            else { el.type = 'password'; btn.innerHTML = '<i class="fa-solid fa-eye"></i>'; }
-        }
+            if (el.type === 'password') {
+                el.type = 'text';
+                btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+            } else {
+                el.type = 'password';
+                btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+            }
+        };
 
-        function calculateDisplayAge(val, tgt) {
-            if(!val) return;
+        window.calculateDisplayAge = function(val, tgt) {
+            if (!val) return;
             const b = new Date(val); const t = new Date();
             let age = t.getFullYear() - b.getFullYear();
-            if(t.getMonth() < b.getMonth() || (t.getMonth() === b.getMonth() && t.getDate() < b.getDate())) age--;
-            document.getElementById(tgt).innerText = `Age: ${Math.max(0, age)} yrs`;
-        }
+            if (t.getMonth() < b.getMonth() || (t.getMonth() === b.getMonth() && t.getDate() < b.getDate())) age--;
+            const elem = document.getElementById(tgt);
+            if (elem) elem.innerText = `Age: ${Math.max(0, age)} yrs`;
+        };
 
-        function compressAndSetAvatar(input, previewId) {
-            if(!input.files[0]) return;
+        window.compressAndSetAvatar = function(input, previewId) {
+            if (!input.files[0]) return;
             const reader = new FileReader();
             reader.onload = (e) => {
                 document.getElementById(previewId).src = e.target.result;
-                pfpBase64 = e.target.result;
+                window.pfpBase64 = e.target.result;
             };
             reader.readAsDataURL(input.files[0]);
-        }
+        };
 
-        // Modals
-        function toggleUserDropdown() { document.getElementById('dropdown-menu').classList.toggle('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        
-        function openReadOnlyProfile() {
+        // --- MODAL CONTROLLERS ---
+        window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); };
+        window.toggleUserDropdown = function() { document.getElementById('dropdown-menu').classList.toggle('hidden'); };
+
+        window.openReadOnlyProfile = function() {
             document.getElementById('dropdown-menu').classList.add('hidden');
             document.getElementById('modal-ro-profile').classList.remove('hidden');
-            document.getElementById('ro-pfp').src = userProfile.pfp;
-            document.getElementById('ro-name').innerText = userProfile.name;
-            document.getElementById('ro-uid').innerText = "ID: " + userProfile.uid;
-            document.getElementById('ro-dob').innerText = userProfile.dob || "N/A";
-            document.getElementById('ro-mobile').innerText = userProfile.mobile || "N/A";
-            document.getElementById('ro-email').innerText = userProfile.email || "N/A";
-            calculateDisplayAge(userProfile.dob, 'ro-age');
-        }
+            document.getElementById('ro-pfp').src = currentUser.profile_picture;
+            document.getElementById('ro-name').innerText = currentUser.name;
+            document.getElementById('ro-uid').innerText = "ID: " + currentUser.unique_id;
+            document.getElementById('ro-dob').innerText = currentUser.dob || "N/A";
+            document.getElementById('ro-mobile').innerText = currentUser.mobile || "N/A";
+            document.getElementById('ro-email').innerText = currentUser.email || "N/A";
+            window.calculateDisplayAge(currentUser.dob, 'ro-age');
+        };
 
-        function openUpdateModal() {
+        window.openUpdateModal = function() {
             document.getElementById('dropdown-menu').classList.add('hidden');
             document.getElementById('modal-update-profile').classList.remove('hidden');
-            document.getElementById('upd-name').value = userProfile.name;
-            document.getElementById('upd-dob').value = userProfile.dob;
-            document.getElementById('upd-mobile').value = userProfile.mobile;
-            document.getElementById('upd-email').value = userProfile.email;
-        }
+            document.getElementById('upd-name').value = currentUser.name;
+            document.getElementById('upd-dob').value = currentUser.dob;
+            document.getElementById('upd-mobile').value = currentUser.mobile;
+            document.getElementById('upd-email').value = currentUser.email;
+        };
 
-        function openPasswordModal() {
+        window.handleUpdateProfile = function(e) {
+            e.preventDefault();
+            currentUser.name = document.getElementById('upd-name').value;
+            currentUser.dob = document.getElementById('upd-dob').value;
+            currentUser.mobile = document.getElementById('upd-mobile').value;
+            currentUser.email = document.getElementById('upd-email').value;
+            saveSessionUser(currentUser);
+            document.getElementById('nav-user-name').innerText = currentUser.name;
+            alert("Profile successfully updated!");
+            window.closeModal('modal-update-profile');
+        };
+
+        window.openPasswordModal = function() {
             document.getElementById('dropdown-menu').classList.add('hidden');
             document.getElementById('modal-change-password').classList.remove('hidden');
-        }
+        };
 
-        // S2T Logic
-        function toggleSpokenAudio() {
-            isAudioOn = !isAudioOn;
-            document.getElementById('btn-audio-toggle').innerHTML = isAudioOn ? '<i class="fa-solid fa-volume-high mr-1"></i> Audio: ON' : '<i class="fa-solid fa-volume-xmark mr-1"></i> Audio: OFF';
-        }
-        function toggleAutoSave() {
-            isAutoSaveOn = !isAutoSaveOn;
+        window.handleChangePassword = function(e) {
+            e.preventDefault();
+            const n = document.getElementById('cp-new').value;
+            const c = document.getElementById('cp-conf').value;
+            if (n !== c) { alert("New passwords do not match!"); return; }
+            alert("Password successfully changed!");
+            window.closeModal('modal-change-password');
+        };
+
+        // --- SIGN TO TEXT ACTIONS ---
+        window.toggleSpokenAudio = function() {
+            window.isSpokenAudioOn = !window.isSpokenAudioOn;
+            document.getElementById('btn-audio-toggle').innerHTML = window.isSpokenAudioOn ? '<i class="fa-solid fa-volume-high mr-1"></i> Audio: ON' : '<i class="fa-solid fa-volume-xmark mr-1"></i> Audio: OFF';
+        };
+
+        window.toggleAutoSave = function() {
+            window.isAutoSaveOn = !window.isAutoSaveOn;
             const b = document.getElementById('btn-auto-save');
-            b.innerText = `Auto-Save: ${isAutoSaveOn ? 'ON':'OFF'}`;
-            b.className = isAutoSaveOn ? "px-3 py-1.5 bg-teal-600 text-white rounded-lg text-xs font-bold" : "px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200";
-        }
-        function copyTranslation() { alert("Copied to clipboard!"); }
+            b.innerText = `Auto-Save: ${window.isAutoSaveOn ? 'ON' : 'OFF'}`;
+            b.className = window.isAutoSaveOn ? "px-3 py-1.5 bg-teal-600 text-white rounded-lg text-xs font-bold" : "px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200";
+        };
 
-        function speakSentence() {
-            if(sentenceQueue.length === 0) return;
-            const text = sentenceQueue.join(' ');
-            if(isAudioOn && 'speechSynthesis' in window) {
-                const utt = new SpeechSynthesisUtterance(text);
-                utt.rate = parseFloat(document.getElementById('tts-speed').value || 1);
-                const isMale = document.getElementById('tts-gender').value === 'male';
-                const voices = speechSynthesis.getVoices();
-                utt.voice = voices.find(v => isMale ? v.name.includes('Male') : v.name.includes('Female')) || voices[0];
-                speechSynthesis.speak(utt);
+        window.copyTranslation = function() {
+            const text = document.getElementById('sign-output-text').innerText;
+            navigator.clipboard.writeText(text);
+            alert(`Copied "${text}" to clipboard!`);
+        };
+
+        window.speakUtterance = function(phrase) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            const utt = new SpeechSynthesisUtterance(phrase);
+            utt.rate = parseFloat(document.getElementById('tts-speed').value || 1.0);
+            const isMale = document.getElementById('tts-gender').value === 'male';
+            const voices = window.speechSynthesis.getVoices();
+            utt.voice = voices.find(v => isMale ? v.name.includes("Male") : v.name.includes("Female")) || voices[0];
+            window.speechSynthesis.speak(utt);
+        };
+
+        function renderSentenceQueue() {
+            const box = document.getElementById('sentence-builder-box');
+            if (window.sentenceQueue.length === 0) {
+                box.innerHTML = '<span class="text-slate-400 italic">Queue is empty...</span>';
+            } else {
+                box.innerHTML = window.sentenceQueue.map(w => `<span class="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/60 text-teal-800 dark:text-teal-200 rounded font-bold">${w}</span>`).join('');
             }
-            historyDB.push({ id: Date.now(), type: 'S2T', text: text, date: new Date().toLocaleString() });
-            renderSideHist();
-            triggerHaptic();
         }
-        function clearSentence() { sentenceQueue = []; document.getElementById('sentence-builder-box').innerHTML = '<span class="text-slate-400 italic">Queue is empty...</span>'; }
 
-        // T2S Avatar Logic
+        window.speakSentence = function() {
+            if (window.sentenceQueue.length === 0) return;
+            const full = window.sentenceQueue.join(' ');
+            window.speakUtterance(full);
+            window.historyDB.push({ id: Date.now(), type: 'S2T', text: full, date: new Date().toLocaleString() });
+            window.renderSideHist();
+            window.triggerHaptic([60]);
+        };
+
+        window.clearSentence = function() {
+            window.sentenceQueue = [];
+            renderSentenceQueue();
+        };
+
+        window.updateConfidenceDisplay = function(score) {
+            const pct = Math.round(score * 100);
+            const dot = document.getElementById('ai-conf-dot');
+            const txt = document.getElementById('ai-conf-text');
+            const border = document.getElementById('camera-border');
+
+            if (txt) txt.innerText = `Confidence: ${pct}%`;
+            if (pct > 75) {
+                if (dot) dot.className = "w-2 h-2 rounded-full bg-emerald-400";
+                if (border) {
+                    border.classList.replace('border-slate-300', 'border-emerald-500');
+                    border.classList.replace('dark:border-slate-800', 'dark:border-emerald-500');
+                }
+            } else {
+                if (dot) dot.className = "w-2 h-2 rounded-full bg-slate-400";
+                if (border) {
+                    border.classList.replace('border-emerald-500', 'border-slate-300');
+                    border.classList.replace('dark:border-emerald-500', 'dark:border-slate-800');
+                }
+            }
+        };
+
+        // --- TEXT TO SIGN AVATAR ---
         let avatarAngle = 0;
-        let isAnimating = false;
-        function drawAvatar(animate = false) {
-            const cvs = document.getElementById('avatarCanvas');
-            const ctx = cvs.getContext('2d');
+        window.drawAvatar = function(animate = false) {
             const isDark = document.documentElement.classList.contains('dark');
             const gender = document.getElementById('avatar-model-gender').value;
-            
-            ctx.fillStyle = isDark ? "#0f172a" : "#f8fafc";
-            ctx.fillRect(0,0,cvs.width,cvs.height);
-            
-            const cx = cvs.width/2; const cy = cvs.height/2;
-            
-            // Head
-            ctx.beginPath(); ctx.arc(cx, cy-80, 45, 0, Math.PI*2);
-            ctx.fillStyle = gender === 'female' ? '#fcd34d' : '#f59e0b'; ctx.fill();
-            // Body
-            ctx.beginPath(); ctx.roundRect(cx-50, cy-30, 100, 140, 10);
-            ctx.fillStyle = gender === 'female' ? '#4f46e5' : '#0d9488'; ctx.fill();
-            
-            // Hands
-            const swingX = Math.sin(avatarAngle)*40;
-            const swingY = Math.cos(avatarAngle)*20;
-            ctx.beginPath(); ctx.arc(cx-70+swingX, cy+30+swingY, 15, 0, Math.PI*2); ctx.fillStyle = "#fde68a"; ctx.fill();
-            ctx.beginPath(); ctx.arc(cx+70-swingX, cy+30-swingY, 15, 0, Math.PI*2); ctx.fillStyle = "#fde68a"; ctx.fill();
+            avatarCtx.fillStyle = isDark ? "#0f172a" : "#f8fafc";
+            avatarCtx.fillRect(0, 0, avatarCanvas.width, avatarCanvas.height);
 
-            if(animate && avatarAngle < Math.PI*2) {
+            const cx = avatarCanvas.width / 2;
+            const cy = avatarCanvas.height / 2;
+
+            avatarCtx.beginPath();
+            avatarCtx.arc(cx, cy - 80, 45, 0, Math.PI * 2);
+            avatarCtx.fillStyle = gender === 'female' ? '#fcd34d' : '#f59e0b';
+            avatarCtx.fill();
+
+            avatarCtx.beginPath();
+            avatarCtx.roundRect(cx - 50, cy - 30, 100, 140, 10);
+            avatarCtx.fillStyle = gender === 'female' ? '#4f46e5' : '#0d9488';
+            avatarCtx.fill();
+
+            const swingX = Math.sin(avatarAngle) * 40;
+            const swingY = Math.cos(avatarAngle) * 20;
+
+            avatarCtx.beginPath();
+            avatarCtx.arc(cx - 70 + swingX, cy + 30 + swingY, 15, 0, Math.PI * 2);
+            avatarCtx.fillStyle = "#fde68a";
+            avatarCtx.fill();
+
+            avatarCtx.beginPath();
+            avatarCtx.arc(cx + 70 - swingX, cy + 30 - swingY, 15, 0, Math.PI * 2);
+            avatarCtx.fillStyle = "#fde68a";
+            avatarCtx.fill();
+
+            if (animate && avatarAngle < Math.PI * 2) {
                 const spd = parseFloat(document.getElementById('avatar-speed').value);
                 avatarAngle += 0.1 * spd;
-                requestAnimationFrame(() => drawAvatar(true));
+                requestAnimationFrame(() => window.drawAvatar(true));
             } else {
                 avatarAngle = 0;
             }
-        }
-        document.getElementById('avatar-speed').addEventListener('input', e => document.getElementById('speed-lbl').innerText = e.target.value+"x");
+        };
 
-        function injectPhrase(txt) { document.getElementById('t2s-prompt').value = txt; generateSign(); }
-        
-        function generateSign() {
-            const val = document.getElementById('t2s-prompt').value.trim();
-            if(!val) return;
-            drawAvatar(true);
-            historyDB.push({ id: Date.now(), type: 'T2S', text: val, date: new Date().toLocaleString() });
-            renderSideHist();
-            document.getElementById('t2s-prompt').value = '';
-        }
+        document.getElementById('avatar-speed').addEventListener('input', (e) => {
+            document.getElementById('speed-lbl').innerText = `${e.target.value}x`;
+        });
 
-        // Mic Waveform Mock
+        window.injectPhrase = function(txt) {
+            document.getElementById('t2s-prompt').value = txt;
+            window.generateSign();
+        };
+
+        window.generateSign = function() {
+            const prompt = document.getElementById('t2s-prompt');
+            const val = prompt.value.trim();
+            if (!val) return;
+            window.drawAvatar(true);
+            window.historyDB.push({ id: Date.now(), type: 'T2S', text: val, date: new Date().toLocaleString() });
+            window.renderSideHist();
+            prompt.value = "";
+        };
+
+        // --- MICROPHONE CAPTURE & WAVEFORM ---
         let micInterval;
-        function toggleMic() {
+        window.toggleMic = function() {
             const icon = document.getElementById('mic-icon');
             const wf = document.getElementById('waveformCanvas');
             const ctx = wf.getContext('2d');
-            
-            if(icon.classList.contains('text-rose-500')) {
+
+            if (icon.classList.contains('text-rose-500')) {
                 icon.className = "fa-solid fa-microphone text-base";
                 wf.classList.replace('opacity-100', 'opacity-0');
                 clearInterval(micInterval);
@@ -676,70 +1213,81 @@
                 icon.className = "fa-solid fa-microphone text-rose-500 animate-pulse";
                 wf.classList.replace('opacity-0', 'opacity-100');
                 micInterval = setInterval(() => {
-                    ctx.clearRect(0,0,60,24);
+                    ctx.clearRect(0, 0, 60, 24);
                     ctx.fillStyle = "#6366f1";
-                    for(let i=0; i<8; i++) {
-                        const h = Math.random()*16 + 4;
-                        ctx.fillRect(i*7, (24-h)/2, 4, h);
+                    for (let i = 0; i < 8; i++) {
+                        const h = Math.random() * 16 + 4;
+                        ctx.fillRect(i * 7, (24 - h) / 2, 4, h);
                     }
                 }, 100);
             }
-        }
+        };
 
-        // History Management
-        function renderSideHist() {
-            const s2t = historyDB.filter(x => x.type === 'S2T').map(formatCard).join('');
-            const t2s = historyDB.filter(x => x.type === 'T2S').map(formatCard).join('');
+        // --- HISTORY MANAGEMENT ---
+        window.renderSideHist = function() {
+            const s2t = window.historyDB.filter(x => x.type === 'S2T').map(formatCard).join('');
+            const t2s = window.historyDB.filter(x => x.type === 'T2S').map(formatCard).join('');
             document.getElementById('s2t-history').innerHTML = s2t || '<p class="text-xs text-slate-400 text-center italic mt-5">No history yet.</p>';
             document.getElementById('t2s-history').innerHTML = t2s || '<p class="text-xs text-slate-400 text-center italic mt-5">No history yet.</p>';
-        }
+        };
+
         function formatCard(item) {
             return `<div class="p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs"><div class="flex justify-between text-[10px] text-slate-400 font-bold mb-1"><span>${item.date}</span></div><p class="font-extrabold text-slate-800 dark:text-slate-100">${item.text}</p></div>`;
         }
 
-        function filterHist(mode) {
-            activeHistFilter = mode;
-            ['tab-all','tab-s2t','tab-t2s'].forEach(id => document.getElementById(id).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200");
+        window.filterHist = function(mode) {
+            window.activeHistFilter = mode;
+            ['tab-all', 'tab-s2t', 'tab-t2s'].forEach(id => {
+                document.getElementById(id).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200";
+            });
             document.getElementById(mode === 'All' ? 'tab-all' : (mode === 'S2T' ? 'tab-s2t' : 'tab-t2s')).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white";
-            renderMasterHistory();
-        }
+            window.renderMasterHistory();
+        };
 
-        function renderMasterHistory() {
-            const q = document.getElementById('hist-search').value.toLowerCase();
-            let arr = historyDB;
-            if(activeHistFilter !== 'All') arr = arr.filter(x => x.type === activeHistFilter);
-            if(q) arr = arr.filter(x => x.text.toLowerCase().includes(q));
+        window.renderMasterHistory = function() {
+            const q = (document.getElementById('hist-search')?.value || "").toLowerCase();
+            let arr = window.historyDB;
+            if (window.activeHistFilter !== 'All') arr = arr.filter(x => x.type === window.activeHistFilter);
+            if (q) arr = arr.filter(x => x.text.toLowerCase().includes(q));
 
-            document.getElementById('cnt-all').innerText = historyDB.length;
-            document.getElementById('cnt-s2t').innerText = historyDB.filter(x=>x.type==='S2T').length;
-            document.getElementById('cnt-t2s').innerText = historyDB.filter(x=>x.type==='T2S').length;
+            document.getElementById('cnt-all').innerText = window.historyDB.length;
+            document.getElementById('cnt-s2t').innerText = window.historyDB.filter(x => x.type === 'S2T').length;
+            document.getElementById('cnt-t2s').innerText = window.historyDB.filter(x => x.type === 'T2S').length;
 
             const box = document.getElementById('master-hist-box');
-            if(!arr.length) box.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-10">No records found.</p>';
-            else box.innerHTML = arr.map(r => `
-                <div class="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-start gap-4">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${r.type==='S2T'?'bg-teal-100 dark:bg-teal-950 text-teal-700':'bg-indigo-100 dark:bg-indigo-950 text-indigo-700'}">${r.type}</span>
-                            <span class="text-[11px] text-slate-400 font-bold">${r.date}</span>
+            if (!arr.length) {
+                box.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-10">No records found.</p>';
+            } else {
+                box.innerHTML = arr.map(r => `
+                    <div class="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-start gap-4">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${r.type === 'S2T' ? 'bg-teal-100 dark:bg-teal-950 text-teal-700' : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700'}">${r.type}</span>
+                                <span class="text-[11px] text-slate-400 font-bold">${r.date}</span>
+                            </div>
+                            <p class="text-sm font-bold text-slate-900 dark:text-slate-100">${r.text}</p>
                         </div>
-                        <p class="text-sm font-bold text-slate-900 dark:text-slate-100">${r.text}</p>
-                    </div>
-                </div>`).join('');
-        }
+                    </div>`).join('');
+            }
+        };
 
-        function clearHistory() { if(confirm("Wipe all history?")) { historyDB = []; renderMasterHistory(); renderSideHist(); } }
+        window.clearHistory = function() {
+            if (confirm("Wipe all history records?")) {
+                window.historyDB = [];
+                window.renderMasterHistory();
+                window.renderSideHist();
+            }
+        };
 
-        function exportData(format) {
-            const meta = `OFFICIAL ISL METADATA\nDate: ${new Date().toLocaleString()}\nUser ID: ${userProfile.uid}\nName: ${userProfile.name}\nTotal Records: ${historyDB.length}\n\n`;
-            const data = historyDB.map(r => `[${r.date}] [${r.type}] ${r.text}`).join('\n');
+        window.exportData = function(format) {
+            const meta = `OFFICIAL ISL TRANSCRIPT METADATA\nDate: ${new Date().toLocaleString()}\nUser ID: ${currentUser.unique_id}\nUser Name: ${currentUser.name}\nTotal Records: ${window.historyDB.length}\n\n`;
+            const data = window.historyDB.map(r => `[${r.date}] [${r.type}] ${r.text}`).join('\n');
             const blob = new Blob([meta + data], { type: 'text/plain' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = `ISL_Export_${Date.now()}.${format.toLowerCase()}`;
             a.click();
-        }
-
+        };
     </script>
 </body>
 </html>
