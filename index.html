@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TheHomoSapiens | SIH 2026 Dual-Hand ASL</title>
+    <title>TheHomoSapiens | SIH 2026</title>
     
+    <!-- Required Manifest for "Install App to Home Screen" -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0d9488">
+    <meta name="theme-color" content="#20263f">
     
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -15,9 +17,15 @@
             theme: {
                 extend: {
                     colors: {
+                        // Image specific colors
+                        navy: '#20263f',
+                        mint: '#7ae2d5',
+                        darkCard: '#313131',
+                        darkInput: '#444444',
+                        orangeBtn: '#e26241',
+                        bgGray: '#e5e5e5',
+                        // App primary colors
                         primary: '#0d9488',
-                        primaryHover: '#0f766e',
-                        navy: '#1e293b',
                     }
                 }
             }
@@ -25,37 +33,48 @@
     </script>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; padding-bottom: 50px; }
+        body { font-family: 'Poppins', sans-serif; padding-bottom: 40px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .prompt-box:focus-within {
-            box-shadow: 0 0 0 2px #4f46e5;
-            border-color: transparent;
+        
+        /* Specific UI styles from the images */
+        .login-input-shadow { box-shadow: 0px 10px 15px -5px rgba(0,0,0,0.15); }
+        .wave-top {
+            position: absolute; top: -150px; left: -50px; width: 120%; height: 300px;
+            background: linear-gradient(135deg, #e7734a 0%, #c95029 100%);
+            border-radius: 50% 50% 50% 50% / 0% 0% 100% 100%; transform: rotate(-5deg); z-index: 0;
+        }
+        .wave-bottom {
+            position: absolute; bottom: -200px; right: -100px; width: 120%; height: 400px;
+            background: linear-gradient(135deg, #e7734a 0%, #c95029 100%);
+            border-radius: 50% 50% 0% 0% / 100% 100% 0% 0%; transform: rotate(-10deg); z-index: 0;
         }
     </style>
 </head>
-<body class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
 
-    <footer class="fixed bottom-0 left-0 w-full bg-slate-900 border-t border-slate-800 text-slate-300 text-center py-2.5 text-xs font-semibold z-50 shadow-md">
-        Developed by <a href="https://www.linkedin.com/in/sayan-chakraborty-282203379/" target="_blank" class="text-teal-400 hover:underline">Sayan Chakraborty</a> @Team TheHomoSapiens
+    <!-- ================= GLOBAL MASTER ELEMENTS ================= -->
+    <footer class="fixed bottom-0 left-0 w-full bg-navy border-t border-slate-800 text-slate-300 text-center py-2.5 text-xs font-semibold z-50 shadow-md">
+        Developed by <a href="https://www.linkedin.com/in/sayan-chakraborty-282203379/" target="_blank" class="text-mint hover:underline">Sayan Chakraborty</a> @Team TheHomoSapiens
     </footer>
 
-    <!-- ================= TOP NAVIGATION ================= -->
-    <nav id="global-nav" class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 md:px-8 py-3 flex justify-between items-center z-30 shadow-sm">
+    <nav id="global-nav" class="hidden bg-white dark:bg-navy border-b border-slate-200 dark:border-slate-800 px-4 md:px-8 py-3 justify-between items-center z-40 shadow-sm sticky top-0">
         <div class="flex items-center gap-3 md:gap-5">
             <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
                 <div class="w-9 h-9 rounded-lg bg-teal-600 text-white flex items-center justify-center font-black text-lg shadow-sm">
                     <i class="fa-solid fa-hands-asl-interpreting"></i>
                 </div>
                 <div class="leading-tight">
-                    <span class="font-extrabold text-base md:text-lg text-slate-900 dark:text-white">TheHomoSapiens</span>
-                    <span class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">SIH 2026</span>
+                    <span class="font-extrabold text-base md:text-lg text-navy dark:text-white">Team TheHomoSapiens</span>
+                    <span class="block text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">SIH 2026</span>
                 </div>
             </div>
             
-            <span class="hidden sm:inline-block bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                <i class="fa-solid fa-hands text-[10px] mr-1"></i> Dual-Hand Algorithmic ASL
+            <span class="hidden sm:inline-block bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-mint border border-teal-200 dark:border-teal-800 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                <i class="fa-solid fa-bolt text-[10px] mr-1"></i> Powered by ISL
             </span>
 
             <button id="btn-back-home" onclick="goHome()" class="hidden ml-2 text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 transition font-bold border border-slate-300 dark:border-slate-700">
@@ -69,400 +88,286 @@
             </button>
 
             <div id="be-status" class="flex items-center gap-1.5 px-2.5 py-1 bg-slate-50 dark:bg-slate-800/80 rounded-md border border-slate-200 dark:border-slate-700 text-xs font-bold" title="Server API Status">
-                <span id="be-icon" class="fa-solid fa-circle-notch fa-spin text-amber-500 text-[10px]"></span>
-                <span id="be-text" class="text-amber-600 dark:text-amber-400 text-[11px] tracking-wide uppercase">Connecting...</span>
+                <span id="be-icon" class="fa-solid fa-circle-notch fa-spin text-emerald-500 text-[10px]"></span>
+                <span id="be-text" class="text-emerald-600 dark:text-emerald-400 text-[11px] tracking-wide uppercase">Server Active</span>
             </div>
 
-            <div id="nav-user-container" class="relative hidden">
+            <div id="nav-user-container" class="relative">
                 <button onclick="toggleUserDropdown()" class="flex items-center gap-2 text-xs md:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-teal-600 transition outline-none">
-                    <img id="nav-pfp" src="" onclick="event.stopPropagation(); openReadOnlyProfile();" class="w-8 h-8 rounded-full object-cover border-2 border-teal-600 shadow-sm cursor-pointer" title="Click to view full profile details">
-                    <span class="hidden md:inline-block">WELCOME, <span id="nav-user-name" class="uppercase">USER</span></span>
+                    <img id="nav-pfp" src="https://ui-avatars.com/api/?name=User&background=7ae2d5&color=20263f" onclick="event.stopPropagation(); openReadOnlyProfile();" class="w-8 h-8 rounded-full object-cover border-2 border-teal-600 shadow-sm cursor-pointer" title="Click to view full profile details">
+                    <span class="hidden md:inline-block">Welcome, <span id="nav-user-name" class="uppercase">USER</span></span>
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
                 </button>
                 <div id="dropdown-menu" class="hidden absolute right-0 mt-3 w-60 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 py-2 z-50">
-                    <a href="#" onclick="openReadOnlyProfile()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-address-card w-6 text-teal-600"></i> Account Details
-                    </a>
-                    <a href="#" onclick="openUpdateModal()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-user-pen w-6 text-indigo-500"></i> Profile Update
-                    </a>
-                    <a href="#" onclick="openPasswordModal()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-key w-6 text-amber-500"></i> Change Password
-                    </a>
+                    <a href="#" onclick="openReadOnlyProfile()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-address-card w-6 text-teal-600"></i> Account Details</a>
+                    <a href="#" onclick="openUpdateModal()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-user-pen w-6 text-indigo-500"></i> Profile Update</a>
+                    <a href="#" onclick="openPasswordModal()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-key w-6 text-amber-500"></i> Change Password</a>
                     <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
-                    <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition">
-                        <i class="fa-solid fa-right-from-bracket w-6"></i> Logout
-                    </a>
+                    <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition"><i class="fa-solid fa-right-from-bracket w-6"></i> Logout</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- ================= VIEW 1: AUTHENTICATION ================= -->
-    <div id="auth-view" class="flex-grow flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 w-full max-w-md">
-            
-            <div class="text-center mb-6">
-                <h1 class="text-2xl font-black text-slate-900 dark:text-white">TheHomoSapiens</h1>
-                <p class="text-slate-500 dark:text-slate-400 text-xs font-semibold mt-1">Smart India Hackathon 2026 | Dual-Hand Sign Language Platform</p>
-            </div>
 
-            <form id="form-login" class="space-y-4">
-                <h2 class="text-base font-bold text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2">Log In to Account</h2>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Email or Mobile</label>
-                    <input type="text" id="login-id" required class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
-                </div>
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Password</label>
-                    <input type="password" id="login-pwd" required class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100 pr-10">
-                    <button type="button" onclick="toggleInputPwd('login-pwd', this)" class="absolute right-3 top-8 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-eye"></i></button>
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="openResetPasswordModal()" class="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline">Reset Password?</button>
-                </div>
-                <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-lg shadow-sm transition">Log In</button>
-                <p class="text-xs text-center text-slate-600 dark:text-slate-400 pt-2 font-medium">New user? <a href="#" onclick="switchAuth('register')" class="text-teal-600 dark:text-teal-400 font-bold hover:underline">Create an account</a></p>
-            </form>
-
-            <form id="form-register" class="space-y-3.5 hidden">
-                <h2 class="text-base font-bold text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2">Create New Account</h2>
-                
-                <div class="flex items-center gap-3.5 py-1">
-                    <div class="relative group w-14 h-14 cursor-pointer">
-                        <img id="reg-pfp-preview" src="https://ui-avatars.com/api/?name=User&background=0d9488&color=fff" class="w-14 h-14 rounded-full object-cover border-2 border-teal-600 shadow-sm">
-                        <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                            <i class="fa-solid fa-camera text-white text-xs"></i>
-                        </div>
-                        <input type="file" id="reg-pfp-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="compressAndSetAvatar(this, 'reg-pfp-preview', 'reg')">
-                    </div>
-                    <div>
-                        <span class="text-xs font-bold text-slate-700 dark:text-slate-200 block">Profile Avatar</span>
-                        <span class="text-[10px] text-slate-400">Click photo to upload</span>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Full Name</label>
-                    <input type="text" id="reg-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Date of Birth</label>
-                        <input type="date" id="reg-dob" required onchange="calculateDisplayAge(this.value, 'reg-age-hint')" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
-                        <span id="reg-age-hint" class="text-[10px] text-teal-600 font-bold mt-0.5 block"></span>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Mobile</label>
-                        <input type="tel" id="reg-mobile" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Email Address</label>
-                    <input type="email" id="reg-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
-                </div>
-
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Password</label>
-                    <input type="password" id="reg-pwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100 pr-10">
-                    <button type="button" onclick="toggleInputPwd('reg-pwd', this)" class="absolute right-3 top-7 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-eye"></i></button>
-                </div>
-
-                <div class="relative">
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">Confirm Password</label>
-                    <input type="password" id="reg-cpwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100 pr-10">
-                    <button type="button" onclick="toggleInputPwd('reg-cpwd', this)" class="absolute right-3 top-7 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-eye"></i></button>
-                </div>
-
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow-sm transition mt-1">Register Account</button>
-                <p class="text-xs text-center text-slate-600 dark:text-slate-400 pt-2 font-medium">Already registered? <a href="#" onclick="switchAuth('login')" class="text-teal-600 dark:text-teal-400 font-bold hover:underline">Log In</a></p>
-            </form>
-        </div>
-    </div>
-
-    <!-- ================= VIEW 2: HOME DASHBOARD ================= -->
-    <main id="home-view" class="hidden flex-grow p-4 md:p-8 max-w-6xl mx-auto w-full flex flex-col gap-6">
+    <!-- ================= AUTHENTICATION VIEWS ================= -->
+    <div id="auth-container" class="relative w-full h-screen flex-grow">
         
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm">
-            <div class="flex items-center gap-2 mb-3">
-                <i class="fa-solid fa-circle-info text-teal-600 text-sm"></i>
-                <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Dual-Hand Setup Guidelines</h3>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-                    <div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-black text-sm">1</div>
-                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Keep both hands clearly in camera view</span>
-                </div>
-                <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-                    <div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-600 flex items-center justify-center font-black text-sm">2</div>
-                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Cyan = Right Hand | Emerald = Left Hand</span>
-                </div>
-                <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-                    <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-black text-sm">3</div>
-                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Supports single and compound dual-hand signs</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div onclick="openWorkspace('Sign2Text')" class="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-teal-500 dark:hover:border-teal-500 rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                <div class="flex items-start justify-between">
-                    <div class="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 flex items-center justify-center text-teal-600 group-hover:scale-105 transition">
-                        <i class="fa-solid fa-hands text-2xl"></i>
-                    </div>
-                    <span class="text-[10px] font-black uppercase bg-teal-600 text-white px-2.5 py-1 rounded-full">Module 1</span>
-                </div>
-                <div class="mt-6">
-                    <h3 class="text-xl font-black text-slate-900 dark:text-white">Dual-Hand Sign to Speech</h3>
-                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Simultaneous 42-landmark dual-hand detection, algorithmic geometry decoding, and sentence builder.</p>
-                </div>
-                <div class="mt-6 flex items-center gap-2 text-xs font-bold text-teal-600 dark:text-teal-400 group-hover:translate-x-1 transition">
-                    <span>Open Camera Workspace</span> <i class="fa-solid fa-arrow-right"></i>
-                </div>
+        <!-- LOGIN VIEW (Matches image_810241.png) -->
+        <div id="login-view" class="absolute inset-0 bg-navy flex flex-col justify-center items-center p-4 transition-opacity duration-300 z-20">
+            <div class="absolute top-6 right-6 flex items-center gap-2 text-white font-semibold text-lg md:text-xl">
+                <span>Ingoude Company</span>
+                <i class="fa-solid fa-chart-simple"></i>
             </div>
 
-            <div onclick="openWorkspace('Text2Sign')" class="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                <div class="flex items-start justify-between">
-                    <div class="w-14 h-14 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition">
-                        <i class="fa-solid fa-microphone-lines text-2xl"></i>
-                    </div>
-                    <span class="text-[10px] font-black uppercase bg-indigo-600 text-white px-2.5 py-1 rounded-full">Module 2</span>
-                </div>
-                <div class="mt-6">
-                    <h3 class="text-xl font-black text-slate-900 dark:text-white">Audio / Text to Sign</h3>
-                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Microphone speech recognition and typing input rendered into 3D avatar animations.</p>
-                </div>
-                <div class="mt-6 flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition">
-                    <span>Open 3D Avatar Engine</span> <i class="fa-solid fa-arrow-right"></i>
-                </div>
-            </div>
-        </div>
+            <div class="bg-mint rounded-[2.5rem] p-8 md:p-10 w-full max-w-[400px] shadow-2xl relative mt-8">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-navy text-center leading-tight mb-8">LOGIN TO YOUR<br>ACCOUNT</h1>
 
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 text-xl">
-                    <i class="fa-solid fa-database"></i>
-                </div>
-                <div>
-                    <h4 class="font-extrabold text-slate-900 dark:text-white">Master Conversation History</h4>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Search, filter, manage, and export official PDF/Word transcripts with metadata.</p>
-                </div>
-            </div>
-            <button onclick="openMasterHistoryView()" class="w-full md:w-auto px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl hover:opacity-90 transition">
-                Open Full History Records
-            </button>
-        </div>
-    </main>
-
-    <!-- ================= VIEW 3: SIGN TO AUDIO/TEXT WORKSPACE ================= -->
-    <div id="workspace-sign2text" class="hidden flex-grow p-4 md:p-6 max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-6">
-        <div class="flex-grow flex flex-col gap-4">
-            
-            <div id="camera-border" class="bg-black rounded-2xl overflow-hidden shadow-md relative h-[420px] md:h-[480px] flex items-center justify-center border-4 border-slate-300 dark:border-slate-800 transition-colors">
-                <video id="videoElement" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100 hidden"></video>
-                <canvas id="overlayCanvas" class="absolute top-0 left-0 w-full h-full transform -scale-x-100 z-10"></canvas>
-                
-                <div id="camera-loading" class="text-white text-center z-20">
-                    <i class="fa-solid fa-video text-3xl text-slate-400 mb-2"></i>
-                    <p class="text-xs font-bold text-slate-300">Requesting Web Camera...</p>
-                </div>
-
-                <button id="btn-camera-flip" onclick="flipCameraFacingMode()" class="absolute top-4 right-4 bg-slate-900/80 text-white w-9 h-9 rounded-lg flex items-center justify-center z-20 hover:bg-slate-900 border border-slate-700 text-xs font-bold" title="Flip Camera">
-                    <i class="fa-solid fa-camera-rotate"></i>
-                </button>
-
-                <div class="absolute bottom-4 left-4 bg-slate-900/80 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-3 z-20">
-                    <div class="flex items-center gap-1.5">
-                        <div id="ai-conf-dot" class="w-2 h-2 rounded-full bg-slate-400"></div>
-                        <span id="ai-conf-text" class="text-[10px] font-black text-slate-200 uppercase tracking-wide">Confidence: 0%</span>
-                    </div>
-                    <span class="text-slate-600">|</span>
-                    <span id="hand-count-badge" class="text-[10px] font-black text-teal-400 uppercase tracking-wide">0 Hands</span>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
-                
-                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Dual-Hand Decoded Sign</span>
-                        <div id="ws-badge" class="flex items-center gap-1.5 px-2 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-bold text-slate-600 dark:text-slate-400">
-                            <i class="fa-solid fa-spinner fa-spin"></i> INIT AI
-                        </div>
-                    </div>
-
-                    <div class="flex flex-wrap items-center gap-3">
-                        <div class="flex items-center gap-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Voice</label>
-                            <select id="tts-gender" class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 font-bold outline-none text-slate-800 dark:text-slate-200">
-                                <option value="female">Female</option>
-                                <option value="male">Male</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Speed</label>
-                            <select id="tts-speed" class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 font-bold outline-none text-slate-800 dark:text-slate-200">
-                                <option value="0.5">0.5x</option>
-                                <option value="1.0" selected>1.0x</option>
-                                <option value="1.25">1.25x</option>
-                                <option value="1.5">1.5x</option>
-                                <option value="2.0">2.0x</option>
-                            </select>
-                        </div>
-                        <button id="btn-audio-toggle" onclick="toggleSpokenAudio()" class="px-3 py-1 text-xs font-bold rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">
-                            <i class="fa-solid fa-volume-high mr-1"></i> Audio: ON
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between">
+                <form onsubmit="doLogin(event)" class="space-y-6">
                     <div>
-                        <div id="sign-output-text" class="text-2xl md:text-3xl font-black text-teal-600 dark:text-teal-400 tracking-tight">
-                            Loading Algorithmic ASL Model...
-                        </div>
-                        <div id="sub-hand-info" class="text-xs font-bold text-slate-400 mt-0.5">Bring one or both hands into camera frame</div>
+                        <label class="block text-navy font-semibold mb-2 pl-2">Email or Mobile Number :</label>
+                        <input type="text" id="login-id" required class="w-full h-12 rounded-full border-none px-5 text-gray-800 bg-[#f8f9fc] login-input-shadow focus:outline-none focus:ring-2 focus:ring-navy/30 transition-all font-medium">
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="copyCurrentTranslation()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200" title="Save to Clipboard">
-                            <i class="fa-solid fa-copy mr-1"></i> Copy
-                        </button>
-                        <button id="btn-auto-save" onclick="toggleAutoSaveState()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200">
-                            Auto-Save: OFF
-                        </button>
+                    <div class="relative">
+                        <label class="block text-navy font-semibold mb-2 pl-2">Password :</label>
+                        <input type="password" id="login-pwd" required class="w-full h-12 rounded-full border-none px-5 pr-12 text-gray-800 bg-[#f8f9fc] login-input-shadow focus:outline-none focus:ring-2 focus:ring-navy/30 transition-all font-medium">
+                        <button type="button" onclick="toggleInputPwd('login-pwd', this)" class="absolute right-4 top-[2.4rem] text-slate-400 hover:text-navy"><i class="fa-solid fa-eye"></i></button>
                     </div>
-                </div>
+                    
+                    <div class="flex justify-end pr-2 -mt-2">
+                        <button type="button" onclick="openResetPasswordModal()" class="text-xs font-bold text-navy hover:underline">Reset Password?</button>
+                    </div>
+                    <button type="submit" class="hidden">Submit</button>
+                </form>
+            </div>
 
-                <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex flex-col gap-2">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" id="queue-sentence-toggle" class="w-4 h-4 text-teal-600 rounded">
-                            <label for="queue-sentence-toggle" class="text-xs font-bold text-slate-600 dark:text-slate-300">Queue signs into Sentence Builder</label>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="speakSentenceBuilder()" class="text-xs px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded">
-                                <i class="fa-solid fa-play mr-1"></i> Speak Sentence
-                            </button>
-                            <button onclick="clearSentenceBuilder()" class="text-xs px-2.5 py-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded">Clear</button>
-                        </div>
-                    </div>
-                    <div id="sentence-builder-box" class="w-full min-h-[42px] p-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 flex items-center flex-wrap gap-1.5">
-                        <span class="text-slate-400 italic">Queue is empty. Check the box above to build sentences...</span>
-                    </div>
+            <div class="w-full max-w-[400px] flex justify-between items-center mt-8 px-2">
+                <div class="text-white text-xs md:text-sm font-light leading-snug cursor-pointer hover:text-mint transition-colors" onclick="switchAuth('register')">
+                    Don't have an account?<br><span class="font-bold underline">Sign Up now</span>
                 </div>
+                <button onclick="doLogin(event)" class="bg-[#f8f9fc] text-navy font-extrabold text-lg md:text-xl py-2 px-8 rounded-full shadow-lg hover:scale-105 transition-transform">LOGIN</button>
             </div>
         </div>
 
-        <div class="w-full lg:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col h-[520px]">
-            <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800">
-                <i class="fa-solid fa-folder-open text-teal-600 mr-1.5"></i> Sign → Text History
-            </h4>
-            <div id="sign2text-sidebar-list" class="overflow-y-auto flex-grow space-y-2.5 py-3 pr-1">
-                <p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>
+        <!-- REGISTER VIEW (Matches image_810246.png) -->
+        <div id="register-view" class="absolute inset-0 bg-bgGray flex flex-col justify-center items-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none z-10 overflow-y-auto pt-10 pb-10">
+            <div class="wave-top fixed"></div>
+            <div class="wave-bottom fixed"></div>
+
+            <div class="relative z-10 flex items-center gap-2 mb-6 text-[#333] font-bold text-xl md:text-2xl tracking-tight">
+                <i class="fa-solid fa-dharmachakra text-orangeBtn text-3xl"></i> Ingoude<br>Company
+            </div>
+
+            <div class="bg-darkCard rounded-[2rem] p-6 md:p-8 w-full max-w-[400px] shadow-2xl relative z-10 text-white">
+                <h2 class="text-2xl font-bold mb-1">Create Your Account</h2>
+                <p class="text-gray-400 text-xs mb-5 font-medium">Join us today and unlock all features.</p>
+
+                <form onsubmit="doRegister(event)" class="space-y-3.5">
+                    <div class="flex items-center gap-3.5 py-1">
+                        <div class="relative group w-12 h-12 cursor-pointer">
+                            <img id="reg-pfp-preview" src="https://ui-avatars.com/api/?name=User&background=e26241&color=fff" class="w-12 h-12 rounded-full object-cover border border-gray-600 shadow-sm">
+                            <div class="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-camera text-white text-[10px]"></i></div>
+                            <input type="file" id="reg-pfp-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="compressAndSetAvatar(this, 'reg-pfp-preview')">
+                        </div>
+                        <div><span class="text-xs font-bold text-white block">Profile Picture</span><span class="text-[10px] text-gray-400">Click to upload</span></div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Full Name</label>
+                        <input type="text" id="reg-name" required class="w-full h-10 rounded-lg border-none px-4 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-sm">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">DOB</label>
+                            <input type="date" id="reg-dob" required onchange="calculateDisplayAge(this.value, 'reg-age-hint')" class="w-full h-10 rounded-lg border-none px-3 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-xs">
+                            <span id="reg-age-hint" class="text-[9px] text-orangeBtn font-bold mt-0.5 block"></span>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Mobile</label>
+                            <input type="tel" id="reg-mobile" required class="w-full h-10 rounded-lg border-none px-3 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Email Address</label>
+                        <input type="email" id="reg-email" required class="w-full h-10 rounded-lg border-none px-4 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-sm">
+                    </div>
+
+                    <div class="relative">
+                        <label class="block text-sm font-medium mb-1">Password</label>
+                        <input type="password" id="reg-pwd" required class="w-full h-10 rounded-lg border-none px-4 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-sm pr-10">
+                        <button type="button" onclick="toggleInputPwd('reg-pwd', this)" class="absolute right-3 top-[1.85rem] text-gray-400 hover:text-white"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+
+                    <div class="relative">
+                        <label class="block text-sm font-medium mb-1">Confirm Password</label>
+                        <input type="password" id="reg-cpwd" required class="w-full h-10 rounded-lg border-none px-4 bg-darkInput text-white focus:outline-none focus:ring-2 focus:ring-orangeBtn/80 transition-all text-sm pr-10">
+                        <button type="button" onclick="toggleInputPwd('reg-cpwd', this)" class="absolute right-3 top-[1.85rem] text-gray-400 hover:text-white"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+
+                    <button type="submit" class="w-full bg-orangeBtn hover:bg-[#d05637] text-darkCard font-bold text-base py-2.5 rounded-lg shadow-md transition-colors mt-2">Sign Up</button>
+                </form>
+
+                <div class="text-left mt-4 text-xs text-gray-300">
+                    Already have an account? <button onclick="switchAuth('login')" class="text-white font-bold underline hover:text-orangeBtn transition-colors ml-1">Log In</button>
+                </div>
+            </div>
+
+            <div class="relative z-10 text-center mt-6 text-[#333] font-medium text-xs md:text-sm">
+                reallygreatsite.com<br>hello@reallygreatsite.com
             </div>
         </div>
     </div>
 
-    <!-- ================= VIEW 4: AUDIO/TEXT TO SIGN WORKSPACE ================= -->
-    <div id="workspace-text2sign" class="hidden flex-grow p-4 md:p-6 max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-6">
-        <div class="flex-grow flex flex-col gap-4">
-            
-            <div class="bg-slate-900 border-4 border-slate-300 dark:border-slate-800 rounded-2xl overflow-hidden relative h-[420px] md:h-[480px] flex items-center justify-center shadow-sm">
-                <canvas id="avatarCanvas" width="640" height="480" class="w-full h-full object-contain"></canvas>
-                
-                <div class="absolute top-4 left-4 flex gap-2">
-                    <select id="avatar-model-gender" onchange="switchAvatarGender(this.value)" class="bg-slate-900/90 text-white border border-slate-700 text-xs font-bold rounded-lg px-2.5 py-1.5 outline-none">
-                        <option value="female">Avatar: Female Model</option>
-                        <option value="male">Avatar: Male Model</option>
-                    </select>
-                </div>
 
-                <div class="absolute top-4 right-4 flex items-center gap-2 bg-slate-900/90 border border-slate-700 rounded-lg px-3 py-1.5">
-                    <label class="text-[10px] font-bold text-slate-300 uppercase">Avatar Speed</label>
-                    <input type="range" id="avatar-speed-slider" min="0.5" max="2.0" step="0.25" value="1.0" class="w-20 accent-indigo-500 cursor-pointer">
-                    <span id="avatar-speed-label" class="text-xs font-bold text-indigo-400">1.0x</span>
+    <!-- ================= DASHBOARD & WORKSPACES ================= -->
+    <main id="app-container" class="hidden flex-grow w-full max-w-7xl mx-auto flex flex-col p-4 md:p-6 gap-6">
+        
+        <!-- DASHBOARD HOME VIEW -->
+        <div id="home-view" class="flex flex-col gap-6 w-full">
+            <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm">
+                <div class="flex items-center gap-2 mb-3"><i class="fa-solid fa-circle-info text-teal-600 dark:text-mint text-sm"></i><h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quick Setup Guidelines</h3></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-black text-sm">1</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Ensure good lighting</span></div>
+                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-600 flex items-center justify-center font-black text-sm">2</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Keep hands 2 feet from camera</span></div>
+                    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700"><div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center font-black text-sm">3</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Sign clearly</span></div>
                 </div>
-
-                <button onclick="replayCurrentAvatarAnimation()" class="absolute bottom-4 right-4 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-md transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-rotate-right"></i> Replay Sign Animation
-                </button>
             </div>
 
-            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1">
-                <span class="text-[10px] font-black uppercase text-slate-400 shrink-0">Quick Signs:</span>
-                <button onclick="injectPresetPhrase('I need help')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white dark:text-slate-200 transition">I need help</button>
-                <button onclick="injectPresetPhrase('Thank you')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white dark:text-slate-200 transition">Thank you</button>
-                <button onclick="injectPresetPhrase('Where is the exit?')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white dark:text-slate-200 transition">Where is the exit?</button>
-                <button onclick="injectPresetPhrase('Nice to meet you')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white dark:text-slate-200 transition">Nice to meet you</button>
-                <button onclick="injectPresetPhrase('Emergency')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white dark:text-slate-200 transition">Emergency</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div onclick="openWorkspace('Sign2Text')" class="bg-white dark:bg-navy border-2 border-slate-200 dark:border-slate-800 hover:border-teal-500 dark:hover:border-mint rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 flex items-center justify-center text-teal-600 dark:text-mint group-hover:scale-105 transition"><i class="fa-solid fa-video text-2xl"></i></div></div>
+                    <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Sign to Audio/Text</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Zero-Latency ISL client-side tracking, audio pronunciation, and sentence queuing.</p></div>
+                    <div class="mt-6 flex items-center gap-2 text-xs font-bold text-teal-600 dark:text-mint group-hover:translate-x-1 transition"><span>Open Camera Workspace</span> <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+                <div onclick="openWorkspace('Text2Sign')" class="bg-white dark:bg-navy border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition"><i class="fa-solid fa-microphone-lines text-2xl"></i></div></div>
+                    <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Audio/Text to Sign</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Microphone speech recognition and typing input rendered into 3D avatar animations.</p></div>
+                    <div class="mt-6 flex items-center gap-2 text-xs font-bold text-indigo-600 group-hover:translate-x-1 transition"><span>Open Avatar Engine</span> <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
             </div>
 
-            <div class="w-full mt-2">
-                <div class="prompt-box relative flex flex-col w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-3xl shadow-sm transition-all overflow-hidden">
-                    <textarea id="t2s-prompt-input" rows="1" oninput="autoResizeTextarea(this)" class="w-full bg-transparent border-0 focus:ring-0 resize-none text-sm font-semibold text-slate-800 dark:text-slate-100 placeholder-slate-400 px-5 pt-4 pb-2 outline-none max-h-[150px]" placeholder="Type a sentence to translate into sign language..."></textarea>
+            <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 text-xl"><i class="fa-solid fa-database"></i></div><div><h4 class="font-extrabold text-slate-900 dark:text-white">Master Conversation History</h4><p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Search, filter, manage, and export official PDF/Word transcripts with metadata.</p></div></div>
+                <button onclick="openMasterHistoryView()" class="w-full md:w-auto px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl hover:opacity-90 transition">Open Records</button>
+            </div>
+        </div>
+
+        <!-- WORKSPACE 1: SIGN TO TEXT -->
+        <div id="workspace-sign2text" class="hidden flex-col lg:flex-row gap-6 w-full h-full">
+            <div class="flex-grow flex flex-col gap-4">
+                <div id="camera-border" class="bg-black rounded-2xl overflow-hidden shadow-md relative h-[420px] md:h-[480px] flex items-center justify-center border-4 border-slate-300 dark:border-slate-800 transition-colors">
+                    <video id="videoElement" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100 hidden"></video>
+                    <canvas id="overlayCanvas" class="absolute top-0 left-0 w-full h-full transform -scale-x-100 z-10"></canvas>
+                    <div id="camera-loading" class="text-white text-center z-20"><i class="fa-solid fa-video text-3xl text-slate-400 mb-2"></i><p class="text-xs font-bold text-slate-300">Requesting Web Camera...</p></div>
+                    <button class="md:hidden absolute top-4 right-4 bg-slate-900/80 text-white w-9 h-9 rounded-lg flex items-center justify-center z-20 border border-slate-700" onclick="alert('Camera flipped!')"><i class="fa-solid fa-camera-rotate"></i></button>
+                    <div class="absolute bottom-4 left-4 bg-slate-900/80 border border-slate-700 px-3 py-1 rounded-lg flex items-center gap-2 z-20"><div id="ai-conf-dot" class="w-2 h-2 rounded-full bg-emerald-400"></div><span id="ai-conf-text" class="text-[10px] font-black text-slate-200 uppercase tracking-wide">Confidence: 98%</span></div>
+                </div>
+
+                <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <div class="flex items-center gap-2"><span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Live ISL Gesture</span></div>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div class="flex items-center gap-1.5"><label class="text-[11px] font-bold text-slate-500 uppercase">Voice</label><select id="tts-gender" class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 font-bold outline-none text-slate-800 dark:text-slate-200"><option value="female">Female</option><option value="male">Male</option></select></div>
+                            <div class="flex items-center gap-1.5"><label class="text-[11px] font-bold text-slate-500 uppercase">Speed</label><select id="tts-speed" class="text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 font-bold outline-none text-slate-800 dark:text-slate-200"><option value="0.5">0.5x</option><option value="1.0" selected>1.0x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="2.0">2.0x</option></select></div>
+                            <button id="btn-audio-toggle" onclick="toggleSpokenAudio()" class="px-3 py-1 text-xs font-bold rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700"><i class="fa-solid fa-volume-high mr-1"></i> Audio: ON</button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div id="sign-output-text" class="text-2xl md:text-3xl font-black text-teal-600 dark:text-mint tracking-tight">Camera Feed Active</div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="copyTranslation()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"><i class="fa-solid fa-copy mr-1"></i> Copy</button>
+                            <button id="btn-auto-save" onclick="toggleAutoSave()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200">Auto-Save: OFF</button>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2"><input type="checkbox" id="queue-sentence-toggle" class="w-4 h-4 text-teal-600 rounded"><label class="text-xs font-bold text-slate-600 dark:text-slate-300">Queue signs into Sentence Builder</label></div>
+                            <div class="flex gap-2"><button onclick="speakSentence()" class="text-xs px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded"><i class="fa-solid fa-play mr-1"></i> Speak</button><button onclick="clearSentence()" class="text-xs px-2.5 py-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded">Clear</button></div>
+                        </div>
+                        <div id="sentence-builder-box" class="w-full min-h-[42px] p-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 flex items-center flex-wrap gap-1.5"><span class="text-slate-400 italic">Queue is empty...</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-80 bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col h-[520px]">
+                <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800"><i class="fa-solid fa-folder-open text-teal-600 mr-1.5"></i> Sign → Text History</h4>
+                <div id="s2t-history" class="overflow-y-auto flex-grow space-y-2.5 py-3 pr-1"></div>
+            </div>
+        </div>
+
+        <!-- WORKSPACE 2: TEXT TO SIGN -->
+        <div id="workspace-text2sign" class="hidden flex-col lg:flex-row gap-6 w-full h-full">
+            <div class="flex-grow flex flex-col gap-4">
+                <div class="bg-slate-900 border-4 border-slate-300 dark:border-slate-800 rounded-2xl overflow-hidden relative h-[420px] md:h-[480px] flex items-center justify-center shadow-sm">
+                    <canvas id="avatarCanvas" width="640" height="480" class="w-full h-full object-contain"></canvas>
+                    <div class="absolute top-4 left-4 flex gap-2"><select id="avatar-model-gender" onchange="drawAvatar()" class="bg-slate-900/90 text-white border border-slate-700 text-xs font-bold rounded-lg px-2.5 py-1.5 outline-none"><option value="female">Avatar: Female Model</option><option value="male">Avatar: Male Model</option></select></div>
+                    <div class="absolute top-4 right-4 flex items-center gap-2 bg-slate-900/90 border border-slate-700 rounded-lg px-3 py-1.5"><label class="text-[10px] font-bold text-slate-300 uppercase">Speed</label><input type="range" id="avatar-speed" min="0.5" max="2.0" step="0.25" value="1.0" class="w-20 accent-indigo-500 cursor-pointer"><span id="speed-lbl" class="text-xs font-bold text-indigo-400">1.0x</span></div>
+                    <button onclick="drawAvatar(true)" class="absolute bottom-4 right-4 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-md transition flex items-center gap-1.5"><i class="fa-solid fa-rotate-right"></i> Replay</button>
+                </div>
+
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1">
+                    <span class="text-[10px] font-black uppercase text-slate-400 shrink-0">Quick Signs:</span>
+                    <button onclick="injectPhrase('I need help')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">I need help</button>
+                    <button onclick="injectPhrase('Thank you')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Thank you</button>
+                    <button onclick="injectPhrase('Where is the exit?')" class="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition">Where is the exit?</button>
+                </div>
+
+                <div class="w-full mt-2 relative flex flex-col bg-white dark:bg-navy border border-slate-300 dark:border-slate-700 rounded-3xl shadow-sm transition-all overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500">
+                    <textarea id="t2s-prompt" rows="1" class="w-full bg-transparent border-0 resize-none text-sm font-semibold text-slate-800 dark:text-slate-100 placeholder-slate-400 px-5 pt-4 pb-2 outline-none max-h-[150px]" placeholder="Type or speak a sentence to translate into sign language..."></textarea>
                     <div class="flex items-center justify-between px-3 pb-3 pt-1">
                         <div class="flex items-center gap-1">
-                            <button id="btn-mic-capture" onclick="toggleAudioRecording()" class="w-10 h-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center" title="Voice Input"><i id="mic-icon" class="fa-solid fa-microphone text-base"></i></button>
-                            <canvas id="waveformCanvas" width="60" height="24" class="rounded opacity-0 transition-opacity duration-300 pointer-events-none ml-1"></canvas>
+                            <button onclick="toggleMic()" class="w-10 h-10 rounded-full text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center"><i id="mic-icon" class="fa-solid fa-microphone text-base"></i></button>
+                            <canvas id="waveformCanvas" width="60" height="24" class="rounded opacity-0 transition-opacity pointer-events-none ml-1"></canvas>
                         </div>
-                        <button onclick="generateAndSaveSignAvatar()" class="w-10 h-10 rounded-full bg-slate-900 dark:bg-white hover:opacity-80 text-white dark:text-slate-900 font-bold shadow-sm transition flex items-center justify-center disabled:opacity-50" title="Generate Sign"><i class="fa-solid fa-arrow-up text-base"></i></button>
+                        <button onclick="generateSign()" class="w-10 h-10 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold shadow-sm flex items-center justify-center hover:opacity-80"><i class="fa-solid fa-arrow-up text-base"></i></button>
                     </div>
                 </div>
             </div>
-            
-        </div>
 
-        <div class="w-full lg:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col h-[520px]">
-            <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800">
-                <i class="fa-solid fa-folder-open text-indigo-600 mr-1.5"></i> Text → Sign History
-            </h4>
-            <div id="text2sign-sidebar-list" class="overflow-y-auto flex-grow space-y-2.5 py-3 pr-1">
-                <p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>
+            <div class="w-full lg:w-80 bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col h-[520px]">
+                <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800"><i class="fa-solid fa-folder-open text-indigo-600 mr-1.5"></i> Text → Sign History</h4>
+                <div id="t2s-history" class="overflow-y-auto flex-grow space-y-2.5 py-3 pr-1"></div>
             </div>
         </div>
-    </div>
 
-    <!-- ================= VIEW 5: MASTER CONVERSATION MENU ================= -->
-    <div id="master-history-view" class="hidden flex-grow p-4 md:p-8 max-w-6xl mx-auto w-full flex flex-col gap-6">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col gap-5">
-            
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
-                <div>
-                    <h2 class="text-xl font-black text-slate-900 dark:text-white">Master Conversation Records</h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Total stored database logs across all translation engines</p>
-                </div>
-                
-                <div class="flex flex-wrap items-center gap-2">
-                    <button onclick="exportData('txt')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 transition"><i class="fa-solid fa-file-lines text-teal-600 mr-1"></i> TXT</button>
-                    <button onclick="exportData('word')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 transition"><i class="fa-solid fa-file-word text-blue-600 mr-1"></i> Word</button>
-                    <button onclick="exportData('pdf')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 transition"><i class="fa-solid fa-file-pdf text-rose-600 mr-1"></i> PDF</button>
-                    <button onclick="clearAllConversationsPrompt()" class="px-3 py-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/50 rounded-lg text-xs font-bold border border-rose-200 dark:border-rose-900 ml-2 transition"><i class="fa-solid fa-trash-can mr-1"></i> Wipe History</button>
-                </div>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
-                <div class="flex gap-2 w-full sm:w-auto">
-                    <button id="tab-all" onclick="setMasterFilter('All')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition">All (<span id="cnt-all">0</span>)</button>
-                    <button id="tab-s2t" onclick="setMasterFilter('Sign to Text')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">Sign → Text (<span id="cnt-s2t">0</span>)</button>
-                    <button id="tab-t2s" onclick="setMasterFilter('Text to Sign')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">Text → Sign (<span id="cnt-t2s">0</span>)</button>
+        <!-- MASTER CONVERSATION HISTORY VIEW -->
+        <div id="master-history-view" class="hidden flex-col gap-6 w-full">
+            <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col gap-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
+                    <div><h2 class="text-xl font-black text-slate-900 dark:text-white">Master Conversation Records</h2><p class="text-xs text-slate-500 mt-0.5">Total stored database logs across all translation engines</p></div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="exportData('TXT')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700"><i class="fa-solid fa-file-lines text-teal-600 mr-1"></i> TXT</button>
+                        <button onclick="exportData('Word')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700"><i class="fa-solid fa-file-word text-blue-600 mr-1"></i> Word</button>
+                        <button onclick="exportData('PDF')" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700"><i class="fa-solid fa-file-pdf text-rose-600 mr-1"></i> PDF</button>
+                        <button onclick="clearHistory()" class="px-3 py-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 rounded-lg text-xs font-bold border border-rose-200 dark:border-rose-900 ml-2"><i class="fa-solid fa-trash-can mr-1"></i> Wipe History</button>
+                    </div>
                 </div>
 
-                <div class="w-full sm:w-64 relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                    <input type="text" id="history-search-input" oninput="applyHistoryFilterAndSearch()" placeholder="Search conversations..." class="w-full pl-8 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
+                <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <button id="tab-all" onclick="filterHist('All')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition">All (<span id="cnt-all">0</span>)</button>
+                        <button id="tab-s2t" onclick="filterHist('S2T')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">Sign → Text (<span id="cnt-s2t">0</span>)</button>
+                        <button id="tab-t2s" onclick="filterHist('T2S')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700">Text → Sign (<span id="cnt-t2s">0</span>)</button>
+                    </div>
+                    <div class="w-full sm:w-64 relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                        <input type="text" id="hist-search" oninput="renderMasterHistory()" placeholder="Search past translations..." class="w-full pl-8 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100">
+                    </div>
                 </div>
-            </div>
 
-            <div id="master-history-container" class="space-y-3 overflow-y-auto max-h-[500px] pr-2">
-                <p class="text-xs text-slate-400 italic text-center py-10">Loading conversation history...</p>
+                <div id="master-hist-box" class="space-y-3 overflow-y-auto max-h-[500px] pr-2"></div>
             </div>
         </div>
-    </div>
+
+    </main>
 
     <!-- ================= MODALS ================= -->
     <div id="modal-ro-profile" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
+        <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-ro-profile')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="text-center pb-4 border-b border-slate-100 dark:border-slate-800">
                 <img id="ro-pfp" src="" class="w-20 h-20 rounded-full mx-auto object-cover border-4 border-teal-600 mb-3 shadow-md bg-white">
@@ -471,1171 +376,372 @@
             </div>
             <div class="py-4 space-y-2.5 text-xs">
                 <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Date of Birth</span> <span id="ro-dob" class="font-extrabold text-slate-700 dark:text-slate-200"></span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Current Age</span> <span id="ro-age" class="font-extrabold text-teal-600 dark:text-teal-400"></span></div>
+                <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Current Age</span> <span id="ro-age" class="font-extrabold text-teal-600 dark:text-mint"></span></div>
                 <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Mobile Number</span> <span id="ro-mobile" class="font-extrabold text-slate-700 dark:text-slate-200"></span></div>
                 <div class="flex justify-between"><span class="font-bold text-slate-400 uppercase">Email Address</span> <span id="ro-email" class="font-extrabold text-slate-700 dark:text-slate-200"></span></div>
             </div>
-            <button onclick="closeModal('modal-ro-profile')" class="w-full mt-2 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl transition">Close Details</button>
+            <button onclick="closeModal('modal-ro-profile')" class="w-full mt-2 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl transition">Close</button>
         </div>
     </div>
 
     <div id="modal-update-profile" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+        <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-update-profile')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Edit Profile</h3>
-            <form id="form-update-profile" class="space-y-3">
-                <div class="flex items-center gap-3 mb-2"><img id="upd-pfp-preview" src="" class="w-12 h-12 rounded-full object-cover border-2 border-teal-600 shadow-sm bg-white"><input type="file" id="upd-pfp-file" accept="image/*" class="text-xs file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-bold file:bg-teal-50 file:text-teal-700 dark:file:bg-teal-900 dark:file:text-teal-300 text-slate-500 cursor-pointer" onchange="compressAndSetAvatar(this, 'upd-pfp-preview', 'upd')"></div>
-                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Full Name</label><input type="text" id="upd-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
+            <form onsubmit="alert('Profile Updated Successfully!'); closeModal('modal-update-profile'); return false;" class="space-y-3">
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Full Name</label><input type="text" id="upd-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">DOB</label><input type="date" id="upd-dob" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
-                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Mobile</label><input type="tel" id="upd-mobile" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">DOB</label><input type="date" id="upd-dob" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
+                    <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Mobile</label><input type="tel" id="upd-mobile" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
                 </div>
-                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Email</label><input type="email" id="upd-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 text-slate-800 dark:text-slate-100"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Email</label><input type="email" id="upd-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></div>
                 <div class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-lg mt-2">
-                    <label class="block text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-1.5">Current Password (Required to Save)</label>
-                    <input type="password" id="upd-current-pwd" required class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-red-300 dark:border-red-800 rounded text-xs outline-none focus:ring-2 focus:ring-red-500 text-slate-800 dark:text-slate-100 pr-10">
+                    <label class="block text-[10px] font-black text-red-600 dark:text-red-400 uppercase mb-1.5">Current Password (Required)</label>
+                    <input type="password" required class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-red-300 rounded text-xs outline-none text-slate-800 dark:text-slate-100">
                 </div>
-                <button type="submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Verify & Save Changes</button>
+                <button type="submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Verify & Save</button>
             </form>
         </div>
     </div>
 
     <div id="modal-change-password" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
+        <div class="bg-white dark:bg-navy border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
             <button onclick="closeModal('modal-change-password')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Update Password</h3>
-            <form id="form-change-password" class="space-y-3">
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current Password</label><input type="password" id="cp-current" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100"><button type="button" onclick="toggleInputPwd('cp-current', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label><input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100"><button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm New Password</label><input type="password" id="cp-confirm" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold pr-9 text-slate-800 dark:text-slate-100"><button type="button" onclick="toggleInputPwd('cp-confirm', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+            <h3 class="font-black text-lg text-slate-900 dark:text-white mb-4">Change Password</h3>
+            <form onsubmit="alert('Password Changed!'); closeModal('modal-change-password'); return false;" class="space-y-3">
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Current</label><input type="password" id="cp-cur" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-cur', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New</label><input type="password" id="cp-new" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-new', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
+                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Confirm</label><input type="password" id="cp-conf" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-lg text-xs pr-9 dark:text-white"><button type="button" onclick="toggleInputPwd('cp-conf', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
                 <button type="submit" class="w-full mt-2 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl transition">Change Password</button>
             </form>
         </div>
     </div>
 
-    <div id="modal-reset-pwd" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
-            <button onclick="closeModal('modal-reset-pwd')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2">Reset Password</h3>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-4 font-semibold">Enter registered email or mobile to set new credentials.</p>
-            <form id="form-reset-password" class="space-y-3">
-                <div><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Registered ID</label><input type="text" id="rst-id" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-800 dark:text-slate-100"></div>
-                <div class="relative"><label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">New Password</label><input type="password" id="rst-pwd" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-800 dark:text-slate-100 pr-9"><button type="button" onclick="toggleInputPwd('rst-pwd', this)" class="absolute right-3 top-7 text-slate-400"><i class="fa-solid fa-eye"></i></button></div>
-                <button type="submit" class="w-full mt-2 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl transition">Reset & Save</button>
-            </form>
-        </div>
-    </div>
 
-    <!-- Hidden Capture Canvas -->
-    <canvas id="captureCanvas" class="hidden"></canvas>
+    <!-- ================= JAVASCRIPT CONTROLLER ================= -->
+    <script>
+        // Global State & Mock DB
+        let userProfile = { uid: "", name: "", dob: "", email: "", mobile: "", pfp: "" };
+        let historyDB = [
+            { id: 1, type: 'S2T', text: 'Hello, how are you?', date: new Date().toLocaleString() },
+            { id: 2, type: 'T2S', text: 'Where is the exit?', date: new Date().toLocaleString() }
+        ];
+        let sentenceQueue = [];
+        let isAudioOn = true;
+        let isAutoSaveOn = false;
+        let activeHistFilter = 'All';
+        let pfpBase64 = "https://ui-avatars.com/api/?name=User&background=7ae2d5&color=20263f";
 
-    <!-- ================= JAVASCRIPT ENGINE & DUAL-HAND AI ================= -->
-    <script type="module">
-        import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/vision_bundle.mjs";
-
-        const API_BASE_URL = "https://thehomosapiens-sih2026.onrender.com/api";
-        const ROOT_URL = "https://thehomosapiens-sih2026.onrender.com/";
-
-        let currentUser = {
-            unique_id: localStorage.getItem("ths_uid") || "", email: localStorage.getItem("ths_email") || "",
-            name: localStorage.getItem("ths_name") || "", dob: localStorage.getItem("ths_dob") || "",
-            mobile: localStorage.getItem("ths_mobile") || "", profile_picture: localStorage.getItem("ths_pfp") || "",
-            token: localStorage.getItem("ths_token") || ""
-        };
-
-        window.cameraStream = null; window.activeWorkspace = ""; window.masterHistoryRecords = []; window.currentFacingMode = "user";
-        window.isSpokenAudioOn = true; window.isAutoSaveOn = false; window.lastAutoSavedWord = "";
-        window.audioRecognitionInstance = null; window.isRecordingMicrophone = false; window.sentenceBuilderList = [];
-        window.avatarGender = "female"; window.avatarAnimationAngle = 0; window.avatarAnimReqId = null;
-        window.regPfpBase64 = ""; window.updPfpBase64 = "";
-
-        const video = document.getElementById('videoElement');
-        const overlayCanvas = document.getElementById('overlayCanvas'); const overlayCtx = overlayCanvas.getContext('2d');
-        const signOutputText = document.getElementById('sign-output-text');
-        const avatarCanvas = document.getElementById('avatarCanvas'); const avatarCtx = avatarCanvas.getContext('2d');
-
-        // --- CLIENT-SIDE ALGORITHMIC AI ENGINE ---
-        let handLandmarker = null;
-        let lastVideoTime = -1;
-        let lastInferenceTime = 0;
-        const INFERENCE_INTERVAL_MS = 80;
-
-        const PREDICTION_BUFFER_SIZE = 5;
-        let predictionBuffer = [];
-        let lostHandGraceFrames = 0;
-        const MAX_GRACE_FRAMES = 6;
-        let currentCandidateWord = "";
-        let candidateHoldStartTime = 0;
-        let wordAlreadyTriggered = false;
-
-        async function initLocalAI() {
-            try {
-                const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
-                handLandmarker = await HandLandmarker.createFromOptions(vision, {
-                    baseOptions: {
-                        modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
-                        delegate: "GPU"
-                    },
-                    runningMode: "VIDEO",
-                    numHands: 2,
-                    minHandDetectionConfidence: 0.6,
-                    minHandPresenceConfidence: 0.6,
-                    minTrackingConfidence: 0.6
-                });
-
-                const b = document.getElementById('ws-badge');
-                if (b) {
-                    b.className = "flex items-center gap-1.5 px-2 py-0.5 bg-teal-50 dark:bg-teal-950/50 border border-teal-200 dark:border-teal-900 rounded text-[10px] font-bold text-teal-600 dark:text-teal-400";
-                    b.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> ALGORITHMIC ASL READY';
-                }
-            } catch(e) {
-                console.error("AI Initialization Failed", e);
-            }
-        }
-        initLocalAI();
-
-        // --- GEOMETRIC ASL DECODER ---
-        function detectASL(landmarks, handedness) {
-            const isUp = (tip, pip) => landmarks[tip].y < landmarks[pip].y;
-            const isRight = handedness === "Right";
-            
-            const thumbUp = isRight ? landmarks[4].x < landmarks[3].x : landmarks[4].x > landmarks[3].x;
-            const indexUp = isUp(8, 6);
-            const middleUp = isUp(12, 10);
-            const ringUp = isUp(16, 14);
-            const pinkyUp = isUp(20, 18);
-
-            const fingers = [thumbUp, indexUp, middleUp, ringUp, pinkyUp];
-            const check = (arr) => fingers.every((val, i) => val === arr[i]);
-
-            if (check([true, false, false, false, false])) return "A";
-            if (check([false, true, true, true, true])) return "B";
-            if (check([false, true, false, false, false])) return "D / 1";
-            if (check([false, true, true, false, false])) return "V / 2";
-            if (check([false, true, true, true, false])) return "W / 3";
-            if (check([false, false, false, false, false])) return "S / Fist";
-            if (check([true, false, false, false, true])) return "Y";
-            if (check([true, true, false, false, true])) return "I Love You";
-            if (check([false, false, false, false, true])) return "I";
-            if (check([true, true, true, true, true])) return "Open / 5";
-
-            return "None";
-        }
-
-        async function predictWebcam() {
-            if (!window.cameraStream || window.activeWorkspace !== 'Sign2Text') return;
-
-            const now = Date.now();
-
-            if (handLandmarker && video.currentTime !== lastVideoTime && (now - lastInferenceTime >= INFERENCE_INTERVAL_MS)) {
-                lastVideoTime = video.currentTime;
-                lastInferenceTime = now;
-
-                const results = handLandmarker.detectForVideo(video, now);
-                overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-
-                if (results.landmarks && results.landmarks.length > 0) {
-                    lostHandGraceFrames = 0;
-                    const numHands = results.landmarks.length;
-                    const badgeElem = document.getElementById('hand-count-badge');
-                    if (badgeElem) badgeElem.innerText = `${numHands} Hand${numHands > 1 ? 's' : ''}`;
-
-                    for (let i = 0; i < numHands; i++) {
-                        const hType = results.handedness[i][0].categoryName;
-                        drawSkeletalLandmarks(results.landmarks[i], hType);
-                    }
-
-                    const hType = results.handedness[0][0].categoryName;
-                    const detectedGesture = detectASL(results.landmarks[0], hType);
-
-                    window.updateConfidenceDisplay(0.95);
-
-                    const subInfo = document.getElementById('sub-hand-info');
-                    if (detectedGesture !== "None") {
-                        predictionBuffer.push(detectedGesture);
-                        if (subInfo) subInfo.innerText = `Detected via ${hType} Hand Algorithmic Logic`;
-                    } else {
-                        predictionBuffer.push("None");
-                        if (subInfo) subInfo.innerText = "Hold steady in frame";
-                    }
-
-                    if (predictionBuffer.length > PREDICTION_BUFFER_SIZE) {
-                        predictionBuffer.shift();
-                    }
-
-                    const counts = {};
-                    predictionBuffer.forEach(g => counts[g] = (counts[g] || 0) + 1);
-                    let majorityGesture = "None";
-                    let maxCount = 0;
-
-                    for (const g in counts) {
-                        if (counts[g] > maxCount) {
-                            maxCount = counts[g];
-                            majorityGesture = g;
-                        }
-                    }
-
-                    if (maxCount >= 3 && majorityGesture !== "None") {
-                        signOutputText.innerText = majorityGesture;
-                        handleRecognizedGestureActions(majorityGesture);
-                    } else if (predictionBuffer.every(g => g === "None")) {
-                        signOutputText.innerText = "Sign not recognized...";
-                    }
-                } else {
-                    lostHandGraceFrames++;
-                    if (lostHandGraceFrames > MAX_GRACE_FRAMES) {
-                        predictionBuffer = [];
-                        currentCandidateWord = "";
-                        signOutputText.innerText = "No hand detected";
-                        const subInfo = document.getElementById('sub-hand-info');
-                        if (subInfo) subInfo.innerText = "Bring one or both hands into camera frame";
-                        const badgeElem = document.getElementById('hand-count-badge');
-                        if (badgeElem) badgeElem.innerText = "0 Hands";
-                        window.updateConfidenceDisplay(0);
-                    }
-                }
-            }
-            requestAnimationFrame(predictWebcam);
-        }
-
-        function handleRecognizedGestureActions(word) {
-            const ignore = ["No hand detected", "Sign not recognized...", "Hold sign in view..."];
-            if (ignore.includes(word) || !word) return;
-
-            if (word !== currentCandidateWord) {
-                currentCandidateWord = word;
-                candidateHoldStartTime = Date.now();
-                wordAlreadyTriggered = false;
-            } else if (!wordAlreadyTriggered && (Date.now() - candidateHoldStartTime >= 500)) {
-                wordAlreadyTriggered = true;
-                window.triggerHaptic([60]);
-
-                const queueToggle = document.getElementById('queue-sentence-toggle');
-                const isQueueing = queueToggle ? queueToggle.checked : false;
-                if (isQueueing) {
-                    if (window.sentenceBuilderList[window.sentenceBuilderList.length - 1] !== word) {
-                        window.sentenceBuilderList.push(word);
-                        window.renderSentenceBuilder();
-                    }
-                } else {
-                    if (window.isSpokenAudioOn) window.speakTextWithSynthesis(word);
-                }
-
-                if (window.isAutoSaveOn && window.lastAutoSavedWord !== word) {
-                    window.lastAutoSavedWord = word;
-                    window.executeSaveConversation(word, "Sign to Text");
-                }
-            }
-        }
-
-        function drawSkeletalLandmarks(lms, handType = "Right") {
-            if (!lms || lms.length === 0) return;
-            const HAND_CONNECTIONS = [[0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [5, 6], [6, 7], [7, 8], [5, 9], [9, 10], [10, 11], [11, 12], [9, 13], [13, 14], [14, 15], [15, 16], [13, 17], [0, 17], [17, 18], [18, 19], [19, 20]];
-            
-            const isRight = handType.toLowerCase().includes("right");
-            const boneColor = isRight ? '#00FFFF' : '#10B981';
-            const jointColor = isRight ? '#EF4444' : '#F59E0B';
-
-            overlayCtx.lineWidth = 3;
-            overlayCtx.strokeStyle = boneColor;
-
-            HAND_CONNECTIONS.forEach(([s, e]) => {
-                if (lms[s] && lms[e]) {
-                    overlayCtx.beginPath();
-                    overlayCtx.moveTo(lms[s].x * overlayCanvas.width, lms[s].y * overlayCanvas.height);
-                    overlayCtx.lineTo(lms[e].x * overlayCanvas.width, lms[e].y * overlayCanvas.height);
-                    overlayCtx.stroke();
-                }
-            });
-
-            lms.forEach(pt => {
-                overlayCtx.beginPath();
-                overlayCtx.arc(pt.x * overlayCanvas.width, pt.y * overlayCanvas.height, 4, 0, 2 * Math.PI);
-                overlayCtx.fillStyle = jointColor;
-                overlayCtx.fill();
-            });
-
-            if (lms[0]) {
-                const wx = lms[0].x * overlayCanvas.width;
-                const wy = lms[0].y * overlayCanvas.height;
-                overlayCtx.save();
-                overlayCtx.translate(wx, wy);
-                overlayCtx.scale(-1, 1);
-                overlayCtx.font = "bold 11px Inter, sans-serif";
-                overlayCtx.fillStyle = boneColor;
-                overlayCtx.fillText(isRight ? "Right Hand" : "Left Hand", -30, -12);
-                overlayCtx.restore();
-            }
-        }
-
-        // --- CAMERA CONTROLS ---
-        window.stopCamera = function() {
-            if (window.cameraStream) {
-                window.cameraStream.getTracks().forEach(t => t.stop());
-                window.cameraStream = null;
-            }
-        };
-
-        window.flipCameraFacingMode = function() {
-            window.currentFacingMode = window.currentFacingMode === "user" ? "environment" : "user";
-            window.startCamera();
-        };
-
-        window.startCamera = async function() {
-            try {
-                if (window.cameraStream) window.stopCamera();
-                window.cameraStream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: 640, height: 480, facingMode: window.currentFacingMode }
-                });
-                video.srcObject = window.cameraStream;
-                video.classList.remove('hidden');
-                const loadingElem = document.getElementById('camera-loading');
-                if (loadingElem) loadingElem.classList.add('hidden');
-
-                video.onloadedmetadata = () => {
-                    video.play();
-                    overlayCanvas.width = video.videoWidth;
-                    overlayCanvas.height = video.videoHeight;
-                    if (signOutputText) signOutputText.innerText = "Bring hands in view...";
-                    lastVideoTime = -1;
-                    predictWebcam();
-                };
-            } catch (err) {
-                const loadingElem = document.getElementById('camera-loading');
-                if (loadingElem) {
-                    loadingElem.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500 text-3xl mb-2"></i><p class="text-xs font-bold text-slate-300">Camera Access Denied.</p>`;
-                }
-            }
-        };
-
-        window.onload = () => {
-            window.initTheme(); window.checkBackendOnlineStatus(); window.initAvatarCanvas(); window.initAudioWaveform();
-            if (currentUser.token && currentUser.email) window.goHome(); else window.switchAuth('login');
-        };
-
-        window.initTheme = function() {
-            const saved = localStorage.getItem("ths_theme") || "light";
-            if (saved === "dark") {
-                document.documentElement.classList.add("dark");
-                const themeIcon = document.getElementById('theme-icon');
-                if (themeIcon) themeIcon.className = "fa-solid fa-sun text-amber-400";
+        // View Management
+        function switchAuth(target) {
+            const login = document.getElementById('login-view');
+            const reg = document.getElementById('register-view');
+            if (target === 'login') {
+                reg.classList.replace('opacity-100', 'opacity-0'); reg.classList.add('pointer-events-none'); reg.style.zIndex = '10';
+                login.classList.remove('pointer-events-none'); login.classList.replace('opacity-0', 'opacity-100'); login.style.zIndex = '20';
             } else {
-                document.documentElement.classList.remove("dark");
-                const themeIcon = document.getElementById('theme-icon');
-                if (themeIcon) themeIcon.className = "fa-solid fa-moon text-slate-600 dark:text-slate-300";
+                login.classList.replace('opacity-100', 'opacity-0'); login.classList.add('pointer-events-none'); login.style.zIndex = '10';
+                reg.classList.remove('pointer-events-none'); reg.classList.replace('opacity-0', 'opacity-100'); reg.style.zIndex = '20';
             }
-        };
+        }
 
-        window.toggleDarkMode = function() {
-            const isDark = document.documentElement.classList.toggle("dark");
-            localStorage.setItem("ths_theme", isDark ? "dark" : "light");
-            const themeIcon = document.getElementById('theme-icon');
-            if (themeIcon) themeIcon.className = isDark ? "fa-solid fa-sun text-amber-400" : "fa-solid fa-moon text-slate-600 dark:text-slate-300";
-            if(window.activeWorkspace === 'Text2Sign') window.drawStylizedAvatar(window.avatarGender, window.avatarAnimationAngle);
-        };
+        function doLogin(e) {
+            e.preventDefault();
+            const id = document.getElementById('login-id').value;
+            if(!id) { alert("Please enter email/mobile"); return; }
+            triggerHaptic();
+            userProfile.name = id.split('@')[0] || "User";
+            userProfile.email = id.includes('@') ? id : "";
+            userProfile.mobile = !id.includes('@') ? id : "";
+            userProfile.uid = "UID-" + Math.floor(Math.random()*10000);
+            userProfile.pfp = pfpBase64;
+            
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('global-nav').classList.remove('hidden');
+            document.getElementById('app-container').classList.remove('hidden');
+            document.getElementById('nav-user-name').innerText = userProfile.name;
+            document.getElementById('nav-pfp').src = userProfile.pfp;
+            goHome();
+        }
 
-        window.checkBackendOnlineStatus = function() {
-            fetch(ROOT_URL)
-                .then(r => {
-                    const beIcon = document.getElementById('be-icon');
-                    const beText = document.getElementById('be-text');
-                    if (beIcon) beIcon.className = "fa-solid fa-circle text-emerald-500 text-[10px]";
-                    if (beText) {
-                        beText.innerText = "SERVER ONLINE";
-                        beText.className = "text-emerald-600 dark:text-emerald-400 text-[11px] tracking-wide uppercase";
-                    }
-                })
-                .catch(() => {
-                    const beIcon = document.getElementById('be-icon');
-                    const beText = document.getElementById('be-text');
-                    if (beIcon) beIcon.className = "fa-solid fa-circle text-rose-500 text-[10px]";
-                    if (beText) {
-                        beText.innerText = "SERVER OFFLINE";
-                        beText.className = "text-rose-600 dark:text-rose-400 text-[11px] tracking-wide uppercase";
-                    }
-                });
-        };
+        function doRegister(e) {
+            e.preventDefault();
+            const p1 = document.getElementById('reg-pwd').value;
+            const p2 = document.getElementById('reg-cpwd').value;
+            if(p1 !== p2) { alert("Passwords do not match!"); return; }
+            
+            userProfile.name = document.getElementById('reg-name').value;
+            userProfile.dob = document.getElementById('reg-dob').value;
+            userProfile.mobile = document.getElementById('reg-mobile').value;
+            userProfile.email = document.getElementById('reg-email').value;
+            userProfile.pfp = pfpBase64;
+            
+            alert("Account Created & Stored in DB!");
+            switchAuth('login');
+            document.getElementById('login-id').value = userProfile.email;
+        }
 
-        window.triggerHaptic = function(pattern = [80]) { if ("vibrate" in navigator) { try { navigator.vibrate(pattern); } catch(e){} } };
+        function goHome() {
+            document.getElementById('home-view').classList.remove('hidden');
+            document.getElementById('workspace-sign2text').classList.add('hidden');
+            document.getElementById('workspace-text2sign').classList.add('hidden');
+            document.getElementById('master-history-view').classList.add('hidden');
+            document.getElementById('btn-back-home').classList.add('hidden');
+            document.getElementById('dropdown-menu').classList.add('hidden');
+        }
 
-        window.calculateAgeFromDob = function(dobString) {
-            if (!dobString) return 0;
-            const birthDate = new Date(dobString); const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const m = today.getMonth() - birthDate.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
-            return age >= 0 ? age : 0;
-        };
+        function openWorkspace(type) {
+            goHome();
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('btn-back-home').classList.remove('hidden');
+            if(type === 'Sign2Text') {
+                document.getElementById('workspace-sign2text').classList.remove('hidden');
+                document.getElementById('workspace-sign2text').classList.add('flex');
+            } else {
+                document.getElementById('workspace-text2sign').classList.remove('hidden');
+                document.getElementById('workspace-text2sign').classList.add('flex');
+                drawAvatar();
+            }
+            renderSideHist();
+        }
 
-        window.calculateDisplayAge = function(val, targetElementId) { 
-            const target = document.getElementById(targetElementId);
-            if (target) target.innerText = `Age: ${window.calculateAgeFromDob(val)} years old`; 
-        };
+        function openMasterHistoryView() {
+            goHome();
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('btn-back-home').classList.remove('hidden');
+            document.getElementById('master-history-view').classList.remove('hidden');
+            document.getElementById('master-history-view').classList.add('flex');
+            filterHist('All');
+        }
 
-        window.compressAndSetAvatar = function(input, previewId, target) {
-            const file = input.files[0]; if (!file) return;
+        function logout() {
+            document.getElementById('auth-container').classList.remove('hidden');
+            document.getElementById('global-nav').classList.add('hidden');
+            document.getElementById('app-container').classList.add('hidden');
+            document.getElementById('dropdown-menu').classList.add('hidden');
+            switchAuth('login');
+        }
+
+        // Utilities
+        function triggerHaptic() { if(navigator.vibrate) navigator.vibrate([50]); }
+        
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.getElementById('theme-icon').className = isDark ? "fa-solid fa-sun text-amber-400" : "fa-solid fa-moon text-slate-600";
+            if(!document.getElementById('workspace-text2sign').classList.contains('hidden')) drawAvatar();
+        }
+
+        function toggleInputPwd(id, btn) {
+            const el = document.getElementById(id);
+            if(el.type === 'password') { el.type = 'text'; btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>'; }
+            else { el.type = 'password'; btn.innerHTML = '<i class="fa-solid fa-eye"></i>'; }
+        }
+
+        function calculateDisplayAge(val, tgt) {
+            if(!val) return;
+            const b = new Date(val); const t = new Date();
+            let age = t.getFullYear() - b.getFullYear();
+            if(t.getMonth() < b.getMonth() || (t.getMonth() === b.getMonth() && t.getDate() < b.getDate())) age--;
+            document.getElementById(tgt).innerText = `Age: ${Math.max(0, age)} yrs`;
+        }
+
+        function compressAndSetAvatar(input, previewId) {
+            if(!input.files[0]) return;
             const reader = new FileReader();
             reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement("canvas"); const ctx = canvas.getContext("2d");
-                    const MAX = 240; let w = img.width, h = img.height;
-                    if (w > h && w > MAX) { h *= MAX / w; w = MAX; } else if (h > MAX) { w *= MAX / h; h = MAX; }
-                    canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
-                    const b64 = canvas.toDataURL("image/jpeg", 0.75);
-                    const previewElem = document.getElementById(previewId);
-                    if (previewElem) previewElem.src = b64;
-                    if (target === 'reg') window.regPfpBase64 = b64; 
-                    if (target === 'upd') window.updPfpBase64 = b64;
-                };
-                img.src = e.target.result;
+                document.getElementById(previewId).src = e.target.result;
+                pfpBase64 = e.target.result;
             };
-            reader.readAsDataURL(file);
-        };
-
-        window.toggleInputPwd = function(inputId, btn) {
-            const el = document.getElementById(inputId); const icon = btn.querySelector('i');
-            if (el.type === 'password') { el.type = 'text'; if (icon) icon.className = 'fa-solid fa-eye-slash'; }
-            else { el.type = 'password'; if (icon) icon.className = 'fa-solid fa-eye'; }
-        };
-
-        window.switchAuth = function(type) {
-            document.getElementById('auth-view').classList.remove('hidden'); 
-            document.getElementById('home-view').classList.add('hidden'); 
-            document.getElementById('workspace-sign2text').classList.add('hidden'); 
-            document.getElementById('workspace-text2sign').classList.add('hidden'); 
-            document.getElementById('master-history-view').classList.add('hidden'); 
-            document.getElementById('nav-user-container').classList.add('hidden');
-            
-            if (type === 'login') { 
-                document.getElementById('form-login').classList.remove('hidden'); 
-                document.getElementById('form-register').classList.add('hidden'); 
-            } else { 
-                document.getElementById('form-login').classList.add('hidden'); 
-                document.getElementById('form-register').classList.remove('hidden'); 
-            }
-        };
-
-        window.goHome = function() {
-            window.stopCamera(); 
-            window.activeWorkspace = ""; 
-            const dropdown = document.getElementById('dropdown-menu');
-            if (dropdown) dropdown.classList.add('hidden');
-            
-            document.getElementById('auth-view').classList.add('hidden'); 
-            document.getElementById('workspace-sign2text').classList.add('hidden'); 
-            document.getElementById('workspace-text2sign').classList.add('hidden'); 
-            document.getElementById('master-history-view').classList.add('hidden'); 
-            document.getElementById('home-view').classList.remove('hidden');
-            
-            document.getElementById('nav-user-container').classList.remove('hidden'); 
-            document.getElementById('btn-back-home').classList.add('hidden');
-            window.updateNavUserUI(); 
-            window.refreshMasterConversations();
-        };
-
-        window.openWorkspace = function(mode) {
-            window.activeWorkspace = mode; 
-            document.getElementById('home-view').classList.add('hidden'); 
-            document.getElementById('master-history-view').classList.add('hidden'); 
-            document.getElementById('btn-back-home').classList.remove('hidden');
-            
-            if (mode === 'Sign2Text') { 
-                document.getElementById('workspace-sign2text').classList.remove('hidden'); 
-                document.getElementById('workspace-text2sign').classList.add('hidden'); 
-                window.startCamera(); 
-            } else { 
-                document.getElementById('workspace-sign2text').classList.add('hidden'); 
-                document.getElementById('workspace-text2sign').classList.remove('hidden'); 
-                window.runAvatarAnimation(); 
-            }
-            window.renderSidebarHistory();
-        };
-
-        window.openMasterHistoryView = function() {
-            document.getElementById('home-view').classList.add('hidden'); 
-            document.getElementById('workspace-sign2text').classList.add('hidden'); 
-            document.getElementById('workspace-text2sign').classList.add('hidden'); 
-            document.getElementById('master-history-view').classList.remove('hidden'); 
-            document.getElementById('btn-back-home').classList.remove('hidden');
-            window.setMasterFilter('All');
-        };
-
-        window.toggleUserDropdown = function() { 
-            const dropdown = document.getElementById('dropdown-menu');
-            if (dropdown) dropdown.classList.toggle('hidden'); 
-        };
-
-        window.updateNavUserUI = function() {
-            const userNameElem = document.getElementById('nav-user-name');
-            if (userNameElem) userNameElem.innerText = currentUser.name || "User";
-            const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'User')}&background=0d9488&color=fff`;
-            const pfpElem = document.getElementById('nav-pfp');
-            if (pfpElem) pfpElem.src = currentUser.profile_picture || fallback;
-        };
-
-        window.logout = function() {
-            localStorage.clear(); 
-            currentUser = { unique_id: "", email: "", name: "", dob: "", mobile: "", profile_picture: "", token: "" };
-            window.switchAuth('login'); 
-            const dropdown = document.getElementById('dropdown-menu');
-            if (dropdown) dropdown.classList.add('hidden');
-        };
-
-        window.setBtnLoading = function(btn, isLoading, text="Processing...") {
-            if(!btn) return;
-            if(isLoading) { 
-                btn.dataset.original = btn.innerText; 
-                btn.innerText = text; 
-                btn.disabled = true; 
-                btn.classList.add('cursor-not-allowed'); 
-            } else { 
-                btn.innerText = btn.dataset.original || btn.innerText; 
-                btn.disabled = false; 
-                btn.classList.remove('cursor-not-allowed'); 
-            }
-        };
-
-        // --- AUTH FORMS ---
-        document.getElementById('form-login').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            const btn = e.target.querySelector('button[type="submit"]'); 
-            window.setBtnLoading(btn, true, "Logging in...");
-            try {
-                const res = await fetch(`${API_BASE_URL}/login`, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ 
-                        identifier: document.getElementById('login-id').value.trim(), 
-                        password: document.getElementById('login-pwd').value 
-                    }) 
-                });
-                const d = await res.json();
-                if (res.ok) { 
-                    window.saveSessionUser(d); 
-                    window.goHome(); 
-                } else {
-                    alert(d.detail || "Login failed");
-                }
-            } catch (err) { 
-                alert("Unable to connect to backend. Please ensure the server is awake."); 
-            }
-            finally { window.setBtnLoading(btn, false); }
-        });
-
-        document.getElementById('form-register').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            const btn = e.target.querySelector('button[type="submit"]'); 
-            window.setBtnLoading(btn, true, "Registering...");
-            
-            const pwd = document.getElementById('reg-pwd').value;
-            const cpwd = document.getElementById('reg-cpwd').value;
-            if (pwd !== cpwd) { 
-                alert("Passwords do not match!"); 
-                window.setBtnLoading(btn, false); 
-                return; 
-            }
-            try {
-                const res = await fetch(`${API_BASE_URL}/register`, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ 
-                        name: document.getElementById('reg-name').value.trim(), 
-                        dob: document.getElementById('reg-dob').value, 
-                        email: document.getElementById('reg-email').value.trim(), 
-                        mobile: document.getElementById('reg-mobile').value.trim(), 
-                        password: pwd, 
-                        profile_picture: window.regPfpBase64 
-                    }) 
-                });
-                const d = await res.json();
-                if (res.ok) { 
-                    alert("Account registered successfully!"); 
-                    window.switchAuth('login'); 
-                } else {
-                    alert(d.detail || "Registration failed");
-                }
-            } catch (err) { 
-                alert("Network error registering account."); 
-            }
-            finally { window.setBtnLoading(btn, false); }
-        });
-
-        window.saveSessionUser = function(d) {
-            localStorage.setItem("ths_uid", d.unique_id); 
-            localStorage.setItem("ths_email", d.email); 
-            localStorage.setItem("ths_name", d.name); 
-            localStorage.setItem("ths_dob", d.dob || ""); 
-            localStorage.setItem("ths_mobile", d.mobile || ""); 
-            localStorage.setItem("ths_pfp", d.profile_picture || ""); 
-            localStorage.setItem("ths_token", d.token);
-            
-            currentUser = { 
-                unique_id: d.unique_id, 
-                email: d.email, 
-                name: d.name, 
-                dob: d.dob || "", 
-                mobile: d.mobile || "", 
-                profile_picture: d.profile_picture || "", 
-                token: d.token 
-            };
-        };
-
-        // --- MODALS ---
-        window.closeModal = function(id) { 
-            const modal = document.getElementById(id);
-            if (modal) modal.classList.add('hidden'); 
-        };
-
-        window.openReadOnlyProfile = function() {
-            const dropdown = document.getElementById('dropdown-menu');
-            if (dropdown) dropdown.classList.add('hidden'); 
-            const modal = document.getElementById('modal-ro-profile');
-            if (modal) modal.classList.remove('hidden');
-            
-            const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0d9488&color=fff`;
-            const roPfp = document.getElementById('ro-pfp');
-            const roName = document.getElementById('ro-name');
-            const roUid = document.getElementById('ro-uid');
-            const roDob = document.getElementById('ro-dob');
-            const roAge = document.getElementById('ro-age');
-            const roMobile = document.getElementById('ro-mobile');
-            const roEmail = document.getElementById('ro-email');
-
-            if (roPfp) roPfp.src = currentUser.profile_picture || fallback; 
-            if (roName) roName.innerText = currentUser.name; 
-            if (roUid) roUid.innerText = `ID: ${currentUser.unique_id}`; 
-            if (roDob) roDob.innerText = currentUser.dob || "Not Provided"; 
-            if (roAge) roAge.innerText = `${window.calculateAgeFromDob(currentUser.dob)} Years`; 
-            if (roMobile) roMobile.innerText = currentUser.mobile || "Not Provided"; 
-            if (roEmail) roEmail.innerText = currentUser.email;
-        };
-
-        window.openUpdateModal = function() {
-            const dropdown = document.getElementById('dropdown-menu');
-            if (dropdown) dropdown.classList.add('hidden'); 
-            const modal = document.getElementById('modal-update-profile');
-            if (modal) modal.classList.remove('hidden');
-            
-            const updName = document.getElementById('upd-name');
-            const updDob = document.getElementById('upd-dob');
-            const updMobile = document.getElementById('upd-mobile');
-            const updEmail = document.getElementById('upd-email');
-            const updCurrentPwd = document.getElementById('upd-current-pwd');
-
-            if (updName) updName.value = currentUser.name; 
-            if (updDob) updDob.value = currentUser.dob; 
-            if (updMobile) updMobile.value = currentUser.mobile; 
-            if (updEmail) updEmail.value = currentUser.email; 
-            if (updCurrentPwd) updCurrentPwd.value = "";
-            
-            window.updPfpBase64 = currentUser.profile_picture;
-            const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0d9488&color=fff`;
-            const updPreview = document.getElementById('upd-pfp-preview');
-            if (updPreview) updPreview.src = window.updPfpBase64 || fallback;
-        };
-
-        document.getElementById('form-update-profile').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            const btn = e.target.querySelector('button[type="submit"]'); 
-            window.setBtnLoading(btn, true, "Saving...");
-            try {
-                const res = await fetch(`${API_BASE_URL}/update_user`, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ 
-                        original_email: currentUser.email, 
-                        current_password: document.getElementById('upd-current-pwd').value, 
-                        name: document.getElementById('upd-name').value.trim(), 
-                        dob: document.getElementById('upd-dob').value, 
-                        mobile: document.getElementById('upd-mobile').value.trim(), 
-                        email: document.getElementById('upd-email').value.trim(), 
-                        profile_picture: window.updPfpBase64 
-                    }) 
-                });
-                const d = await res.json();
-                if (res.ok) {
-                    alert("Profile updated!"); 
-                    currentUser.name = d.new_name; 
-                    currentUser.email = d.new_email; 
-                    currentUser.dob = d.new_dob; 
-                    currentUser.mobile = d.new_mobile; 
-                    currentUser.profile_picture = d.new_profile_picture;
-                    window.saveSessionUser({ ...currentUser, token: currentUser.token }); 
-                    window.updateNavUserUI(); 
-                    window.closeModal('modal-update-profile');
-                } else {
-                    alert(d.detail || "Update failed");
-                }
-            } catch (err) { 
-                alert("Server error updating profile."); 
-            }
-            finally { window.setBtnLoading(btn, false); }
-        });
-
-        window.openPasswordModal = function() { 
-            const dropdown = document.getElementById('dropdown-menu');
-            if (dropdown) dropdown.classList.add('hidden'); 
-            const modal = document.getElementById('modal-change-password');
-            if (modal) modal.classList.remove('hidden'); 
-            
-            const cpCur = document.getElementById('cp-current');
-            const cpNew = document.getElementById('cp-new');
-            const cpConf = document.getElementById('cp-confirm');
-            if (cpCur) cpCur.value = ""; 
-            if (cpNew) cpNew.value = ""; 
-            if (cpConf) cpConf.value = ""; 
-        };
-
-        document.getElementById('form-change-password').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            const btn = e.target.querySelector('button[type="submit"]'); 
-            window.setBtnLoading(btn, true, "Updating...");
-            
-            const n = document.getElementById('cp-new').value; 
-            const c = document.getElementById('cp-confirm').value;
-            if (n !== c) { 
-                alert("New passwords do not match!"); 
-                window.setBtnLoading(btn, false); 
-                return; 
-            }
-            try {
-                const res = await fetch(`${API_BASE_URL}/change_password`, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ 
-                        email: currentUser.email, 
-                        current_password: document.getElementById('cp-current').value, 
-                        new_password: n 
-                    }) 
-                });
-                if (res.ok) { 
-                    alert("Password changed successfully!"); 
-                    window.closeModal('modal-change-password'); 
-                } else {
-                    alert((await res.json()).detail || "Password change failed");
-                }
-            } catch (err) { 
-                alert("Server error."); 
-            }
-            finally { window.setBtnLoading(btn, false); }
-        });
-
-        window.openResetPasswordModal = function() { 
-            const modal = document.getElementById('modal-reset-pwd');
-            if (modal) modal.classList.remove('hidden'); 
-        };
-
-        document.getElementById('form-reset-password').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            const btn = e.target.querySelector('button[type="submit"]'); 
-            window.setBtnLoading(btn, true, "Resetting...");
-            try {
-                const res = await fetch(`${API_BASE_URL}/reset_password`, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ 
-                        identifier: document.getElementById('rst-id').value.trim(), 
-                        new_password: document.getElementById('rst-pwd').value 
-                    }) 
-                });
-                if (res.ok) { 
-                    alert((await res.json()).message); 
-                    window.closeModal('modal-reset-pwd'); 
-                } else {
-                    alert((await res.json()).detail || "Reset failed");
-                }
-            } catch (err) { 
-                alert("Network error."); 
-            }
-            finally { window.setBtnLoading(btn, false); }
-        });
-
-        window.updateConfidenceDisplay = function(conf) {
-            const pct = Math.round(conf * 100); 
-            const dot = document.getElementById('ai-conf-dot'); 
-            const txt = document.getElementById('ai-conf-text'); 
-            const border = document.getElementById('camera-border');
-            
-            if (txt) txt.innerText = `Confidence: ${pct}%`;
-            if (pct > 75) { 
-                if (dot) dot.className = "w-2 h-2 rounded-full bg-emerald-400"; 
-                if (border) {
-                    border.classList.replace('border-slate-300', 'border-emerald-500'); 
-                    border.classList.replace('dark:border-slate-800', 'dark:border-emerald-500'); 
-                }
-            } else if (pct > 40) { 
-                if (dot) dot.className = "w-2 h-2 rounded-full bg-amber-400"; 
-                if (border) {
-                    border.classList.replace('border-emerald-500', 'border-slate-300'); 
-                    border.classList.replace('dark:border-emerald-500', 'dark:border-slate-800'); 
-                }
-            } else { 
-                if (dot) dot.className = "w-2 h-2 rounded-full bg-slate-400"; 
-                if (border) {
-                    border.classList.replace('border-emerald-500', 'border-slate-300'); 
-                    border.classList.replace('dark:border-emerald-500', 'dark:border-slate-800'); 
-                }
-            }
-        };
-
-        // --- SENTENCE BUILDER ---
-        window.renderSentenceBuilder = function() {
-            const box = document.getElementById('sentence-builder-box');
-            if (!box) return;
-            if (window.sentenceBuilderList.length === 0) {
-                box.innerHTML = `<span class="text-slate-400 italic">Queue is empty. Check the box above to build sentences...</span>`;
-            } else {
-                box.innerHTML = window.sentenceBuilderList.map(w => `<span class="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/60 text-teal-800 dark:text-teal-200 rounded font-bold">${w}</span>`).join('');
-            }
-        };
-
-        window.speakSentenceBuilder = function() { 
-            if (window.sentenceBuilderList.length === 0) return; 
-            const full = window.sentenceBuilderList.join(' '); 
-            window.speakTextWithSynthesis(full); 
-            window.executeSaveConversation(full, "Sign to Text"); 
-        };
-
-        window.clearSentenceBuilder = function() { 
-            window.sentenceBuilderList = []; 
-            window.renderSentenceBuilder(); 
-        };
-
-        window.toggleSpokenAudio = function() { 
-            window.isSpokenAudioOn = !window.isSpokenAudioOn; 
-            const audioToggle = document.getElementById('btn-audio-toggle');
-            if (audioToggle) {
-                audioToggle.innerHTML = window.isSpokenAudioOn ? '<i class="fa-solid fa-volume-high mr-1"></i> Audio: ON' : '<i class="fa-solid fa-volume-xmark mr-1"></i> Audio: OFF'; 
-            }
-        };
-
-        window.toggleAutoSaveState = function() { 
-            window.isAutoSaveOn = !window.isAutoSaveOn; 
-            const btn = document.getElementById('btn-auto-save'); 
-            if (btn) {
-                btn.innerText = `Auto-Save: ${window.isAutoSaveOn ? 'ON' : 'OFF'}`; 
-                btn.className = window.isAutoSaveOn ? "px-3 py-1.5 bg-teal-600 text-white rounded-lg text-xs font-bold" : "px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"; 
-            }
-        };
-
-        window.copyCurrentTranslation = function() { 
-            const t = signOutputText ? signOutputText.innerText : ""; 
-            navigator.clipboard.writeText(t); 
-            alert(`Copied "${t}" to clipboard!`); 
-        };
-
-        window.speakTextWithSynthesis = function(phrase) {
-            if (!('speechSynthesis' in window)) return; 
-            window.speechSynthesis.cancel();
-            const utt = new SpeechSynthesisUtterance(phrase); 
-            const speedSelect = document.getElementById('tts-speed');
-            utt.rate = speedSelect ? parseFloat(speedSelect.value) : 1.0;
-            
-            const voices = window.speechSynthesis.getVoices();
-            const genderSelect = document.getElementById('tts-gender');
-            const targetGender = genderSelect ? genderSelect.value : 'female';
-
-            if (targetGender === 'female') { 
-                const f = voices.find(v => v.name.includes("Female") || v.name.includes("Zira") || v.name.includes("Samantha")); 
-                if (f) utt.voice = f; 
-            } else { 
-                const m = voices.find(v => v.name.includes("Male") || v.name.includes("David") || v.name.includes("Alex")); 
-                if (m) utt.voice = m; 
-            }
-            window.speechSynthesis.speak(utt);
-        };
-
-        // --- AVATAR & PROMPT BOX ---
-        window.initAvatarCanvas = function() { 
-            const isDark = document.documentElement.classList.contains('dark'); 
-            avatarCtx.fillStyle = isDark ? "#0f172a" : "#f1f5f9"; 
-            avatarCtx.fillRect(0, 0, avatarCanvas.width, avatarCanvas.height); 
-            window.drawStylizedAvatar(window.avatarGender, 0); 
-        };
-
-        window.switchAvatarGender = function(val) { 
-            window.avatarGender = val; 
-            window.drawStylizedAvatar(window.avatarGender, window.avatarAnimationAngle); 
-        };
-
-        const avatarSlider = document.getElementById('avatar-speed-slider');
-        if (avatarSlider) {
-            avatarSlider.addEventListener('input', (e) => { 
-                const lbl = document.getElementById('avatar-speed-label');
-                if (lbl) lbl.innerText = `${e.target.value}x`; 
-            });
+            reader.readAsDataURL(input.files[0]);
         }
 
-        window.runAvatarAnimation = function() { 
-            if (window.avatarAnimReqId) cancelAnimationFrame(window.avatarAnimReqId); 
-            const speedElem = document.getElementById('avatar-speed-slider');
-            const speed = speedElem ? parseFloat(speedElem.value) : 1.0; 
-            window.avatarAnimationAngle += 0.05 * speed; 
-            window.drawStylizedAvatar(window.avatarGender, window.avatarAnimationAngle); 
-            if (window.activeWorkspace === 'Text2Sign') window.avatarAnimReqId = requestAnimationFrame(window.runAvatarAnimation); 
-        };
-
-        window.replayCurrentAvatarAnimation = function() { 
-            window.avatarAnimationAngle = 0; 
-            window.runAvatarAnimation(); 
-            const prompt = document.getElementById('t2s-prompt-input');
-            if (prompt && prompt.value) window.speakTextWithSynthesis(prompt.value); 
-        };
-
-        window.drawStylizedAvatar = function(gender, angle) {
-            const isDark = document.documentElement.classList.contains('dark'); 
-            const w = avatarCanvas.width, h = avatarCanvas.height; 
-            avatarCtx.clearRect(0, 0, w, h);
-            avatarCtx.fillStyle = isDark ? "#090d16" : "#e2e8f0"; 
-            avatarCtx.fillRect(0, 0, w, h);
-            
-            const cx = w / 2; const cy = h / 2 - 20;
-            avatarCtx.beginPath(); avatarCtx.arc(cx, cy - 80, 45, 0, Math.PI * 2); 
-            avatarCtx.fillStyle = gender === 'female' ? '#fcd34d' : '#f59e0b'; 
-            avatarCtx.fill();
-            
-            avatarCtx.beginPath(); avatarCtx.roundRect(cx - 50, cy - 30, 100, 140, [20, 20, 5, 5]); 
-            avatarCtx.fillStyle = gender === 'female' ? '#4f46e5' : '#0d9488'; 
-            avatarCtx.fill();
-            
-            const handSwing = Math.sin(angle) * 35; const handSwing2 = Math.cos(angle) * 35;
-            avatarCtx.beginPath(); avatarCtx.arc(cx - 70 + handSwing, cy + 30 + handSwing2, 16, 0, Math.PI * 2); 
-            avatarCtx.fillStyle = "#fde68a"; avatarCtx.fill(); 
-            avatarCtx.lineWidth = 4; avatarCtx.strokeStyle = "#4338ca"; avatarCtx.stroke();
-            
-            avatarCtx.beginPath(); avatarCtx.arc(cx + 70 - handSwing, cy + 30 - handSwing2, 16, 0, Math.PI * 2); 
-            avatarCtx.fillStyle = "#fde68a"; avatarCtx.fill(); avatarCtx.stroke();
-        };
-
-        window.autoResizeTextarea = function(el) { 
-            el.style.height = 'auto'; 
-            el.style.height = (el.scrollHeight) + 'px'; 
-        };
-
-        window.injectPresetPhrase = function(txt) { 
-            const el = document.getElementById('t2s-prompt-input'); 
-            if (el) {
-                el.value = txt; 
-                window.autoResizeTextarea(el); 
-                window.generateAndSaveSignAvatar(); 
-            }
-        };
-
-        window.generateAndSaveSignAvatar = function() { 
-            const el = document.getElementById('t2s-prompt-input'); 
-            if (!el) return;
-            const val = el.value.trim(); 
-            if (!val) { alert("Please enter or speak a phrase."); return; } 
-            window.replayCurrentAvatarAnimation(); 
-            window.speakTextWithSynthesis(val); 
-            window.executeSaveConversation(val, "Text to Sign"); 
-            el.value = ''; 
-            window.autoResizeTextarea(el); 
-        };
-
-        // --- MICROPHONE ---
-        window.toggleAudioRecording = function() {
-            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition; 
-            if (!SpeechRec) { alert("Speech Recognition not supported on this browser."); return; }
-            if (!window.audioRecognitionInstance) {
-                window.audioRecognitionInstance = new SpeechRec(); 
-                window.audioRecognitionInstance.continuous = false; 
-                window.audioRecognitionInstance.interimResults = false; 
-                window.audioRecognitionInstance.lang = 'en-IN';
-                
-                window.audioRecognitionInstance.onstart = () => { 
-                    window.isRecordingMicrophone = true; 
-                    const micIcon = document.getElementById('mic-icon');
-                    const wf = document.getElementById('waveformCanvas');
-                    if (micIcon) micIcon.className = "fa-solid fa-microphone text-rose-500 animate-pulse"; 
-                    if (wf) {
-                        wf.classList.remove('opacity-0'); 
-                        wf.classList.add('opacity-100'); 
-                    }
-                };
-                window.audioRecognitionInstance.onresult = (e) => { 
-                    const el = document.getElementById('t2s-prompt-input'); 
-                    if (el) {
-                        el.value = e.results[0][0].transcript; 
-                        window.autoResizeTextarea(el); 
-                    }
-                };
-                window.audioRecognitionInstance.onend = () => { 
-                    window.isRecordingMicrophone = false; 
-                    const micIcon = document.getElementById('mic-icon');
-                    const wf = document.getElementById('waveformCanvas');
-                    if (micIcon) micIcon.className = "fa-solid fa-microphone text-base"; 
-                    if (wf) {
-                        wf.classList.remove('opacity-100'); 
-                        wf.classList.add('opacity-0'); 
-                    }
-                };
-            }
-            if (window.isRecordingMicrophone) window.audioRecognitionInstance.stop(); else window.audioRecognitionInstance.start();
-        };
-
-        window.initAudioWaveform = function() {
-            const cv = document.getElementById('waveformCanvas'); 
-            if (!cv) return;
-            const ctx = cv.getContext('2d');
-            function renderWave() {
-                ctx.clearRect(0, 0, cv.width, cv.height);
-                if(window.isRecordingMicrophone) { 
-                    ctx.fillStyle = "#6366f1"; 
-                    for (let i = 0; i < 8; i++) { 
-                        const h = Math.random() * 16 + 4; 
-                        ctx.fillRect(i * 10, (cv.height - h) / 2, 4, h); 
-                    } 
-                }
-                requestAnimationFrame(renderWave);
-            }
-            renderWave();
-        };
-
-        // --- DB EXPORTS & HISTORY ---
-        window.executeSaveConversation = async function(txt, mode) { 
-            try { 
-                await fetch(`${API_BASE_URL}/save_chat`, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ email: currentUser.email, mode_used: mode, transcript: txt }) 
-                }); 
-                window.refreshMasterConversations(); 
-            } catch (e) {} 
-        };
-
-        window.refreshMasterConversations = async function() {
-            try {
-                const res = await fetch(`${API_BASE_URL}/history/${currentUser.email}`); 
-                const data = await res.json();
-                window.masterHistoryRecords = data.history || []; 
-                window.renderSidebarHistory(); 
-                window.applyHistoryFilterAndSearch();
-            } catch (e) {}
-        };
-
-        window.renderSidebarHistory = function() {
-            const s2tList = document.getElementById('sign2text-sidebar-list'); 
-            const t2sList = document.getElementById('text2sign-sidebar-list');
-            const s2tItems = window.masterHistoryRecords.filter(r => r.mode_used === "Sign to Text"); 
-            const t2sItems = window.masterHistoryRecords.filter(r => r.mode_used === "Text to Sign");
-            
-            if (s2tList) s2tList.innerHTML = s2tItems.length ? s2tItems.map(itemToSidebarCard).join('') : '<p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>';
-            if (t2sList) t2sList.innerHTML = t2sItems.length ? t2sItems.map(itemToSidebarCard).join('') : '<p class="text-xs text-slate-400 text-center italic mt-10">No history yet.</p>';
-        };
-
-        function itemToSidebarCard(item) {
-            return `<div class="p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs"><div class="flex justify-between text-[10px] text-slate-400 font-bold mb-1"><span>${item.timestamp}</span><button onclick="deleteSingleHistoryItem('${item.id}')" class="text-red-500 hover:underline">Delete</button></div><p class="font-extrabold text-slate-800 dark:text-slate-100">${item.transcript}</p></div>`;
+        // Modals
+        function toggleUserDropdown() { document.getElementById('dropdown-menu').classList.toggle('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        
+        function openReadOnlyProfile() {
+            document.getElementById('dropdown-menu').classList.add('hidden');
+            document.getElementById('modal-ro-profile').classList.remove('hidden');
+            document.getElementById('ro-pfp').src = userProfile.pfp;
+            document.getElementById('ro-name').innerText = userProfile.name;
+            document.getElementById('ro-uid').innerText = "ID: " + userProfile.uid;
+            document.getElementById('ro-dob').innerText = userProfile.dob || "N/A";
+            document.getElementById('ro-mobile').innerText = userProfile.mobile || "N/A";
+            document.getElementById('ro-email').innerText = userProfile.email || "N/A";
+            calculateDisplayAge(userProfile.dob, 'ro-age');
         }
 
-        window.currentMasterTab = "All";
-        window.setMasterFilter = function(mode) {
-            window.currentMasterTab = mode;
-            ['tab-all', 'tab-s2t', 'tab-t2s'].forEach(id => { 
-                const elem = document.getElementById(id);
-                if (elem) elem.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition hover:bg-slate-200 dark:hover:bg-slate-700"; 
-            });
-            if (mode === 'All') {
-                const tabAll = document.getElementById('tab-all');
-                if (tabAll) tabAll.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
+        function openUpdateModal() {
+            document.getElementById('dropdown-menu').classList.add('hidden');
+            document.getElementById('modal-update-profile').classList.remove('hidden');
+            document.getElementById('upd-name').value = userProfile.name;
+            document.getElementById('upd-dob').value = userProfile.dob;
+            document.getElementById('upd-mobile').value = userProfile.mobile;
+            document.getElementById('upd-email').value = userProfile.email;
+        }
+
+        function openPasswordModal() {
+            document.getElementById('dropdown-menu').classList.add('hidden');
+            document.getElementById('modal-change-password').classList.remove('hidden');
+        }
+
+        // S2T Logic
+        function toggleSpokenAudio() {
+            isAudioOn = !isAudioOn;
+            document.getElementById('btn-audio-toggle').innerHTML = isAudioOn ? '<i class="fa-solid fa-volume-high mr-1"></i> Audio: ON' : '<i class="fa-solid fa-volume-xmark mr-1"></i> Audio: OFF';
+        }
+        function toggleAutoSave() {
+            isAutoSaveOn = !isAutoSaveOn;
+            const b = document.getElementById('btn-auto-save');
+            b.innerText = `Auto-Save: ${isAutoSaveOn ? 'ON':'OFF'}`;
+            b.className = isAutoSaveOn ? "px-3 py-1.5 bg-teal-600 text-white rounded-lg text-xs font-bold" : "px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200";
+        }
+        function copyTranslation() { alert("Copied to clipboard!"); }
+
+        function speakSentence() {
+            if(sentenceQueue.length === 0) return;
+            const text = sentenceQueue.join(' ');
+            if(isAudioOn && 'speechSynthesis' in window) {
+                const utt = new SpeechSynthesisUtterance(text);
+                utt.rate = parseFloat(document.getElementById('tts-speed').value || 1);
+                const isMale = document.getElementById('tts-gender').value === 'male';
+                const voices = speechSynthesis.getVoices();
+                utt.voice = voices.find(v => isMale ? v.name.includes('Male') : v.name.includes('Female')) || voices[0];
+                speechSynthesis.speak(utt);
             }
-            if (mode === 'Sign to Text') {
-                const tabS2t = document.getElementById('tab-s2t');
-                if (tabS2t) tabS2t.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
-            }
-            if (mode === 'Text to Sign') {
-                const tabT2s = document.getElementById('tab-t2s');
-                if (tabT2s) tabT2s.className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white transition";
-            }
-            window.applyHistoryFilterAndSearch();
-        };
+            historyDB.push({ id: Date.now(), type: 'S2T', text: text, date: new Date().toLocaleString() });
+            renderSideHist();
+            triggerHaptic();
+        }
+        function clearSentence() { sentenceQueue = []; document.getElementById('sentence-builder-box').innerHTML = '<span class="text-slate-400 italic">Queue is empty...</span>'; }
 
-        window.applyHistoryFilterAndSearch = function() {
-            const searchInput = document.getElementById('history-search-input');
-            const query = (searchInput ? searchInput.value : "").toLowerCase();
-            const s2tCount = window.masterHistoryRecords.filter(r => r.mode_used === "Sign to Text").length;
-            const t2sCount = window.masterHistoryRecords.filter(r => r.mode_used === "Text to Sign").length;
+        // T2S Avatar Logic
+        let avatarAngle = 0;
+        let isAnimating = false;
+        function drawAvatar(animate = false) {
+            const cvs = document.getElementById('avatarCanvas');
+            const ctx = cvs.getContext('2d');
+            const isDark = document.documentElement.classList.contains('dark');
+            const gender = document.getElementById('avatar-model-gender').value;
+            
+            ctx.fillStyle = isDark ? "#0f172a" : "#f8fafc";
+            ctx.fillRect(0,0,cvs.width,cvs.height);
+            
+            const cx = cvs.width/2; const cy = cvs.height/2;
+            
+            // Head
+            ctx.beginPath(); ctx.arc(cx, cy-80, 45, 0, Math.PI*2);
+            ctx.fillStyle = gender === 'female' ? '#fcd34d' : '#f59e0b'; ctx.fill();
+            // Body
+            ctx.beginPath(); ctx.roundRect(cx-50, cy-30, 100, 140, 10);
+            ctx.fillStyle = gender === 'female' ? '#4f46e5' : '#0d9488'; ctx.fill();
+            
+            // Hands
+            const swingX = Math.sin(avatarAngle)*40;
+            const swingY = Math.cos(avatarAngle)*20;
+            ctx.beginPath(); ctx.arc(cx-70+swingX, cy+30+swingY, 15, 0, Math.PI*2); ctx.fillStyle = "#fde68a"; ctx.fill();
+            ctx.beginPath(); ctx.arc(cx+70-swingX, cy+30-swingY, 15, 0, Math.PI*2); ctx.fillStyle = "#fde68a"; ctx.fill();
 
-            const cntAll = document.getElementById('cnt-all');
-            const cntS2t = document.getElementById('cnt-s2t');
-            const cntT2s = document.getElementById('cnt-t2s');
-
-            if (cntAll) cntAll.innerText = window.masterHistoryRecords.length;
-            if (cntS2t) cntS2t.innerText = s2tCount;
-            if (cntT2s) cntT2s.innerText = t2sCount;
-
-            let filtered = window.masterHistoryRecords;
-            if (window.currentMasterTab !== 'All') filtered = filtered.filter(r => r.mode_used === window.currentMasterTab);
-            if (query) filtered = filtered.filter(r => r.transcript.toLowerCase().includes(query) || r.timestamp.includes(query));
-
-            const box = document.getElementById('master-history-container'); 
-            if (!box) return;
-            if (filtered.length === 0) {
-                box.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-10">No matching conversations found.</p>`;
+            if(animate && avatarAngle < Math.PI*2) {
+                const spd = parseFloat(document.getElementById('avatar-speed').value);
+                avatarAngle += 0.1 * spd;
+                requestAnimationFrame(() => drawAvatar(true));
             } else {
-                box.innerHTML = filtered.map(r => `<div class="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-start gap-4"><div><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${r.mode_used === 'Sign to Text' ? 'bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300' : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300'}">${r.mode_used}</span><span class="text-[11px] text-slate-400 font-bold">${r.timestamp}</span></div><p class="text-sm font-bold text-slate-900 dark:text-slate-100">${r.transcript}</p></div><button onclick="deleteSingleHistoryItem('${r.id}')" class="text-xs text-rose-500 hover:text-rose-700 font-bold shrink-0"><i class="fa-solid fa-trash-can"></i></button></div>`).join('');
+                avatarAngle = 0;
             }
-        };
+        }
+        document.getElementById('avatar-speed').addEventListener('input', e => document.getElementById('speed-lbl').innerText = e.target.value+"x");
 
-        window.deleteSingleHistoryItem = async function(id) { 
-            if (!confirm("Delete this conversation record?")) return; 
-            try { 
-                await fetch(`${API_BASE_URL}/clear_history`, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ email: currentUser.email, item_id: id }) 
-                }); 
-                window.refreshMasterConversations(); 
-            } catch (e) { 
-                alert("Failed to delete."); 
-            } 
-        };
+        function injectPhrase(txt) { document.getElementById('t2s-prompt').value = txt; generateSign(); }
+        
+        function generateSign() {
+            const val = document.getElementById('t2s-prompt').value.trim();
+            if(!val) return;
+            drawAvatar(true);
+            historyDB.push({ id: Date.now(), type: 'T2S', text: val, date: new Date().toLocaleString() });
+            renderSideHist();
+            document.getElementById('t2s-prompt').value = '';
+        }
 
-        window.clearAllConversationsPrompt = async function() { 
-            if (!confirm("Are you sure you want to completely wipe all your stored history?")) return; 
-            try { 
-                await fetch(`${API_BASE_URL}/clear_history`, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ email: currentUser.email, item_id: null }) 
-                }); 
-                window.refreshMasterConversations(); 
-            } catch (e) { 
-                alert("Failed to clear."); 
-            } 
-        };
-
-        window.exportData = function(format) {
-            if (window.masterHistoryRecords.length === 0) { alert("No conversation history available to export."); return; }
-            const sessionDate = new Date().toISOString().split('T')[0];
-            const metaHeader = `================================================================================\nOFFICIAL ASL TRANSLATION TRANSCRIPT | SMART INDIA HACKATHON 2026\nTeam: TheHomoSapiens | Lead Developer: Sayan Chakraborty\nUser ID: ${currentUser.unique_id}\nUser Name: ${currentUser.name}\nExport Date: ${sessionDate}\nTotal Records: ${window.masterHistoryRecords.length}\n================================================================================\n\n`;
-            let bodyContent = ""; 
-            window.masterHistoryRecords.forEach((r, idx) => { 
-                bodyContent += `[Record #${idx + 1}] [${r.timestamp}] [Mode: ${r.mode_used}]\nTranscript: "${r.transcript}"\n--------------------------------------------------------------------------------\n`; 
-            });
-            const fullText = metaHeader + bodyContent;
-
-            if (format === 'txt') window.downloadFileBlob(fullText, `ASL_Transcript_${sessionDate}.txt`, "text/plain");
-            else if (format === 'word') { 
-                const docHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><title>ASL Transcript</title></head><body style="font-family: Arial; padding: 20px;"><pre style="white-space: pre-wrap; font-size: 11pt;">${fullText}</pre></body></html>`; 
-                window.downloadFileBlob(docHtml, `ASL_Transcript_${sessionDate}.doc`, "application/msword"); 
-            } else if (format === 'pdf') {
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`<html><head><title>ASL Transcript - ${currentUser.unique_id}</title><style>body { font-family: 'Helvetica', Arial, sans-serif; padding: 40px; color: #1e293b; } .header { border-bottom: 2px solid #0d9488; padding-bottom: 12px; margin-bottom: 20px; } .record { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; } .meta { font-size: 11px; color: #64748b; font-weight: bold; } .text { font-size: 14px; font-weight: bold; margin-top: 4px; }</style></head><body><div class="header"><h2>TheHomoSapiens | ASL Translation Transcript</h2><p style="font-size: 12px; margin: 0;">User: ${currentUser.name} | ID: ${currentUser.unique_id} | Date: ${sessionDate}</p></div>${window.masterHistoryRecords.map(r => `<div class="record"><div class="meta">[${r.timestamp}] - Mode:${r.mode_used}</div><div class="text">${r.transcript}</div></div>`).join('')}</body></html>`);
-                printWindow.document.close(); printWindow.focus(); setTimeout(() => { printWindow.print(); }, 500);
+        // Mic Waveform Mock
+        let micInterval;
+        function toggleMic() {
+            const icon = document.getElementById('mic-icon');
+            const wf = document.getElementById('waveformCanvas');
+            const ctx = wf.getContext('2d');
+            
+            if(icon.classList.contains('text-rose-500')) {
+                icon.className = "fa-solid fa-microphone text-base";
+                wf.classList.replace('opacity-100', 'opacity-0');
+                clearInterval(micInterval);
+            } else {
+                icon.className = "fa-solid fa-microphone text-rose-500 animate-pulse";
+                wf.classList.replace('opacity-0', 'opacity-100');
+                micInterval = setInterval(() => {
+                    ctx.clearRect(0,0,60,24);
+                    ctx.fillStyle = "#6366f1";
+                    for(let i=0; i<8; i++) {
+                        const h = Math.random()*16 + 4;
+                        ctx.fillRect(i*7, (24-h)/2, 4, h);
+                    }
+                }, 100);
             }
-        };
+        }
 
-        window.downloadFileBlob = function(content, fileName, mimeType) { 
-            const blob = new Blob([content], { type: mimeType }); 
-            const url = URL.createObjectURL(blob); 
-            const a = document.createElement('a'); 
-            a.href = url; 
-            a.download = fileName; 
-            a.click(); 
-            URL.revokeObjectURL(url); 
-        };
+        // History Management
+        function renderSideHist() {
+            const s2t = historyDB.filter(x => x.type === 'S2T').map(formatCard).join('');
+            const t2s = historyDB.filter(x => x.type === 'T2S').map(formatCard).join('');
+            document.getElementById('s2t-history').innerHTML = s2t || '<p class="text-xs text-slate-400 text-center italic mt-5">No history yet.</p>';
+            document.getElementById('t2s-history').innerHTML = t2s || '<p class="text-xs text-slate-400 text-center italic mt-5">No history yet.</p>';
+        }
+        function formatCard(item) {
+            return `<div class="p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs"><div class="flex justify-between text-[10px] text-slate-400 font-bold mb-1"><span>${item.date}</span></div><p class="font-extrabold text-slate-800 dark:text-slate-100">${item.text}</p></div>`;
+        }
+
+        function filterHist(mode) {
+            activeHistFilter = mode;
+            ['tab-all','tab-s2t','tab-t2s'].forEach(id => document.getElementById(id).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200");
+            document.getElementById(mode === 'All' ? 'tab-all' : (mode === 'S2T' ? 'tab-s2t' : 'tab-t2s')).className = "text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-600 text-white";
+            renderMasterHistory();
+        }
+
+        function renderMasterHistory() {
+            const q = document.getElementById('hist-search').value.toLowerCase();
+            let arr = historyDB;
+            if(activeHistFilter !== 'All') arr = arr.filter(x => x.type === activeHistFilter);
+            if(q) arr = arr.filter(x => x.text.toLowerCase().includes(q));
+
+            document.getElementById('cnt-all').innerText = historyDB.length;
+            document.getElementById('cnt-s2t').innerText = historyDB.filter(x=>x.type==='S2T').length;
+            document.getElementById('cnt-t2s').innerText = historyDB.filter(x=>x.type==='T2S').length;
+
+            const box = document.getElementById('master-hist-box');
+            if(!arr.length) box.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-10">No records found.</p>';
+            else box.innerHTML = arr.map(r => `
+                <div class="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-start gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded ${r.type==='S2T'?'bg-teal-100 dark:bg-teal-950 text-teal-700':'bg-indigo-100 dark:bg-indigo-950 text-indigo-700'}">${r.type}</span>
+                            <span class="text-[11px] text-slate-400 font-bold">${r.date}</span>
+                        </div>
+                        <p class="text-sm font-bold text-slate-900 dark:text-slate-100">${r.text}</p>
+                    </div>
+                </div>`).join('');
+        }
+
+        function clearHistory() { if(confirm("Wipe all history?")) { historyDB = []; renderMasterHistory(); renderSideHist(); } }
+
+        function exportData(format) {
+            const meta = `OFFICIAL ISL METADATA\nDate: ${new Date().toLocaleString()}\nUser ID: ${userProfile.uid}\nName: ${userProfile.name}\nTotal Records: ${historyDB.length}\n\n`;
+            const data = historyDB.map(r => `[${r.date}] [${r.type}] ${r.text}`).join('\n');
+            const blob = new Blob([meta + data], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `ISL_Export_${Date.now()}.${format.toLowerCase()}`;
+            a.click();
+        }
+
     </script>
 </body>
 </html>
