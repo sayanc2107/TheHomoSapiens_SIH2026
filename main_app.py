@@ -241,26 +241,26 @@ async def startup_db_init():
         # 1. Clean up legacy admin account if present
         await db.users.delete_many({"email": "admin@homosapiens.ai"})
 
-        # 2. Ensure sayan2008c@gmail.com is configured as Super Admin
-        admin = await db.users.find_one({"email": "sayan2008c@gmail.com"})
+        # 2. Ensure sayan@superadmin.com is configured as Super Admin
+        admin = await db.users.find_one({"email": "sayan@superadmin.com"})
         if not admin:
-            hashed = await asyncio.to_thread(hash_password, "Sayan123")
+            hashed = await asyncio.to_thread(hash_password, "SuperAdmin@123")
             await db.users.insert_one({
                 "name": "Sayan Chakraborty",
-                "email": "sayan2008c@gmail.com",
-                "mobile": "6735654275",
+                "email": "sayan@superadmin.com",
+                "mobile": "9876543210",
                 "dob": "2004-01-01",
                 "password": hashed,
                 "role": "superadmin",
                 "status": "active",
                 "unique_id": "THS-SUPERADMIN",
-                "profile_picture": "https://ui-avatars.com/api/?name=Sayan+Chakraborty&background=20263f&color=7ae2d5",
+                "profile_picture": "https://ui-avatars.com/api/?name=Sayan+SuperAdmin&background=20263f&color=7ae2d5",
                 "created_at": datetime.datetime.now(datetime.timezone.utc)
             })
-            print("[INFO] Super Admin initialized: sayan2008c@gmail.com")
+            print("[INFO] Super Admin initialized: sayan@superadmin.com")
         else:
             await db.users.update_one(
-                {"email": "sayan2008c@gmail.com"},
+                {"email": "sayan@superadmin.com"},
                 {"$set": {"role": "superadmin", "status": "active"}}
             )
 
@@ -338,7 +338,8 @@ async def login(credentials: UserLogin):
     if not is_valid:
         raise HTTPException(status_code=401, detail="Invalid password.")
     
-    role = db_user.get("role", "admin" if db_user.get("email") in ["admin@homosapiens.ai", "sayan2008c@gmail.com"] else "user")
+    role = db_user.get("role", "superadmin" if db_user.get("email") == "sayan@superadmin.com" else "user")
+    redirect_url = "/admin" if role in ["superadmin", "admin", "manager"] else ""
     token = jwt.encode({
         "email": db_user["email"],
         "name": db_user["name"],
@@ -354,6 +355,7 @@ async def login(credentials: UserLogin):
         "dob": db_user.get("dob", ""),
         "mobile": db_user["mobile"],
         "role": role,
+        "redirect_url": redirect_url,
         "profile_picture": db_user.get("profile_picture", "")
     }
 
@@ -476,7 +478,7 @@ async def admin_login(creds: AdminLoginRequest):
     if not is_valid:
         raise HTTPException(status_code=401, detail="Invalid admin credentials.")
 
-    role = db_user.get("role", "superadmin" if db_user["email"] == "sayan2008c@gmail.com" else "user")
+    role = db_user.get("role", "superadmin" if db_user["email"] == "sayan@superadmin.com" else "user")
     if role not in ["superadmin", "admin", "manager"]:
         raise HTTPException(status_code=403, detail="Access denied. Administrator privileges required.")
 
@@ -754,7 +756,7 @@ async def delete_user_by_admin(email_or_id: str, delete_conversations: bool = Tr
         raise HTTPException(status_code=404, detail="User not found")
 
     email = target.get("email", "")
-    if email == "sayan2008c@gmail.com" or target.get("role") == "superadmin":
+    if email == "sayan@superadmin.com" or target.get("role") == "superadmin":
         raise HTTPException(status_code=403, detail="Protected account. The Super Administrator cannot be deleted.")
     await db.users.delete_one({"_id": target["_id"]})
     if delete_conversations and email:

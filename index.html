@@ -85,7 +85,7 @@
                 <i class="fa-solid fa-arrow-left mr-1.5"></i> Dashboard
             </button>
 
-            <a href="admin.html" id="btn-nav-admin" class="ml-2 text-xs bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 px-3 py-1.5 rounded-md hover:opacity-90 transition font-bold shadow-sm flex items-center gap-1.5" title="Open Admin Control Panel">
+            <a href="admin.html" id="btn-nav-admin" class="hidden ml-2 text-xs bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 px-3 py-1.5 rounded-md hover:opacity-90 transition font-bold shadow-sm flex items-center gap-1.5" title="Open Admin Control Panel">
                 <i class="fa-solid fa-shield-halved text-teal-400 dark:text-teal-600"></i> <span class="hidden md:inline">Admin Panel</span>
             </a>
         </div>
@@ -111,7 +111,7 @@
                     <a href="#" onclick="openUpdateModal()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-user-pen w-6 text-indigo-500"></i> Profile Update</a>
                     <a href="#" onclick="openPasswordModal()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-key w-6 text-amber-500"></i> Change Password</a>
                     <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
-                    <a href="admin.html" class="flex items-center px-4 py-2.5 text-xs font-bold text-teal-600 dark:text-neonTeal hover:bg-teal-50 dark:hover:bg-teal-950/40 transition"><i class="fa-solid fa-shield-halved w-6 text-teal-600 dark:text-neonTeal"></i> Admin Suite</a>
+                    <a href="admin.html" id="dropdown-admin-link" class="hidden flex items-center px-4 py-2.5 text-xs font-bold text-teal-600 dark:text-neonTeal hover:bg-teal-50 dark:hover:bg-teal-950/40 transition"><i class="fa-solid fa-shield-halved w-6 text-teal-600 dark:text-neonTeal"></i> Admin Suite</a>
                     <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition"><i class="fa-solid fa-right-from-bracket w-6"></i> Logout</a>
                 </div>
             </div>
@@ -154,13 +154,6 @@
                     Don't have an account?<br><span class="font-bold underline">Sign Up now</span>
                 </div>
                 <button onclick="doLogin(event)" class="bg-[#f8f9fc] text-navy font-extrabold text-lg md:text-xl py-2 px-8 rounded-full shadow-lg hover:scale-105 transition-transform" id="btn-login-main">LOGIN</button>
-            </div>
-
-            <div class="w-full max-w-[400px] mt-4 text-center">
-                <a href="admin.html" class="inline-flex items-center gap-1.5 text-xs font-semibold text-mint/80 hover:text-mint transition">
-                    <i class="fa-solid fa-shield-halved text-[11px]"></i>
-                    <span>Administrator Console Access &rarr;</span>
-                </a>
             </div>
         </div>
 
@@ -846,10 +839,22 @@
                     currentUser = {
                         unique_id: d.unique_id, email: d.email, name: d.name,
                         dob: d.dob || "", mobile: d.mobile || "",
+                        role: d.role || "user",
                         profile_picture: d.profile_picture || window.pfpBase64,
                         token: d.token
                     };
                     saveSessionUser(currentUser);
+
+                    // Dynamic role-based destination routing
+                    if (d.role === "superadmin" || d.role === "admin" || d.role === "manager" || d.redirect_url === "/admin") {
+                        localStorage.setItem("ths_admin_token", d.token);
+                        localStorage.setItem("ths_admin_name", d.name);
+                        localStorage.setItem("ths_admin_email", d.email);
+                        localStorage.setItem("ths_admin_role", d.role);
+                        localStorage.setItem("ths_admin_pfp", d.profile_picture || "");
+                        window.location.href = "admin.html";
+                        return;
+                    }
                 } else {
                     currentUser.name = id.split('@')[0];
                     currentUser.email = id.includes('@') ? id : "";
@@ -868,6 +873,14 @@
             document.getElementById('app-container').classList.remove('hidden');
             document.getElementById('nav-user-name').innerText = currentUser.name;
             document.getElementById('nav-pfp').src = currentUser.profile_picture || window.pfpBase64;
+            
+            // Only show admin nav buttons if user has admin privileges
+            if (currentUser.role === 'superadmin' || currentUser.role === 'admin' || currentUser.role === 'manager') {
+                const navAdmin = document.getElementById('btn-nav-admin');
+                const dropAdmin = document.getElementById('dropdown-admin-link');
+                if (navAdmin) navAdmin.classList.remove('hidden');
+                if (dropAdmin) dropAdmin.classList.remove('hidden');
+            }
             window.goHome();
         };
 

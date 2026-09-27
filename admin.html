@@ -93,10 +93,10 @@
 
             <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="space-y-4 relative z-10">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5 pl-1">Super Admin Email / Mobile</label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5 pl-1">Admin Email / Mobile</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"><i class="fa-solid fa-envelope"></i></span>
-                        <input type="text" id="admin-input-id" required placeholder="sayan2008c@gmail.com" value="sayan2008c@gmail.com"
+                        <input type="text" id="admin-input-id" required placeholder="Enter admin email or mobile"
                             class="w-full pl-10 pr-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-neonTeal transition font-medium">
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5 pl-1">Security Key / Password</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"><i class="fa-solid fa-key"></i></span>
-                        <input type="password" id="admin-input-pwd" required placeholder="••••••••••••" value="Sayan123"
+                        <input type="password" id="admin-input-pwd" required placeholder="••••••••••••"
                             class="w-full pl-10 pr-10 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-neonTeal transition font-medium">
                         <button type="button" onclick="togglePasswordVisibility('admin-input-pwd', this)" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-white">
                             <i class="fa-solid fa-eye"></i>
@@ -128,14 +128,6 @@
                     <i class="fa-solid fa-right-to-bracket"></i>
                     <span>Unlock Admin Console</span>
                 </button>
-
-                <div class="pt-3 border-t border-slate-800 text-center">
-                    <p class="text-[11px] text-slate-400 mb-2">Evaluation Shortcut (Click to pre-fill credentials):</p>
-                    <button type="button" onclick="fillAdminCreds('sayan2008c@gmail.com', 'Sayan123')"
-                        class="w-full py-2 px-3 bg-slate-800/90 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-bold text-teal-300 transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-crown text-amber-400"></i> <span>Super Admin (Sayan Chakraborty)</span>
-                    </button>
-                </div>
             </form>
         </div>
     </div>
@@ -763,6 +755,16 @@
             <h3 class="font-black text-lg text-slate-900 dark:text-white mb-1">Create User Account</h3>
             <p class="text-xs text-slate-400 mb-4">Direct administrator provisioning</p>
             <form onsubmit="handleAddUser(event)" class="space-y-3">
+                <!-- Avatar Upload Section -->
+                <div class="flex items-center gap-3.5 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl">
+                    <img id="add-user-pfp-preview" src="https://ui-avatars.com/api/?name=User&background=20263f&color=7ae2d5" class="w-12 h-12 rounded-full object-cover border-2 border-teal-500 shadow-sm flex-shrink-0">
+                    <div class="flex-grow">
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">User Photo / Avatar</label>
+                        <input type="file" id="add-user-pfp-file" accept="image/*" onchange="previewUploadImage(event, 'add-user-pfp-preview', 'add-user-pfp-base64')" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-teal-600 file:text-white hover:file:bg-teal-700 cursor-pointer w-full">
+                        <input type="hidden" id="add-user-pfp-base64">
+                    </div>
+                </div>
+
                 <div>
                     <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Full Name</label>
                     <input type="text" id="add-user-name" required placeholder="John Doe" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
@@ -810,6 +812,17 @@
             <p class="text-xs text-slate-400 mb-4" id="edit-user-uid-label">UID: --</p>
             <form onsubmit="handleSaveEditUser(event)" class="space-y-3">
                 <input type="hidden" id="edit-user-original-email">
+                
+                <!-- Avatar Edit/Change Section -->
+                <div class="flex items-center gap-3.5 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl">
+                    <img id="edit-user-pfp-preview" src="https://ui-avatars.com/api/?name=User&background=20263f&color=7ae2d5" class="w-12 h-12 rounded-full object-cover border-2 border-teal-500 shadow-sm flex-shrink-0">
+                    <div class="flex-grow">
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Change User Avatar</label>
+                        <input type="file" id="edit-user-pfp-file" accept="image/*" onchange="previewUploadImage(event, 'edit-user-pfp-preview', 'edit-user-pfp-base64')" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-teal-600 file:text-white hover:file:bg-teal-700 cursor-pointer w-full">
+                        <input type="hidden" id="edit-user-pfp-base64">
+                    </div>
+                </div>
+
                 <div>
                     <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Full Name</label>
                     <input type="text" id="edit-user-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
@@ -1070,13 +1083,13 @@
             } catch (err) {
                 // If local backend is down, allow emergency demo fallback for evaluation
                 console.warn("Backend request error", err);
-                if (id === "sayan2008c@gmail.com" && pwd === "Sayan123") {
+                if (id === "sayan@superadmin.com" && pwd === "SuperAdmin@123") {
                     currentAdmin = {
                         token: "demo_admin_token_sih2026",
                         name: "Sayan Chakraborty (Super Admin)",
                         email: id,
                         role: "superadmin",
-                        profile_picture: "https://ui-avatars.com/api/?name=Sayan+Chakraborty&background=20263f&color=7ae2d5"
+                        profile_picture: "https://ui-avatars.com/api/?name=Sayan+SuperAdmin&background=20263f&color=7ae2d5"
                     };
                     showToast("Offline Admin Mode Activated", "info");
                     document.getElementById("admin-login-screen").classList.add("hidden");
@@ -1405,7 +1418,26 @@
             }).join('');
         }
 
+        function previewUploadImage(event, previewId, hiddenInputId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 3 * 1024 * 1024) {
+                showToast("Image must be smaller than 3MB", "warning");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const b64 = e.target.result;
+                document.getElementById(previewId).src = b64;
+                document.getElementById(hiddenInputId).value = b64;
+            };
+            reader.readAsDataURL(file);
+        }
+
         function openAddUserModal() {
+            document.getElementById("add-user-pfp-preview").src = "https://ui-avatars.com/api/?name=User&background=20263f&color=7ae2d5";
+            document.getElementById("add-user-pfp-base64").value = "";
+            document.getElementById("add-user-pfp-file").value = "";
             document.getElementById("modal-add-user").classList.remove("hidden");
         }
 
@@ -1421,7 +1453,8 @@
                 mobile: document.getElementById("add-user-mobile").value.trim(),
                 dob: document.getElementById("add-user-dob").value,
                 role: document.getElementById("add-user-role").value,
-                password: document.getElementById("add-user-pwd").value
+                password: document.getElementById("add-user-pwd").value,
+                profile_picture: document.getElementById("add-user-pfp-base64").value || ""
             };
 
             try {
@@ -1458,6 +1491,13 @@
             document.getElementById("edit-user-dob").value = user.dob || "";
             document.getElementById("edit-user-role").value = user.role || "user";
             document.getElementById("edit-user-status").value = user.status || "active";
+            
+            // Set existing avatar preview & hidden field
+            const pfp = user.profile_picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=20263f&color=7ae2d5`;
+            document.getElementById("edit-user-pfp-preview").src = pfp;
+            document.getElementById("edit-user-pfp-base64").value = user.profile_picture || "";
+            document.getElementById("edit-user-pfp-file").value = "";
+
             document.getElementById("modal-edit-user").classList.remove("hidden");
         }
 
@@ -1470,7 +1510,8 @@
                 mobile: document.getElementById("edit-user-mobile").value.trim(),
                 dob: document.getElementById("edit-user-dob").value,
                 role: document.getElementById("edit-user-role").value,
-                status: document.getElementById("edit-user-status").value
+                status: document.getElementById("edit-user-status").value,
+                profile_picture: document.getElementById("edit-user-pfp-base64").value || ""
             };
 
             try {
