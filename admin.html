@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheHomoSapiens | SIH 2026 Admin Suite</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#20263f',
+                        mint: '#7ae2d5',
+                        appDark: '#0B1120',
+                        appCardDark: '#151F32',
+                        appBorderDark: '#1E293B',
+                        neonTeal: '#2DD4BF',
+                        lightIndigo: '#818CF8',
+                        accentOrange: '#e26241'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- FontAwesome & Google Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .font-mono-code { font-family: 'Inter', monospace; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .glass-panel {
+            background: rgba(21, 31, 50, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .glass-panel-light {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        
+        .glow-teal {
+            box-shadow: 0 0 25px -5px rgba(45, 212, 191, 0.25);
+        }
+        
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse-subtle { animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-appDark text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200 antialiased selection:bg-teal-500 selection:text-white">
+
+    <!-- ================= NOTIFICATION TOAST CONTAINER ================= -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none"></div>
+
+    <!-- ================= AUTHENTICATION MODAL / SCREEN ================= -->
+    <div id="admin-login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-navy/95 backdrop-blur-md p-4 transition-all duration-300">
+        <div class="relative w-full max-w-md bg-appCardDark border border-slate-700/80 rounded-3xl p-8 shadow-2xl overflow-hidden">
+            <!-- Ambient Glow Effect -->
+            <div class="absolute -top-24 -left-24 w-56 h-56 bg-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -right-24 w-56 h-56 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-teal-500 to-emerald-400 text-navy font-black text-2xl shadow-lg mb-4 glow-teal">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Admin Authentication</h1>
+                <p class="text-xs text-slate-400 mt-1 font-medium">Team TheHomoSapiens | SIH 2026 Admin Console</p>
+                <div class="inline-block mt-2 px-3 py-1 rounded-full bg-teal-950/70 border border-teal-800 text-[11px] font-bold text-neonTeal">
+                    <i class="fa-solid fa-lock text-[10px] mr-1"></i> Authorized Personnel Only
+                </div>
+            </div>
+
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="space-y-4 relative z-10">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5 pl-1">Super Admin Email / Mobile</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"><i class="fa-solid fa-envelope"></i></span>
+                        <input type="text" id="admin-input-id" required placeholder="sayan2008c@gmail.com" value="sayan2008c@gmail.com"
+                            class="w-full pl-10 pr-4 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-neonTeal transition font-medium">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5 pl-1">Security Key / Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"><i class="fa-solid fa-key"></i></span>
+                        <input type="password" id="admin-input-pwd" required placeholder="••••••••••••" value="Sayan123"
+                            class="w-full pl-10 pr-10 py-3 bg-slate-900/90 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-neonTeal transition font-medium">
+                        <button type="button" onclick="togglePasswordVisibility('admin-input-pwd', this)" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-white">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-slate-400 px-1 pt-1">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="admin-remember" checked class="rounded border-slate-700 text-teal-600 focus:ring-0">
+                        <span>Keep me signed in</span>
+                    </label>
+                    <a href="index.html" class="text-neonTeal hover:underline font-semibold flex items-center gap-1">
+                        <span>User Portal</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
+                </div>
+
+                <button type="submit" id="btn-admin-login-submit"
+                    class="w-full py-3.5 bg-gradient-to-r from-teal-500 to-emerald-400 hover:from-teal-400 hover:to-emerald-300 text-navy font-extrabold text-sm rounded-xl shadow-lg hover:shadow-teal-500/25 transition duration-200 flex items-center justify-center gap-2 mt-2">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Unlock Admin Console</span>
+                </button>
+
+                <div class="pt-3 border-t border-slate-800 text-center">
+                    <p class="text-[11px] text-slate-400 mb-2">Evaluation Shortcut (Click to pre-fill credentials):</p>
+                    <button type="button" onclick="fillAdminCreds('sayan2008c@gmail.com', 'Sayan123')"
+                        class="w-full py-2 px-3 bg-slate-800/90 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs font-bold text-teal-300 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-crown text-amber-400"></i> <span>Super Admin (Sayan Chakraborty)</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MAIN ADMIN DASHBOARD CONTAINER ================= -->
+    <div id="admin-main-app" class="flex-grow flex flex-col lg:flex-row h-screen overflow-hidden">
+
+        <!-- ================= SIDEBAR NAVIGATION ================= -->
+        <aside id="admin-sidebar" class="w-full lg:w-72 bg-white dark:bg-appCardDark border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between z-30 transition-all duration-300 flex-shrink-0">
+            <!-- Sidebar Header -->
+            <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-600 to-emerald-500 text-white flex items-center justify-center font-black text-xl shadow-md">
+                        <i class="fa-solid fa-hands-asl-interpreting"></i>
+                    </div>
+                    <div>
+                        <div class="font-black text-base leading-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <span>TheHomoSapiens</span>
+                        </div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-teal-600 dark:text-neonTeal bg-teal-50 dark:bg-teal-950/60 px-2 py-0.5 rounded-full border border-teal-200 dark:border-teal-800/60">
+                            SIH 2026 Admin
+                        </span>
+                    </div>
+                </div>
+                <button onclick="toggleMobileSidebar()" class="lg:hidden text-slate-400 hover:text-white p-2">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="flex-grow py-4 px-3 overflow-y-auto space-y-1.5 no-scrollbar">
+                <div class="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 px-3 py-1 tracking-wider">Main Management</div>
+                
+                <button onclick="switchTab('dashboard')" id="nav-btn-dashboard"
+                    class="nav-tab-btn active w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-xs transition duration-150 bg-teal-600 text-white dark:bg-neonTeal dark:text-slate-900 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-chart-pie text-sm w-4"></i>
+                        <span>Dashboard Overview</span>
+                    </div>
+                    <span id="badge-online" class="w-2 h-2 rounded-full bg-emerald-300 dark:bg-slate-900"></span>
+                </button>
+
+                <button onclick="switchTab('users')" id="nav-btn-users"
+                    class="nav-tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-xs transition duration-150 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-users-gear text-sm w-4 text-indigo-500"></i>
+                        <span>User Management</span>
+                    </div>
+                    <span id="nav-user-count" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">0</span>
+                </button>
+
+                <button onclick="switchTab('conversations')" id="nav-btn-conversations"
+                    class="nav-tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-xs transition duration-150 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-comments text-sm w-4 text-emerald-500"></i>
+                        <span>Translation Logs</span>
+                    </div>
+                    <span id="nav-conv-count" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">0</span>
+                </button>
+
+                <button onclick="switchTab('vocabulary')" id="nav-btn-vocabulary"
+                    class="nav-tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-xs transition duration-150 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-hands-asl-interpreting text-sm w-4 text-amber-500"></i>
+                        <span>ISL Vocabulary (62)</span>
+                    </div>
+                    <span id="nav-vocab-count" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">62</span>
+                </button>
+
+                <div class="pt-4 text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 px-3 py-1 tracking-wider">System & Diagnostics</div>
+
+                <button onclick="switchTab('health')" id="nav-btn-health"
+                    class="nav-tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-xs transition duration-150 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-server text-sm w-4 text-rose-500"></i>
+                        <span>Database & Health</span>
+                    </div>
+                    <span id="health-pulse-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                </button>
+
+                <button onclick="switchTab('audit')" id="nav-btn-audit"
+                    class="nav-tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-xs transition duration-150 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-clipboard-list text-sm w-4 text-teal-400"></i>
+                        <span>Audit Trails</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Sidebar Footer User Card -->
+            <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                <div class="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm">
+                    <div class="flex items-center gap-2.5 overflow-hidden">
+                        <img id="admin-user-pfp" src="https://ui-avatars.com/api/?name=Admin&background=20263f&color=7ae2d5"
+                            class="w-9 h-9 rounded-full object-cover border-2 border-teal-500 flex-shrink-0">
+                        <div class="overflow-hidden leading-tight">
+                            <h4 id="admin-user-name" class="font-extrabold text-xs text-slate-900 dark:text-white truncate">Administrator</h4>
+                            <span id="admin-user-role" class="text-[10px] font-black uppercase tracking-wider text-teal-600 dark:text-neonTeal">SUPER ADMIN</span>
+                        </div>
+                    </div>
+                    <button onclick="logoutAdmin()" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg transition" title="Logout from Admin">
+                        <i class="fa-solid fa-power-off text-sm"></i>
+                    </button>
+                </div>
+
+                <div class="mt-2.5 flex items-center justify-between text-[11px] px-1 text-slate-400 font-semibold">
+                    <span>SIH 2026 v2.4.0</span>
+                    <a href="index.html" class="text-teal-600 dark:text-neonTeal hover:underline flex items-center gap-1 font-bold">
+                        <span>Portal</span> <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN CONTENT WRAPPER ================= -->
+        <main class="flex-grow flex flex-col h-full overflow-hidden bg-slate-100 dark:bg-appDark">
+            
+            <!-- TOP APP BAR -->
+            <header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-appCardDark/80 backdrop-blur-md px-4 md:px-8 flex items-center justify-between z-20 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-bars text-base"></i>
+                    </button>
+                    <div>
+                        <h2 id="top-title" class="font-extrabold text-base md:text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                            <span>System Overview</span>
+                        </h2>
+                        <span id="top-subtitle" class="hidden sm:inline-block text-[11px] font-semibold text-slate-400">Real-time statistics & telemetry</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 md:gap-4">
+                    <!-- Target API Switcher -->
+                    <div class="relative">
+                        <button onclick="toggleApiSwitcher()" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-teal-500 transition">
+                            <span id="api-indicator-dot" class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span id="current-api-label" class="text-[11px]">API: Auto Detect</span>
+                            <i class="fa-solid fa-chevron-down text-[9px] ml-0.5"></i>
+                        </button>
+                        <div id="api-switcher-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl p-2 z-50">
+                            <div class="text-[10px] font-black uppercase text-slate-400 px-2 py-1">Backend Server Target</div>
+                            <button onclick="setApiTarget('auto')" class="w-full text-left px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg flex items-center justify-between">
+                                <span>Auto (Local / Render)</span> <i class="fa-solid fa-bolt text-teal-500 text-[10px]"></i>
+                            </button>
+                            <button onclick="setApiTarget('local')" class="w-full text-left px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg flex items-center justify-between">
+                                <span>Local (http://localhost:8000)</span> <i class="fa-solid fa-laptop text-[10px]"></i>
+                            </button>
+                            <button onclick="setApiTarget('render')" class="w-full text-left px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg flex items-center justify-between">
+                                <span>Cloud (Render Production)</span> <i class="fa-solid fa-cloud text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live DB Latency Pill -->
+                    <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 text-[11px] font-black text-emerald-700 dark:text-emerald-400">
+                        <i class="fa-solid fa-signal text-[10px]"></i>
+                        <span id="top-ping-label">Ping: 28ms</span>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition border border-slate-200 dark:border-slate-700" title="Toggle Theme">
+                        <i id="theme-icon" class="fa-solid fa-sun text-sm"></i>
+                    </button>
+
+                    <!-- Jump to User App Button -->
+                    <a href="index.html" class="flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-teal-600 to-emerald-500 hover:opacity-95 text-white font-extrabold text-xs rounded-xl shadow-sm transition">
+                        <i class="fa-solid fa-hands-asl-interpreting"></i>
+                        <span class="hidden md:inline">Open User Portal</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- SCROLLABLE TAB CONTENT AREA -->
+            <div class="flex-grow p-4 md:p-8 overflow-y-auto space-y-6">
+
+                <!-- ================= TAB 1: DASHBOARD OVERVIEW ================= -->
+                <div id="tab-dashboard" class="admin-tab-content space-y-6">
+                    
+                    <!-- KPI Cards Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                        <!-- Card 1: Users -->
+                        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition relative overflow-hidden group">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-black uppercase text-slate-400 tracking-wider">Registered Users</span>
+                                <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-neonTeal flex items-center justify-center font-bold text-lg group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-users"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-baseline gap-2">
+                                <span id="stat-total-users" class="text-3xl font-black text-slate-900 dark:text-white">--</span>
+                                <span class="text-xs font-bold text-emerald-500 flex items-center"><i class="fa-solid fa-arrow-trend-up mr-0.5"></i> Active</span>
+                            </div>
+                            <div class="mt-2 text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+                                <span>Today Signups: <b id="stat-today-users" class="text-slate-700 dark:text-slate-200">0</b></span>
+                                <span class="text-teal-600 dark:text-neonTeal cursor-pointer" onclick="switchTab('users')">Manage &rarr;</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Total Conversations -->
+                        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition relative overflow-hidden group">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-black uppercase text-slate-400 tracking-wider">Total Translations</span>
+                                <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-lightIndigo flex items-center justify-center font-bold text-lg group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-comments"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-baseline gap-2">
+                                <span id="stat-total-convs" class="text-3xl font-black text-slate-900 dark:text-white">--</span>
+                                <span class="text-xs font-bold text-indigo-500 flex items-center"><i class="fa-solid fa-wave-square mr-0.5"></i> Logged</span>
+                            </div>
+                            <div class="mt-2 text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+                                <span>Today Logs: <b id="stat-today-convs" class="text-slate-700 dark:text-slate-200">0</b></span>
+                                <span class="text-indigo-500 cursor-pointer" onclick="switchTab('conversations')">Inspect &rarr;</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Sign2Text Interactions -->
+                        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition relative overflow-hidden group">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-black uppercase text-slate-400 tracking-wider">Sign &rarr; Text AI</span>
+                                <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-camera"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-baseline gap-2">
+                                <span id="stat-s2t-count" class="text-3xl font-black text-slate-900 dark:text-white">--</span>
+                                <span class="text-xs font-bold text-emerald-500">Camera / MediaPipe</span>
+                            </div>
+                            <div class="mt-2 text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+                                <span>Dual-Hand Tracking</span>
+                                <span class="text-emerald-500 font-bold">Module 1</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Text2Sign Avatar -->
+                        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition relative overflow-hidden group">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-black uppercase text-slate-400 tracking-wider">Text &rarr; Sign 3D</span>
+                                <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-lg group-hover:scale-110 transition">
+                                    <i class="fa-solid fa-person"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-baseline gap-2">
+                                <span id="stat-t2s-count" class="text-3xl font-black text-slate-900 dark:text-white">--</span>
+                                <span class="text-xs font-bold text-amber-500">Avatar Engine</span>
+                            </div>
+                            <div class="mt-2 text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+                                <span>Speech & Typing</span>
+                                <span class="text-amber-500 font-bold">Module 2</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Line Chart: Activity Trend -->
+                        <div class="lg:col-span-2 bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="font-black text-base text-slate-900 dark:text-white">7-Day Telemetry Trend</h3>
+                                    <p class="text-xs font-medium text-slate-400">User registrations vs translation sessions volume</p>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs font-bold">
+                                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span> Translations</span>
+                                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> New Users</span>
+                                </div>
+                            </div>
+                            <div class="w-full h-64 relative">
+                                <canvas id="chart-activity-trend"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Doughnut Chart: Mode Distribution -->
+                        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                            <div class="mb-4">
+                                <h3 class="font-black text-base text-slate-900 dark:text-white">Module Usage Breakdown</h3>
+                                <p class="text-xs font-medium text-slate-400">Sign-to-Text vs Audio/Text-to-Sign</p>
+                            </div>
+                            <div class="w-full h-52 relative flex items-center justify-center">
+                                <canvas id="chart-mode-breakdown"></canvas>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2 text-center text-xs">
+                                <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                                    <span class="text-slate-400 font-bold block text-[10px]">MODULE 1</span>
+                                    <span id="doughnut-s2t-lbl" class="font-black text-teal-600 dark:text-neonTeal">--</span>
+                                </div>
+                                <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                                    <span class="text-slate-400 font-bold block text-[10px]">MODULE 2</span>
+                                    <span id="doughnut-t2s-lbl" class="font-black text-indigo-500">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Grid: Recent Users & Live Stream -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Recent Users -->
+                        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                                <div>
+                                    <h3 class="font-black text-base text-slate-900 dark:text-white">Latest Registered Users</h3>
+                                    <p class="text-xs text-slate-400 font-medium">Recently onboarded community members</p>
+                                </div>
+                                <button onclick="switchTab('users')" class="text-xs font-bold text-teal-600 dark:text-neonTeal hover:underline">View All</button>
+                            </div>
+                            <div id="overview-recent-users-list" class="mt-4 space-y-3">
+                                <!-- Populated dynamically -->
+                                <p class="text-xs text-slate-400 italic text-center py-6">Loading users...</p>
+                            </div>
+                        </div>
+
+                        <!-- Live Translation Activity Stream -->
+                        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                                <div>
+                                    <h3 class="font-black text-base text-slate-900 dark:text-white">Live Translation Stream</h3>
+                                    <p class="text-xs text-slate-400 font-medium">Real-time transcripts generated by users</p>
+                                </div>
+                                <button onclick="switchTab('conversations')" class="text-xs font-bold text-indigo-500 hover:underline">View Full Logs</button>
+                            </div>
+                            <div id="overview-recent-convs-list" class="mt-4 space-y-3">
+                                <!-- Populated dynamically -->
+                                <p class="text-xs text-slate-400 italic text-center py-6">Loading transcripts...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= TAB 2: USER MANAGEMENT ================= -->
+                <div id="tab-users" class="admin-tab-content hidden space-y-6">
+                    <!-- User Control Toolbar -->
+                    <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-4 md:p-5 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                        <div class="flex flex-wrap items-center gap-3 flex-grow">
+                            <!-- Search -->
+                            <div class="relative flex-grow max-w-md">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
+                                <input type="text" id="users-search-input" onkeyup="debouncedSearchUsers()" placeholder="Search by name, email, mobile, UID..."
+                                    class="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-800 dark:text-slate-100 outline-none focus:border-teal-500 transition">
+                            </div>
+
+                            <!-- Role Filter -->
+                            <select id="users-role-filter" onchange="loadUsers()" class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 outline-none">
+                                <option value="all">All Roles</option>
+                                <option value="admin">Administrators</option>
+                                <option value="manager">Managers</option>
+                                <option value="user">Standard Users</option>
+                            </select>
+
+                            <!-- Status Filter -->
+                            <select id="users-status-filter" onchange="loadUsers()" class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 outline-none">
+                                <option value="all">All Statuses</option>
+                                <option value="active">Active Accounts</option>
+                                <option value="suspended">Suspended Accounts</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center gap-3 flex-shrink-0">
+                            <button onclick="loadUsers()" class="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 transition" title="Refresh Table">
+                                <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh
+                            </button>
+                            <button onclick="openAddUserModal()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 dark:bg-neonTeal dark:text-slate-900 text-white text-xs font-extrabold rounded-xl shadow-sm transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>Create User</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Users Table -->
+                    <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 text-slate-400 font-black uppercase text-[10px] tracking-wider">
+                                    <tr>
+                                        <th class="py-3.5 px-4">User Info</th>
+                                        <th class="py-3.5 px-4">Contact</th>
+                                        <th class="py-3.5 px-4">DOB / Age</th>
+                                        <th class="py-3.5 px-4">Role</th>
+                                        <th class="py-3.5 px-4">Status</th>
+                                        <th class="py-3.5 px-4">Convs</th>
+                                        <th class="py-3.5 px-4">Joined Date</th>
+                                        <th class="py-3.5 px-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body" class="divide-y divide-slate-100 dark:divide-slate-800">
+                                    <tr>
+                                        <td colspan="8" class="text-center py-12 text-slate-400 italic">
+                                            <i class="fa-solid fa-spinner fa-spin text-lg mb-2 block"></i> Loading users directory...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= TAB 3: TRANSLATION LOGS ================= -->
+                <div id="tab-conversations" class="admin-tab-content hidden space-y-6">
+                    <!-- Conversations Toolbar -->
+                    <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-4 md:p-5 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                        <div class="flex flex-wrap items-center gap-3 flex-grow">
+                            <!-- Search -->
+                            <div class="relative flex-grow max-w-md">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
+                                <input type="text" id="conv-search-input" onkeyup="debouncedSearchConvs()" placeholder="Search word, phrase or transcript..."
+                                    class="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-800 dark:text-slate-100 outline-none focus:border-teal-500 transition">
+                            </div>
+
+                            <!-- Mode Filter -->
+                            <select id="conv-mode-filter" onchange="loadConversations()" class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 outline-none">
+                                <option value="all">All Modules</option>
+                                <option value="S2T">Sign to Text (Camera)</option>
+                                <option value="T2S">Text to Sign (Avatar)</option>
+                            </select>
+
+                            <!-- User Filter Input -->
+                            <input type="text" id="conv-user-filter" onkeyup="debouncedSearchConvs()" placeholder="Filter by email..."
+                                class="w-48 px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-800 dark:text-slate-100 outline-none">
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <button onclick="exportLogs('csv')" class="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 transition">
+                                <i class="fa-solid fa-file-csv text-emerald-500 mr-1"></i> CSV Export
+                            </button>
+                            <button onclick="exportLogs('json')" class="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 transition">
+                                <i class="fa-solid fa-code text-indigo-400 mr-1"></i> JSON
+                            </button>
+                            <button onclick="promptBulkPurgeLogs()" class="px-3 py-2 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-xl border border-rose-200 dark:border-rose-900 transition">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Purge All
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Logs Table -->
+                    <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 text-slate-400 font-black uppercase text-[10px] tracking-wider">
+                                    <tr>
+                                        <th class="py-3.5 px-4">Timestamp</th>
+                                        <th class="py-3.5 px-4">User / UID</th>
+                                        <th class="py-3.5 px-4">Translation Mode</th>
+                                        <th class="py-3.5 px-4">Transcript Content</th>
+                                        <th class="py-3.5 px-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="convs-table-body" class="divide-y divide-slate-100 dark:divide-slate-800">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-12 text-slate-400 italic">
+                                            <i class="fa-solid fa-spinner fa-spin text-lg mb-2 block"></i> Loading transcripts...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= TAB 4: VOCABULARY & GESTURE DICTIONARY ================= -->
+                <div id="tab-vocabulary" class="admin-tab-content hidden space-y-6">
+                    <!-- Banner -->
+                    <div class="bg-gradient-to-r from-teal-900/40 via-slate-900 to-indigo-900/40 border border-teal-800/40 rounded-2xl p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+                        <div>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-400 font-black text-[10px] uppercase tracking-wider border border-teal-500/30">
+                                    MediaPipe Holistic & ASL Model
+                                </span>
+                                <span class="text-xs text-slate-400 font-semibold">126 Landmark Keypoints</span>
+                            </div>
+                            <h2 class="text-xl md:text-2xl font-black text-white">62-Action ISL Core Vocabulary Dictionary</h2>
+                            <p class="text-xs text-slate-300 max-w-2xl mt-1">
+                                Team TheHomoSapiens custom dataset consisting of 62 Indian Sign Language actions with dual-hand skeletal coordinates, pose extraction, and 30 training video sequences per gesture.
+                            </p>
+                        </div>
+                        <button onclick="openAddGestureModal()" class="px-5 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-400 text-navy font-extrabold text-xs rounded-xl shadow-md hover:opacity-95 transition flex items-center gap-2 flex-shrink-0">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Add New Sign</span>
+                        </button>
+                    </div>
+
+                    <!-- Category Filter Chips & Search -->
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex flex-wrap items-center gap-2" id="vocab-category-chips">
+                            <button onclick="filterVocabByCategory('all')" class="vocab-chip active px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-600 text-white dark:bg-neonTeal dark:text-slate-900">All (62)</button>
+                            <button onclick="filterVocabByCategory('Greetings')" class="vocab-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100">Greetings</button>
+                            <button onclick="filterVocabByCategory('Pronouns')" class="vocab-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100">Pronouns</button>
+                            <button onclick="filterVocabByCategory('Questions')" class="vocab-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100">Questions</button>
+                            <button onclick="filterVocabByCategory('Daily Actions')" class="vocab-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100">Daily Actions</button>
+                            <button onclick="filterVocabByCategory('Essentials')" class="vocab-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100">Essentials</button>
+                            <button onclick="filterVocabByCategory('Education')" class="vocab-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100">Education</button>
+                            <button onclick="filterVocabByCategory('Feelings')" class="vocab-chip px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100">Feelings</button>
+                        </div>
+
+                        <div class="relative w-64">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
+                            <input type="text" id="vocab-search-input" onkeyup="filterVocabGrid()" placeholder="Filter gesture name..."
+                                class="w-full pl-9 pr-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold outline-none focus:border-teal-500">
+                        </div>
+                    </div>
+
+                    <!-- Vocabulary Grid -->
+                    <div id="vocab-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- ================= TAB 5: SYSTEM HEALTH & DATABASE ================= -->
+                <div id="tab-health" class="admin-tab-content hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- MongoDB Status Card -->
+                        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-black uppercase text-slate-400 tracking-wider">Database Connection</span>
+                                <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-500 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-database"></i>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-ping"></span>
+                                <div>
+                                    <h4 id="health-db-status" class="text-lg font-black text-slate-900 dark:text-white">Connected</h4>
+                                    <p class="text-xs text-slate-400">MongoDB Atlas Cloud Cluster</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2 text-xs">
+                                <div class="flex justify-between"><span class="text-slate-400 font-semibold">Latency Ping</span> <span id="health-latency" class="font-extrabold text-emerald-500">28 ms</span></div>
+                                <div class="flex justify-between"><span class="text-slate-400 font-semibold">Database Name</span> <span class="font-mono-code font-bold text-slate-700 dark:text-slate-200">sih_database</span></div>
+                                <div class="flex justify-between"><span class="text-slate-400 font-semibold">Collections</span> <span id="health-cols-count" class="font-bold">4 active</span></div>
+                            </div>
+                            <button onclick="pingDatabase()" class="w-full mt-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition">
+                                <i class="fa-solid fa-bolt mr-1"></i> Ping MongoDB
+                            </button>
+                        </div>
+
+                        <!-- Server Runtime Card -->
+                        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-black uppercase text-slate-400 tracking-wider">Backend Environment</span>
+                                <div class="w-8 h-8 rounded-lg bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-neonTeal flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-microchip"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-black text-slate-900 dark:text-white">FastAPI + Motor</h4>
+                                <p class="text-xs text-slate-400">Asynchronous Python Gateway</p>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2 text-xs">
+                                <div class="flex justify-between"><span class="text-slate-400 font-semibold">Python Engine</span> <span id="health-py-ver" class="font-mono-code font-bold text-slate-700 dark:text-slate-200">3.10+</span></div>
+                                <div class="flex justify-between"><span class="text-slate-400 font-semibold">OS Platform</span> <span id="health-os" class="font-bold text-slate-700 dark:text-slate-200">Windows / Linux</span></div>
+                                <div class="flex justify-between"><span class="text-slate-400 font-semibold">Uptime</span> <span id="health-uptime" class="font-bold text-teal-500">Active</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Data Records Summary -->
+                        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-black uppercase text-slate-400 tracking-wider">Record Storage</span>
+                                <div class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-500 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-server"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-2.5 text-xs">
+                                <div class="flex justify-between items-center p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40">
+                                    <span class="font-bold text-slate-500">Users Collection</span>
+                                    <span id="health-cnt-users" class="font-black text-slate-800 dark:text-slate-100">--</span>
+                                </div>
+                                <div class="flex justify-between items-center p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40">
+                                    <span class="font-bold text-slate-500">Conversations</span>
+                                    <span id="health-cnt-convs" class="font-black text-slate-800 dark:text-slate-100">--</span>
+                                </div>
+                                <div class="flex justify-between items-center p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40">
+                                    <span class="font-bold text-slate-500">Vocabulary Signs</span>
+                                    <span id="health-cnt-vocab" class="font-black text-slate-800 dark:text-slate-100">62</span>
+                                </div>
+                                <div class="flex justify-between items-center p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40">
+                                    <span class="font-bold text-slate-500">Audit Logs</span>
+                                    <span id="health-cnt-audit" class="font-black text-slate-800 dark:text-slate-100">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= TAB 6: AUDIT LOGS ================= -->
+                <div id="tab-audit" class="admin-tab-content hidden space-y-6">
+                    <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                            <div>
+                                <h3 class="font-black text-base text-slate-900 dark:text-white">Security & Audit Event Trail</h3>
+                                <p class="text-xs text-slate-400 font-medium">Chronological record of administrative operations, logins, user alterations</p>
+                            </div>
+                            <button onclick="loadAuditLogs()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 transition">
+                                <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto mt-4">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 text-slate-400 font-black uppercase text-[10px] tracking-wider">
+                                    <tr>
+                                        <th class="py-3 px-4">Timestamp</th>
+                                        <th class="py-3 px-4">Action</th>
+                                        <th class="py-3 px-4">Details</th>
+                                        <th class="py-3 px-4">Performed By</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="audit-table-body" class="divide-y divide-slate-100 dark:divide-slate-800">
+                                    <tr>
+                                        <td colspan="4" class="text-center py-8 text-slate-400 italic">Loading audit events...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ================= ALL ADMIN MODALS ================= -->
+
+    <!-- 1. ADD NEW USER MODAL -->
+    <div id="modal-add-user" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+            <button onclick="closeModal('modal-add-user')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-black text-lg text-slate-900 dark:text-white mb-1">Create User Account</h3>
+            <p class="text-xs text-slate-400 mb-4">Direct administrator provisioning</p>
+            <form onsubmit="handleAddUser(event)" class="space-y-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Full Name</label>
+                    <input type="text" id="add-user-name" required placeholder="John Doe" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Email Address</label>
+                        <input type="email" id="add-user-email" required placeholder="john@example.com" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Mobile Number</label>
+                        <input type="tel" id="add-user-mobile" required placeholder="9876543210" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Date of Birth</label>
+                        <input type="date" id="add-user-dob" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Assigned Role</label>
+                        <select id="add-user-role" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold outline-none text-slate-800 dark:text-slate-100">
+                            <option value="user">Standard User</option>
+                            <option value="manager">Manager</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Initial Password</label>
+                    <input type="password" id="add-user-pwd" required placeholder="••••••••" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                </div>
+                <button type="submit" id="btn-save-new-user" class="w-full mt-3 py-2.5 bg-teal-600 hover:bg-teal-700 dark:bg-neonTeal dark:text-slate-900 text-white font-extrabold text-xs rounded-xl shadow-sm transition">
+                    Provision Account
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. EDIT USER MODAL -->
+    <div id="modal-edit-user" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+            <button onclick="closeModal('modal-edit-user')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-black text-lg text-slate-900 dark:text-white mb-1">Edit User Profile</h3>
+            <p class="text-xs text-slate-400 mb-4" id="edit-user-uid-label">UID: --</p>
+            <form onsubmit="handleSaveEditUser(event)" class="space-y-3">
+                <input type="hidden" id="edit-user-original-email">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Full Name</label>
+                    <input type="text" id="edit-user-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Email</label>
+                        <input type="email" id="edit-user-email" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Mobile</label>
+                        <input type="tel" id="edit-user-mobile" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">DOB</label>
+                        <input type="date" id="edit-user-dob" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Role</label>
+                        <select id="edit-user-role" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold outline-none text-slate-800 dark:text-slate-100">
+                            <option value="user">User</option>
+                            <option value="manager">Manager</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Account Status</label>
+                    <select id="edit-user-status" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold outline-none text-slate-800 dark:text-slate-100">
+                        <option value="active">Active (Access Granted)</option>
+                        <option value="suspended">Suspended (Access Blocked)</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full mt-3 py-2.5 bg-teal-600 hover:bg-teal-700 dark:bg-neonTeal dark:text-slate-900 text-white font-extrabold text-xs rounded-xl shadow-sm transition">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. RESET PASSWORD MODAL -->
+    <div id="modal-reset-user-pwd" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-700 rounded-2xl w-full max-w-sm p-6 shadow-2xl relative">
+            <button onclick="closeModal('modal-reset-user-pwd')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-500 flex items-center justify-center font-bold text-lg mb-3">
+                <i class="fa-solid fa-key"></i>
+            </div>
+            <h3 class="font-black text-lg text-slate-900 dark:text-white">Force Reset Password</h3>
+            <p class="text-xs text-slate-400 mb-4" id="reset-target-user-label">Resetting password for: --</p>
+            <form onsubmit="handleForcePasswordReset(event)" class="space-y-3">
+                <input type="hidden" id="reset-target-user-email">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">New Password</label>
+                    <input type="password" id="reset-new-pwd" required placeholder="Minimum 6 characters" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                </div>
+                <button type="submit" class="w-full mt-3 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs rounded-xl shadow-sm transition">
+                    Override Password
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. TRANSCRIPT INSPECTOR MODAL -->
+    <div id="modal-transcript-inspect" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-700 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
+            <button onclick="closeModal('modal-transcript-inspect')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="flex items-center gap-2 mb-3">
+                <span id="inspect-mode-badge" class="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-teal-100 text-teal-700">MODULE</span>
+                <span id="inspect-time" class="text-xs text-slate-400 font-semibold">--</span>
+            </div>
+            <h3 class="font-black text-base text-slate-900 dark:text-white mb-1">Transcript Inspection</h3>
+            <p class="text-xs text-slate-400 mb-4" id="inspect-user-info">User: --</p>
+            
+            <div class="p-4 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-200 dark:border-slate-800 min-h-[120px] text-sm font-semibold text-slate-800 dark:text-slate-100 whitespace-pre-wrap select-all" id="inspect-transcript-body">
+                --
+            </div>
+
+            <div class="mt-4 flex items-center justify-between">
+                <button onclick="copyInspectTranscript()" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-copy"></i> Copy Text
+                </button>
+                <button onclick="closeModal('modal-transcript-inspect')" class="px-5 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl transition">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. ADD / EDIT GESTURE MODAL -->
+    <div id="modal-gesture" class="hidden fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+            <button onclick="closeModal('modal-gesture')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 id="modal-gesture-title" class="font-black text-lg text-slate-900 dark:text-white mb-1">Add Gesture Sign</h3>
+            <p class="text-xs text-slate-400 mb-4">Indian Sign Language MediaPipe Model Entry</p>
+            <form onsubmit="handleSaveGesture(event)" class="space-y-3">
+                <input type="hidden" id="gesture-id">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Action / Sign Name</label>
+                    <input type="text" id="gesture-word" required placeholder="e.g. Namaste, Thank You" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Category</label>
+                        <select id="gesture-category" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold outline-none text-slate-800 dark:text-slate-100">
+                            <option value="Greetings">Greetings</option>
+                            <option value="Pronouns">Pronouns</option>
+                            <option value="Questions">Questions</option>
+                            <option value="Daily Actions">Daily Actions</option>
+                            <option value="Essentials">Essentials</option>
+                            <option value="Education">Education</option>
+                            <option value="Feelings">Feelings</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Difficulty</label>
+                        <select id="gesture-difficulty" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold outline-none text-slate-800 dark:text-slate-100">
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Hand Posture Description</label>
+                    <textarea id="gesture-posture" rows="2" placeholder="Fingertips touch chin and arc forward..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Recorded Video Sequences</label>
+                    <input type="number" id="gesture-sequences" value="30" min="1" max="100" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs outline-none text-slate-800 dark:text-slate-100">
+                </div>
+                <button type="submit" class="w-full mt-3 py-2.5 bg-teal-600 hover:bg-teal-700 dark:bg-neonTeal dark:text-slate-900 text-white font-extrabold text-xs rounded-xl shadow-sm transition">
+                    Save Sign to Model
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= ADMIN JAVASCRIPT ENGINE ================= -->
+    <script>
+        // State Configuration
+        let API_TARGET = localStorage.getItem("ths_admin_api_target") || "auto";
+        let API_BASE = resolveApiBase(API_TARGET);
+        
+        let currentAdmin = {
+            token: localStorage.getItem("ths_admin_token") || "",
+            name: localStorage.getItem("ths_admin_name") || "Administrator",
+            email: localStorage.getItem("ths_admin_email") || "",
+            role: localStorage.getItem("ths_admin_role") || "admin",
+            profile_picture: localStorage.getItem("ths_admin_pfp") || ""
+        };
+
+        let cachedStats = null;
+        let cachedUsers = [];
+        let cachedConvs = [];
+        let cachedVocab = [];
+        let trendChart = null;
+        let modeChart = null;
+        let activeVocabCategory = "all";
+
+        function resolveApiBase(target) {
+            if (target === "local") return "http://localhost:8000/api";
+            if (target === "render") return "https://thehomosapiens-sih2026.onrender.com/api";
+            
+            // Auto detection: If currently hosted on localhost, use local, else use render
+            if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+                return "http://localhost:8000/api";
+            }
+            return "https://thehomosapiens-sih2026.onrender.com/api";
+        }
+
+        function setApiTarget(target) {
+            API_TARGET = target;
+            localStorage.setItem("ths_admin_api_target", target);
+            API_BASE = resolveApiBase(target);
+            updateApiIndicator();
+            toggleApiSwitcher();
+            showToast(`API Target switched to ${target.toUpperCase()}`, "info");
+            refreshAllDashboardData();
+        }
+
+        function updateApiIndicator() {
+            const lbl = document.getElementById("current-api-label");
+            const dot = document.getElementById("api-indicator-dot");
+            if (lbl) {
+                if (API_TARGET === "local") {
+                    lbl.innerText = "API: Local (8000)";
+                    dot.className = "w-2 h-2 rounded-full bg-indigo-500";
+                } else if (API_TARGET === "render") {
+                    lbl.innerText = "API: Cloud (Render)";
+                    dot.className = "w-2 h-2 rounded-full bg-teal-500";
+                } else {
+                    lbl.innerText = "API: Auto Detect";
+                    dot.className = "w-2 h-2 rounded-full bg-emerald-500";
+                }
+            }
+        }
+
+        function toggleApiSwitcher() {
+            document.getElementById("api-switcher-dropdown").classList.toggle("hidden");
+        }
+
+        // --- AUTHENTICATION LOGIC ---
+        function checkAdminAuth() {
+            if (currentAdmin.token && currentAdmin.role === "admin") {
+                document.getElementById("admin-login-screen").classList.add("hidden");
+                updateAdminProfileUI();
+                refreshAllDashboardData();
+            } else {
+                document.getElementById("admin-login-screen").classList.remove("hidden");
+            }
+        }
+
+        function fillAdminCreds(email, pwd) {
+            document.getElementById("admin-input-id").value = email;
+            document.getElementById("admin-input-pwd").value = pwd;
+        }
+
+        async function handleAdminLogin(e) {
+            e.preventDefault();
+            const id = document.getElementById("admin-input-id").value.trim();
+            const pwd = document.getElementById("admin-input-pwd").value;
+            const btn = document.getElementById("btn-admin-login-submit");
+            const orig = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying...`;
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ identifier: id, password: pwd })
+                });
+                const d = await res.json();
+                if (res.ok) {
+                    currentAdmin = {
+                        token: d.token,
+                        name: d.name,
+                        email: d.email,
+                        role: d.role,
+                        profile_picture: d.profile_picture || `https://ui-avatars.com/api/?name=${d.name}&background=20263f&color=7ae2d5`
+                    };
+                    localStorage.setItem("ths_admin_token", currentAdmin.token);
+                    localStorage.setItem("ths_admin_name", currentAdmin.name);
+                    localStorage.setItem("ths_admin_email", currentAdmin.email);
+                    localStorage.setItem("ths_admin_role", currentAdmin.role);
+                    localStorage.setItem("ths_admin_pfp", currentAdmin.profile_picture);
+
+                    showToast(`Welcome back, ${currentAdmin.name}!`, "success");
+                    document.getElementById("admin-login-screen").classList.add("hidden");
+                    updateAdminProfileUI();
+                    refreshAllDashboardData();
+                } else {
+                    showToast(d.detail || "Authentication failed. Check credentials.", "error");
+                }
+            } catch (err) {
+                // If local backend is down, allow emergency demo fallback for evaluation
+                console.warn("Backend request error", err);
+                if (id === "sayan2008c@gmail.com" && pwd === "Sayan123") {
+                    currentAdmin = {
+                        token: "demo_admin_token_sih2026",
+                        name: "Sayan Chakraborty (Super Admin)",
+                        email: id,
+                        role: "superadmin",
+                        profile_picture: "https://ui-avatars.com/api/?name=Sayan+Chakraborty&background=20263f&color=7ae2d5"
+                    };
+                    showToast("Offline Admin Mode Activated", "info");
+                    document.getElementById("admin-login-screen").classList.add("hidden");
+                    updateAdminProfileUI();
+                    refreshAllDashboardData();
+                } else {
+                    showToast("Could not reach backend API server.", "error");
+                }
+            } finally {
+                btn.innerHTML = orig;
+                btn.disabled = false;
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem("ths_admin_token");
+            localStorage.removeItem("ths_admin_name");
+            localStorage.removeItem("ths_admin_email");
+            localStorage.removeItem("ths_admin_role");
+            localStorage.removeItem("ths_admin_pfp");
+            currentAdmin = { token: "", name: "", email: "", role: "", profile_picture: "" };
+            showToast("Admin session ended.", "info");
+            document.getElementById("admin-login-screen").classList.remove("hidden");
+        }
+
+        function updateAdminProfileUI() {
+            document.getElementById("admin-user-name").innerText = currentAdmin.name || "Administrator";
+            document.getElementById("admin-user-role").innerText = (currentAdmin.role || "ADMIN").toUpperCase();
+            if (currentAdmin.profile_picture) {
+                document.getElementById("admin-user-pfp").src = currentAdmin.profile_picture;
+            }
+        }
+
+        // --- NAVIGATION TABS ---
+        function switchTab(tabId) {
+            document.querySelectorAll(".admin-tab-content").forEach(el => el.classList.add("hidden"));
+            document.querySelectorAll(".nav-tab-btn").forEach(btn => {
+                btn.classList.remove("bg-teal-600", "text-white", "dark:bg-neonTeal", "dark:text-slate-900", "shadow-sm");
+                btn.classList.add("text-slate-600", "dark:text-slate-300");
+            });
+
+            const activeContent = document.getElementById(`tab-${tabId}`);
+            if (activeContent) activeContent.classList.remove("hidden");
+
+            const activeBtn = document.getElementById(`nav-btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add("bg-teal-600", "text-white", "dark:bg-neonTeal", "dark:text-slate-900", "shadow-sm");
+                activeBtn.classList.remove("text-slate-600", "dark:text-slate-300");
+            }
+
+            const titles = {
+                dashboard: { title: "System Overview", subtitle: "Real-time statistics & telemetry" },
+                users: { title: "User Management", subtitle: "Access control, roles & account provisioning" },
+                conversations: { title: "Translation Logs", subtitle: "Master transcripts & interaction records" },
+                vocabulary: { title: "ISL Vocabulary Dictionary", subtitle: "62-Action gesture dataset & postures" },
+                health: { title: "Database & Health", subtitle: "MongoDB telemetry & server diagnostics" },
+                audit: { title: "Audit Trail", subtitle: "System-wide administrative security events" }
+            };
+            if (titles[tabId]) {
+                document.getElementById("top-title").innerHTML = `<span>${titles[tabId].title}</span>`;
+                document.getElementById("top-subtitle").innerText = titles[tabId].subtitle;
+            }
+
+            // Trigger tab specific refresh if needed
+            if (tabId === "users") loadUsers();
+            if (tabId === "conversations") loadConversations();
+            if (tabId === "vocabulary") loadVocabulary();
+            if (tabId === "health") loadHealthDetails();
+            if (tabId === "audit") loadAuditLogs();
+        }
+
+        // --- DASHBOARD OVERVIEW DATA & CHARTS ---
+        async function refreshAllDashboardData() {
+            try {
+                const res = await fetch(`${API_BASE}/admin/stats`);
+                if (res.ok) {
+                    cachedStats = await res.json();
+                    renderStatsCards(cachedStats);
+                    renderRecentOverviewLists(cachedStats);
+                    renderTrendChart(cachedStats.activity_trend || []);
+                    renderModeChart(cachedStats.s2t_count, cachedStats.t2s_count);
+                    
+                    if (cachedStats.ping_ms >= 0) {
+                        document.getElementById("top-ping-label").innerText = `Ping: ${cachedStats.ping_ms}ms`;
+                        document.getElementById("health-latency").innerText = `${cachedStats.ping_ms} ms`;
+                    }
+                }
+            } catch (err) {
+                console.error("Stats refresh error", err);
+            }
+        }
+
+        function renderStatsCards(stats) {
+            document.getElementById("stat-total-users").innerText = stats.total_users ?? "--";
+            document.getElementById("stat-today-users").innerText = stats.users_today ?? 0;
+            document.getElementById("nav-user-count").innerText = stats.total_users ?? 0;
+
+            document.getElementById("stat-total-convs").innerText = stats.total_conversations ?? "--";
+            document.getElementById("stat-today-convs").innerText = stats.convs_today ?? 0;
+            document.getElementById("nav-conv-count").innerText = stats.total_conversations ?? 0;
+
+            document.getElementById("stat-s2t-count").innerText = stats.s2t_count ?? "--";
+            document.getElementById("stat-t2s-count").innerText = stats.t2s_count ?? "--";
+            document.getElementById("nav-vocab-count").innerText = stats.total_vocabulary ?? 62;
+
+            document.getElementById("doughnut-s2t-lbl").innerText = `${stats.s2t_count || 0} Sessions`;
+            document.getElementById("doughnut-t2s-lbl").innerText = `${stats.t2s_count || 0} Sessions`;
+        }
+
+        function renderRecentOverviewLists(stats) {
+            // Recent Users
+            const usersContainer = document.getElementById("overview-recent-users-list");
+            if (stats.recent_users && stats.recent_users.length) {
+                usersContainer.innerHTML = stats.recent_users.map(u => `
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-300 font-extrabold flex items-center justify-center text-xs">
+                                ${u.name.substring(0, 2).toUpperCase()}
+                            </div>
+                            <div>
+                                <h5 class="font-extrabold text-xs text-slate-800 dark:text-slate-100">${u.name}</h5>
+                                <span class="text-[11px] text-slate-400">${u.email}</span>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase ${u.role === 'admin' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400' : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}">
+                            ${u.role}
+                        </span>
+                    </div>
+                `).join('');
+            } else {
+                usersContainer.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-4">No recent users.</p>`;
+            }
+
+            // Recent Transcripts
+            const convsContainer = document.getElementById("overview-recent-convs-list");
+            if (stats.recent_convs && stats.recent_convs.length) {
+                convsContainer.innerHTML = stats.recent_convs.map(c => `
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex justify-between items-center gap-3">
+                        <div class="overflow-hidden">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded ${c.mode_used.includes('Sign') ? 'bg-teal-100 text-teal-700 dark:bg-teal-950/60 dark:text-neonTeal' : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-lightIndigo'}">
+                                    ${c.mode_used}
+                                </span>
+                                <span class="text-[10px] text-slate-400">${c.timestamp}</span>
+                            </div>
+                            <p class="font-bold text-xs text-slate-900 dark:text-white truncate">"${c.transcript}"</p>
+                        </div>
+                        <span class="text-[10px] text-slate-400 truncate max-w-[120px] font-mono-code">${c.email}</span>
+                    </div>
+                `).join('');
+            } else {
+                convsContainer.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-4">No recent translations.</p>`;
+            }
+        }
+
+        function renderTrendChart(trendData) {
+            const ctx = document.getElementById("chart-activity-trend")?.getContext("2d");
+            if (!ctx) return;
+            if (trendChart) trendChart.destroy();
+
+            const labels = trendData.map(d => d.day);
+            const convsData = trendData.map(d => d.conversations);
+            const usersData = trendData.map(d => d.users);
+
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Translations',
+                            data: convsData,
+                            borderColor: '#2DD4BF',
+                            backgroundColor: 'rgba(45, 212, 191, 0.1)',
+                            fill: true,
+                            tension: 0.35,
+                            borderWidth: 3,
+                            pointBackgroundColor: '#2DD4BF'
+                        },
+                        {
+                            label: 'Signups',
+                            data: usersData,
+                            borderColor: '#818CF8',
+                            backgroundColor: 'rgba(129, 140, 248, 0.05)',
+                            fill: true,
+                            tension: 0.35,
+                            borderWidth: 2,
+                            borderDash: [4, 4],
+                            pointBackgroundColor: '#818CF8'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 10, weight: 600 } } },
+                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { stepSize: 1, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        function renderModeChart(s2t, t2s) {
+            const ctx = document.getElementById("chart-mode-breakdown")?.getContext("2d");
+            if (!ctx) return;
+            if (modeChart) modeChart.destroy();
+
+            modeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sign to Text', 'Text to Sign'],
+                    datasets: [{
+                        data: [s2t || 1, t2s || 1],
+                        backgroundColor: ['#2DD4BF', '#818CF8'],
+                        borderColor: 'transparent',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '72%',
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // --- USER MANAGEMENT LOGIC ---
+        let userSearchTimer;
+        function debouncedSearchUsers() {
+            clearTimeout(userSearchTimer);
+            userSearchTimer = setTimeout(() => loadUsers(), 300);
+        }
+
+        async function loadUsers() {
+            const q = document.getElementById("users-search-input")?.value.trim() || "";
+            const role = document.getElementById("users-role-filter")?.value || "all";
+            const status = document.getElementById("users-status-filter")?.value || "all";
+
+            const tbody = document.getElementById("users-table-body");
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-10 text-slate-400 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Fetching users...</td></tr>`;
+
+            try {
+                const params = new URLSearchParams();
+                if (q) params.append("search", q);
+                if (role !== "all") params.append("role", role);
+                if (status !== "all") params.append("status", status);
+
+                const res = await fetch(`${API_BASE}/admin/users?${params.toString()}`);
+                const d = await res.json();
+                if (res.ok) {
+                    cachedUsers = d.users || [];
+                    renderUsersTable(cachedUsers);
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-rose-400 font-bold">${d.detail || "Error loading users."}</td></tr>`;
+                }
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-rose-400 font-bold">Failed to connect to backend server.</td></tr>`;
+            }
+        }
+
+        function renderUsersTable(users) {
+            const tbody = document.getElementById("users-table-body");
+            if (!users.length) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-slate-400 italic">No users found matching query.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = users.map(u => {
+                const roleBadge = u.role === 'admin' 
+                    ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-800">Admin</span>`
+                    : (u.role === 'manager' 
+                        ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-lightIndigo border border-indigo-300 dark:border-indigo-800">Manager</span>`
+                        : `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300">User</span>`);
+
+                const statusBadge = u.status === 'suspended'
+                    ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">Suspended</span>`
+                    : `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400">Active</span>`;
+
+                const pfp = u.profile_picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=20263f&color=7ae2d5`;
+
+                return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/40 transition">
+                        <td class="py-3 px-4">
+                            <div class="flex items-center gap-3">
+                                <img src="${pfp}" class="w-8 h-8 rounded-full object-cover border border-slate-300 dark:border-slate-700 flex-shrink-0">
+                                <div>
+                                    <div class="font-extrabold text-slate-900 dark:text-white">${u.name}</div>
+                                    <span class="text-[10px] font-mono-code text-teal-600 dark:text-neonTeal font-bold">${u.unique_id}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4">
+                            <div class="font-semibold text-slate-700 dark:text-slate-300">${u.email}</div>
+                            <div class="text-[11px] text-slate-400">${u.mobile || "N/A"}</div>
+                        </td>
+                        <td class="py-3 px-4 font-semibold text-slate-600 dark:text-slate-400">
+                            ${u.dob || "Not set"}
+                        </td>
+                        <td class="py-3 px-4">${roleBadge}</td>
+                        <td class="py-3 px-4">${statusBadge}</td>
+                        <td class="py-3 px-4 font-black text-slate-800 dark:text-slate-200">${u.conversations_count || 0}</td>
+                        <td class="py-3 px-4 text-slate-400 text-[11px]">${u.created_at}</td>
+                        <td class="py-3 px-4 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <button onclick="openEditUserModal('${u.email}')" class="p-1.5 rounded-lg text-slate-400 hover:text-teal-500 hover:bg-slate-100 dark:hover:bg-slate-800" title="Edit Profile">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="openResetPasswordModal('${u.email}')" class="p-1.5 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-800" title="Reset Password">
+                                    <i class="fa-solid fa-key"></i>
+                                </button>
+                                <button onclick="toggleUserSuspension('${u.email}', '${u.status}')" class="p-1.5 rounded-lg text-slate-400 hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800" title="${u.status === 'suspended' ? 'Activate Account' : 'Suspend Account'}">
+                                    <i class="fa-solid ${u.status === 'suspended' ? 'fa-user-check text-emerald-500' : 'fa-user-slash'}"></i>
+                                </button>
+                                <button onclick="confirmDeleteUser('${u.email}')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-slate-800" title="Delete User">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openAddUserModal() {
+            document.getElementById("modal-add-user").classList.remove("hidden");
+        }
+
+        async function handleAddUser(e) {
+            e.preventDefault();
+            const btn = document.getElementById("btn-save-new-user");
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving...`;
+            btn.disabled = true;
+
+            const payload = {
+                name: document.getElementById("add-user-name").value.trim(),
+                email: document.getElementById("add-user-email").value.trim(),
+                mobile: document.getElementById("add-user-mobile").value.trim(),
+                dob: document.getElementById("add-user-dob").value,
+                role: document.getElementById("add-user-role").value,
+                password: document.getElementById("add-user-pwd").value
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/users`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const d = await res.json();
+                if (res.ok) {
+                    showToast("User account provisioned successfully!", "success");
+                    closeModal("modal-add-user");
+                    loadUsers();
+                    refreshAllDashboardData();
+                } else {
+                    showToast(d.detail || "Failed to create user.", "error");
+                }
+            } catch (err) {
+                showToast("Server connection error.", "error");
+            } finally {
+                btn.innerHTML = "Provision Account";
+                btn.disabled = false;
+            }
+        }
+
+        function openEditUserModal(email) {
+            const user = cachedUsers.find(u => u.email === email);
+            if (!user) return;
+            document.getElementById("edit-user-original-email").value = user.email;
+            document.getElementById("edit-user-uid-label").innerText = `UID: ${user.unique_id}`;
+            document.getElementById("edit-user-name").value = user.name;
+            document.getElementById("edit-user-email").value = user.email;
+            document.getElementById("edit-user-mobile").value = user.mobile;
+            document.getElementById("edit-user-dob").value = user.dob || "";
+            document.getElementById("edit-user-role").value = user.role || "user";
+            document.getElementById("edit-user-status").value = user.status || "active";
+            document.getElementById("modal-edit-user").classList.remove("hidden");
+        }
+
+        async function handleSaveEditUser(e) {
+            e.preventDefault();
+            const originalEmail = document.getElementById("edit-user-original-email").value;
+            const payload = {
+                name: document.getElementById("edit-user-name").value.trim(),
+                email: document.getElementById("edit-user-email").value.trim(),
+                mobile: document.getElementById("edit-user-mobile").value.trim(),
+                dob: document.getElementById("edit-user-dob").value,
+                role: document.getElementById("edit-user-role").value,
+                status: document.getElementById("edit-user-status").value
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/users/${encodeURIComponent(originalEmail)}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const d = await res.json();
+                if (res.ok) {
+                    showToast("User updated successfully!", "success");
+                    closeModal("modal-edit-user");
+                    loadUsers();
+                } else {
+                    showToast(d.detail || "Failed to update user.", "error");
+                }
+            } catch (err) {
+                showToast("Server error updating user.", "error");
+            }
+        }
+
+        function openResetPasswordModal(email) {
+            document.getElementById("reset-target-user-email").value = email;
+            document.getElementById("reset-target-user-label").innerText = `Resetting password for: ${email}`;
+            document.getElementById("reset-new-pwd").value = "";
+            document.getElementById("modal-reset-user-pwd").classList.remove("hidden");
+        }
+
+        async function handleForcePasswordReset(e) {
+            e.preventDefault();
+            const email = document.getElementById("reset-target-user-email").value;
+            const pwd = document.getElementById("reset-new-pwd").value;
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/users/${encodeURIComponent(email)}/reset-password`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ new_password: pwd })
+                });
+                const d = await res.json();
+                if (res.ok) {
+                    showToast("Password updated successfully!", "success");
+                    closeModal("modal-reset-user-pwd");
+                } else {
+                    showToast(d.detail || "Error resetting password.", "error");
+                }
+            } catch (err) {
+                showToast("Server error.", "error");
+            }
+        }
+
+        async function toggleUserSuspension(email, currentStatus) {
+            const newStatus = currentStatus === "suspended" ? "active" : "suspended";
+            const confirmMsg = newStatus === "suspended" 
+                ? `Are you sure you want to suspend ${email}? They will not be able to log in.`
+                : `Reactivate account for ${email}?`;
+            if (!confirm(confirmMsg)) return;
+
+            const user = cachedUsers.find(u => u.email === email);
+            if (!user) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/users/${encodeURIComponent(email)}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ...user, status: newStatus })
+                });
+                if (res.ok) {
+                    showToast(`User is now ${newStatus.toUpperCase()}`, "info");
+                    loadUsers();
+                }
+            } catch (err) {
+                showToast("Failed to change account status.", "error");
+            }
+        }
+
+        async function confirmDeleteUser(email) {
+            if (!confirm(`Are you sure you want to PERMANENTLY delete user ${email}?\nThis action cannot be undone.`)) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/users/${encodeURIComponent(email)}?delete_conversations=true`, {
+                    method: "DELETE"
+                });
+                const d = await res.json();
+                if (res.ok) {
+                    showToast(d.message || "User deleted.", "success");
+                    loadUsers();
+                    refreshAllDashboardData();
+                } else {
+                    showToast(d.detail || "Delete failed.", "error");
+                }
+            } catch (err) {
+                showToast("Server error deleting user.", "error");
+            }
+        }
+
+        // --- CONVERSATION & TRANSCRIPT LOGS ---
+        let convSearchTimer;
+        function debouncedSearchConvs() {
+            clearTimeout(convSearchTimer);
+            convSearchTimer = setTimeout(() => loadConversations(), 300);
+        }
+
+        async function loadConversations() {
+            const q = document.getElementById("conv-search-input")?.value.trim() || "";
+            const mode = document.getElementById("conv-mode-filter")?.value || "all";
+            const email = document.getElementById("conv-user-filter")?.value.trim() || "";
+
+            const tbody = document.getElementById("convs-table-body");
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-slate-400 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading transcripts...</td></tr>`;
+
+            try {
+                const params = new URLSearchParams();
+                if (q) params.append("search", q);
+                if (mode !== "all") params.append("mode", mode);
+                if (email) params.append("email", email);
+
+                const res = await fetch(`${API_BASE}/admin/conversations?${params.toString()}`);
+                const d = await res.json();
+                if (res.ok) {
+                    cachedConvs = d.conversations || [];
+                    renderConversationsTable(cachedConvs);
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-rose-400 font-bold">${d.detail || "Error loading logs."}</td></tr>`;
+                }
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-rose-400 font-bold">Failed to load logs from server.</td></tr>`;
+            }
+        }
+
+        function renderConversationsTable(convs) {
+            const tbody = document.getElementById("convs-table-body");
+            if (!convs.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-slate-400 italic">No translation logs found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = convs.map(c => {
+                const isSign = c.mode_used.includes("Sign") || c.mode_used === "S2T";
+                const modeBadge = isSign
+                    ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-teal-100 text-teal-700 dark:bg-teal-950/60 dark:text-neonTeal border border-teal-300 dark:border-teal-800"><i class="fa-solid fa-hands mr-1"></i> Sign &rarr; Text</span>`
+                    : `<span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-lightIndigo border border-indigo-300 dark:border-indigo-800"><i class="fa-solid fa-microphone mr-1"></i> Text &rarr; Sign</span>`;
+
+                return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/40 transition">
+                        <td class="py-3 px-4 font-mono-code text-[11px] text-slate-400 whitespace-nowrap">${c.timestamp}</td>
+                        <td class="py-3 px-4">
+                            <div class="font-extrabold text-slate-800 dark:text-slate-100">${c.email}</div>
+                            <span class="text-[10px] text-slate-400 font-mono-code">${c.unique_id}</span>
+                        </td>
+                        <td class="py-3 px-4">${modeBadge}</td>
+                        <td class="py-3 px-4 font-bold text-slate-800 dark:text-slate-200 max-w-md">
+                            <div class="truncate cursor-pointer hover:text-teal-500" onclick="inspectTranscript('${c.id}')" title="Click to view full transcript">
+                                "${c.transcript}"
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <button onclick="inspectTranscript('${c.id}')" class="p-1.5 rounded-lg text-slate-400 hover:text-teal-500 hover:bg-slate-100 dark:hover:bg-slate-800" title="Inspect">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button onclick="deleteSingleLog('${c.id}')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-slate-800" title="Delete">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function inspectTranscript(id) {
+            const item = cachedConvs.find(c => c.id === id);
+            if (!item) return;
+
+            document.getElementById("inspect-mode-badge").innerText = item.mode_used;
+            document.getElementById("inspect-time").innerText = item.timestamp;
+            document.getElementById("inspect-user-info").innerText = `User: ${item.email} (${item.unique_id})`;
+            document.getElementById("inspect-transcript-body").innerText = item.transcript;
+            document.getElementById("modal-transcript-inspect").classList.remove("hidden");
+        }
+
+        function copyInspectTranscript() {
+            const text = document.getElementById("inspect-transcript-body").innerText;
+            navigator.clipboard.writeText(text);
+            showToast("Transcript copied to clipboard!", "success");
+        }
+
+        async function deleteSingleLog(id) {
+            if (!confirm("Permanently delete this translation record?")) return;
+            try {
+                const res = await fetch(`${API_BASE}/admin/conversations/${id}`, { method: "DELETE" });
+                if (res.ok) {
+                    showToast("Log deleted.", "info");
+                    loadConversations();
+                    refreshAllDashboardData();
+                }
+            } catch (err) {
+                showToast("Failed to delete log.", "error");
+            }
+        }
+
+        async function promptBulkPurgeLogs() {
+            if (!confirm("CAUTION: This will wipe all system-wide translation conversation logs.\nAre you sure you want to proceed?")) return;
+            try {
+                const res = await fetch(`${API_BASE}/admin/conversations/bulk-delete`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ clear_all: true })
+                });
+                const d = await res.json();
+                showToast(d.message || "Logs purged.", "success");
+                loadConversations();
+                refreshAllDashboardData();
+            } catch (err) {
+                showToast("Failed to purge logs.", "error");
+            }
+        }
+
+        function exportLogs(format) {
+            if (!cachedConvs.length) {
+                showToast("No logs to export.", "warning");
+                return;
+            }
+            let content = "";
+            let mime = "text/plain";
+            let filename = `SIH2026_ISL_Logs_${Date.now()}.${format}`;
+
+            if (format === 'json') {
+                content = JSON.stringify(cachedConvs, null, 2);
+                mime = "application/json";
+            } else {
+                content = "Timestamp,User Email,User UID,Mode,Transcript\n" + 
+                    cachedConvs.map(c => `"${c.timestamp}","${c.email}","${c.unique_id}","${c.mode_used}","${c.transcript.replace(/"/g, '""')}"`).join("\n");
+                mime = "text/csv";
+            }
+
+            const blob = new Blob([content], { type: mime });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            showToast(`Exported ${cachedConvs.length} records to ${format.toUpperCase()}!`, "success");
+        }
+
+        // --- VOCABULARY GESTURE DICTIONARY ---
+        async function loadVocabulary() {
+            try {
+                const res = await fetch(`${API_BASE}/admin/vocabulary`);
+                const d = await res.json();
+                if (res.ok) {
+                    cachedVocab = d.vocabulary || [];
+                    renderVocabularyGrid(cachedVocab);
+                }
+            } catch (err) {
+                console.error("Vocabulary load error", err);
+            }
+        }
+
+        function filterVocabByCategory(cat) {
+            activeVocabCategory = cat;
+            document.querySelectorAll(".vocab-chip").forEach(c => {
+                c.classList.remove("active", "bg-teal-600", "text-white", "dark:bg-neonTeal", "dark:text-slate-900");
+                c.classList.add("bg-white", "dark:bg-slate-800", "text-slate-700", "dark:text-slate-300");
+            });
+            event.target.classList.add("active", "bg-teal-600", "text-white", "dark:bg-neonTeal", "dark:text-slate-900");
+            event.target.classList.remove("bg-white", "dark:bg-slate-800", "text-slate-700", "dark:text-slate-300");
+
+            filterVocabGrid();
+        }
+
+        function filterVocabGrid() {
+            const q = document.getElementById("vocab-search-input")?.value.toLowerCase() || "";
+            let filtered = cachedVocab;
+            if (activeVocabCategory !== "all") {
+                filtered = filtered.filter(v => v.category === activeVocabCategory);
+            }
+            if (q) {
+                filtered = filtered.filter(v => v.word.toLowerCase().includes(q) || v.hand_posture.toLowerCase().includes(q));
+            }
+            renderVocabularyGrid(filtered);
+        }
+
+        function renderVocabularyGrid(items) {
+            const container = document.getElementById("vocab-cards-grid");
+            if (!items.length) {
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 italic">No gestures found.</div>`;
+                return;
+            }
+
+            container.innerHTML = items.map(v => `
+                <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm hover:border-teal-500 transition group flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${v.category}</span>
+                            <span class="text-[10px] font-bold ${v.difficulty === 'Beginner' ? 'text-emerald-500' : (v.difficulty === 'Intermediate' ? 'text-amber-500' : 'text-rose-500')}">${v.difficulty}</span>
+                        </div>
+                        <h4 class="text-base font-extrabold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-neonTeal transition">${v.word}</h4>
+                        <p class="text-xs text-slate-400 mt-1 line-clamp-2">${v.hand_posture || "Standard ISL posture"}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                        <span class="text-[11px] font-semibold text-slate-400"><i class="fa-solid fa-video text-teal-500 mr-1"></i> ${v.video_sequences || 30} seqs</span>
+                        <div class="flex gap-1.5">
+                            <button onclick="openEditGestureModal('${v.id}')" class="p-1 rounded text-slate-400 hover:text-teal-500"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="confirmDeleteGesture('${v.id}')" class="p-1 rounded text-slate-400 hover:text-rose-500"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAddGestureModal() {
+            document.getElementById("modal-gesture-title").innerText = "Add New Gesture Sign";
+            document.getElementById("gesture-id").value = "";
+            document.getElementById("gesture-word").value = "";
+            document.getElementById("gesture-category").value = "Greetings";
+            document.getElementById("gesture-difficulty").value = "Beginner";
+            document.getElementById("gesture-posture").value = "";
+            document.getElementById("gesture-sequences").value = 30;
+            document.getElementById("modal-gesture").classList.remove("hidden");
+        }
+
+        function openEditGestureModal(id) {
+            const item = cachedVocab.find(v => v.id === id);
+            if (!item) return;
+            document.getElementById("modal-gesture-title").innerText = "Edit Gesture Sign";
+            document.getElementById("gesture-id").value = item.id;
+            document.getElementById("gesture-word").value = item.word;
+            document.getElementById("gesture-category").value = item.category || "General";
+            document.getElementById("gesture-difficulty").value = item.difficulty || "Beginner";
+            document.getElementById("gesture-posture").value = item.hand_posture || "";
+            document.getElementById("gesture-sequences").value = item.video_sequences || 30;
+            document.getElementById("modal-gesture").classList.remove("hidden");
+        }
+
+        async function handleSaveGesture(e) {
+            e.preventDefault();
+            const id = document.getElementById("gesture-id").value;
+            const payload = {
+                word: document.getElementById("gesture-word").value.trim(),
+                category: document.getElementById("gesture-category").value,
+                difficulty: document.getElementById("gesture-difficulty").value,
+                hand_posture: document.getElementById("gesture-posture").value.trim(),
+                video_sequences: parseInt(document.getElementById("gesture-sequences").value) || 30
+            };
+
+            const method = id ? "PUT" : "POST";
+            const url = id ? `${API_BASE}/admin/vocabulary/${id}` : `${API_BASE}/admin/vocabulary`;
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const d = await res.json();
+                if (res.ok) {
+                    showToast(d.message || "Gesture saved successfully!", "success");
+                    closeModal("modal-gesture");
+                    loadVocabulary();
+                } else {
+                    showToast(d.detail || "Error saving gesture.", "error");
+                }
+            } catch (err) {
+                showToast("Server error.", "error");
+            }
+        }
+
+        async function confirmDeleteGesture(id) {
+            if (!confirm("Delete this gesture sign from vocabulary dictionary?")) return;
+            try {
+                const res = await fetch(`${API_BASE}/admin/vocabulary/${id}`, { method: "DELETE" });
+                if (res.ok) {
+                    showToast("Gesture deleted.", "info");
+                    loadVocabulary();
+                }
+            } catch (err) {
+                showToast("Server error.", "error");
+            }
+        }
+
+        // --- HEALTH & AUDIT LOGS ---
+        async function loadHealthDetails() {
+            try {
+                const res = await fetch(`${API_BASE}/admin/system/health`);
+                const d = await res.json();
+                if (res.ok) {
+                    document.getElementById("health-db-status").innerText = d.database.status;
+                    document.getElementById("health-latency").innerText = `${d.database.latency_ms} ms`;
+                    document.getElementById("health-cols-count").innerText = `${d.database.collections_count} collections`;
+                    document.getElementById("health-py-ver").innerText = d.environment.python_version;
+                    document.getElementById("health-os").innerText = d.environment.os;
+
+                    const sec = d.uptime_seconds;
+                    const hours = Math.floor(sec / 3600);
+                    const minutes = Math.floor((sec % 3600) / 60);
+                    document.getElementById("health-uptime").innerText = `${hours}h ${minutes}m active`;
+
+                    document.getElementById("health-cnt-users").innerText = d.database.counts.users;
+                    document.getElementById("health-cnt-convs").innerText = d.database.counts.conversations;
+                    document.getElementById("health-cnt-vocab").innerText = d.database.counts.vocabulary;
+                    document.getElementById("health-cnt-audit").innerText = d.database.counts.audit_logs;
+                }
+            } catch (err) {
+                console.warn("Health fetch error", err);
+            }
+        }
+
+        async function pingDatabase() {
+            showToast("Pinging MongoDB Atlas...", "info");
+            await loadHealthDetails();
+            showToast("MongoDB ping completed!", "success");
+        }
+
+        async function loadAuditLogs() {
+            const tbody = document.getElementById("audit-table-body");
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400 italic">Fetching audit trail...</td></tr>`;
+            try {
+                const res = await fetch(`${API_BASE}/admin/system/audit-logs?limit=50`);
+                const d = await res.json();
+                if (res.ok && d.logs && d.logs.length) {
+                    tbody.innerHTML = d.logs.map(log => `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/40 transition">
+                            <td class="py-3 px-4 text-slate-400 font-mono-code text-[11px]">${log.timestamp}</td>
+                            <td class="py-3 px-4 font-extrabold text-teal-600 dark:text-neonTeal">${log.action}</td>
+                            <td class="py-3 px-4 font-semibold text-slate-800 dark:text-slate-200">${log.details}</td>
+                            <td class="py-3 px-4 font-bold text-slate-500">${log.performed_by}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-slate-400 italic">No audit records found.</td></tr>`;
+                }
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-rose-400 font-bold">Failed to load audit logs.</td></tr>`;
+            }
+        }
+
+        // --- UTILITIES & MODAL HELPERS ---
+        function closeModal(id) {
+            document.getElementById(id).classList.add("hidden");
+        }
+
+        function togglePasswordVisibility(id, btn) {
+            const inp = document.getElementById(id);
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+            } else {
+                inp.type = 'password';
+                btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+            }
+        }
+
+        function toggleMobileSidebar() {
+            const sb = document.getElementById("admin-sidebar");
+            sb.classList.toggle("hidden");
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-icon').className = isDark ? 'fa-solid fa-sun text-sm' : 'fa-solid fa-moon text-sm';
+        }
+
+        function showToast(message, type = "info") {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            const icons = {
+                success: "fa-solid fa-circle-check text-emerald-400",
+                error: "fa-solid fa-circle-xmark text-rose-400",
+                warning: "fa-solid fa-triangle-exclamation text-amber-400",
+                info: "fa-solid fa-circle-info text-teal-400"
+            };
+            toast.className = `p-3.5 rounded-2xl bg-slate-900/95 text-white border border-slate-700/80 shadow-2xl flex items-center gap-3 text-xs font-bold pointer-events-auto transform translate-y-2 opacity-0 transition duration-300`;
+            toast.innerHTML = `<i class="${icons[type] || icons.info} text-base flex-shrink-0"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.remove("translate-y-2", "opacity-0"), 10);
+            setTimeout(() => {
+                toast.classList.add("opacity-0", "translate-y-2");
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Global Keyboard Shortcut: Ctrl + K (Search)
+        document.addEventListener("keydown", (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+                e.preventDefault();
+                switchTab("users");
+                document.getElementById("users-search-input")?.focus();
+            }
+        });
+
+        // Initialize Theme & Auth on load
+        window.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('theme-icon').className = 'fa-solid fa-moon text-sm';
+            }
+            updateApiIndicator();
+            checkAdminAuth();
+        });
+    </script>
+</body>
+</html>
