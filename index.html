@@ -164,6 +164,13 @@
                         <p class="text-xs font-bold text-slate-300">Requesting Web Camera...</p>
                     </div>
                     
+                    <div class="absolute top-4 left-4 z-20 flex items-center gap-2">
+                        <button id="btn-swap-hands" onclick="toggleInvertHandedness()" class="px-2.5 py-1.5 bg-slate-900/80 hover:bg-slate-800 text-teal-300 border border-slate-700 rounded-lg text-[11px] font-bold transition flex items-center gap-1.5 shadow-md" title="Toggle hand detection mapping (Left ↔ Right)">
+                            <i class="fa-solid fa-arrows-rotate text-xs"></i>
+                            <span id="swap-hands-text">Mode: Direct (L/R)</span>
+                        </button>
+                    </div>
+
                     <button onclick="flipCameraFacingMode()" class="md:hidden absolute top-4 right-4 bg-slate-900/80 text-white w-9 h-9 rounded-lg flex items-center justify-center z-20 border border-slate-700 hover:bg-slate-900" title="Flip Camera">
                         <i class="fa-solid fa-camera-rotate"></i>
                     </button>
@@ -445,61 +452,67 @@
         }
         initLocalAI();
 
-        // --- GEOMETRIC DUAL-HAND ASL DECODER ---
+        // --- HANDEDNESS RESOLVER & USER INVERT TOGGLE ---
+        window.invertHandedness = localStorage.getItem("ths_invert_hands") === "true";
+
+        window.toggleInvertHandedness = function() {
+            window.invertHandedness = !window.invertHandedness;
+            localStorage.setItem("ths_invert_hands", window.invertHandedness ? "true" : "false");
+            const txt = document.getElementById('swap-hands-text');
+            if (txt) {
+                txt.innerText = window.invertHandedness ? "Mode: Swapped (R/L)" : "Mode: Direct (L/R)";
+            }
+        };
+
         function resolveHandTypes(results) {
             if (!results || !results.landmarks || results.landmarks.length === 0) return [];
 
             const numHands = results.landmarks.length;
-            const handednessCollection = results.handednesses || results.handedness || [];
-            const isFrontCamera = !window.currentFacingMode || window.currentFacingMode === "user";
+            const handednessCollection = results.handedness || results.handednesses || [];
 
-            const resolved = [];
+            // Case A: 2 Hands Detected in mirrored selfie camera
+            // In the mirrored view, the hand on screen-left (1 - x < 0.5 or smaller screen X) is physically the Left Hand.
+            // The hand on screen-right is physically the Right Hand.
+            if (numHands === 2) {
+                const s0 = 1 - results.landmarks[0][0].x;
+                const s1 = 1 - results.landmarks[1][0].x;
 
-            for (let i = 0; i < numHands; i++) {
-                let handType = null;
+                let h0 = s0 < s1 ? "Left" : "Right";
+                let h1 = s0 < s1 ? "Right" : "Left";
 
-                // 1. Primary: MediaPipe's handednesses collection
-                const hEntry = handednessCollection[i]?.[0] || handednessCollection[i];
-                const mpCategory = hEntry?.categoryName || hEntry?.displayName;
-                if (mpCategory) {
-                    // MediaPipe HandLandmarker models assume mirrored selfie input.
-                    // When receiving the unmirrored raw camera feed in front-facing mode,
-                    // raw "Left" is the user's physical Right hand, and raw "Right" is the user's Left hand.
-                    handType = isFrontCamera ? (mpCategory === "Left" ? "Right" : "Left") : mpCategory;
+                if (window.invertHandedness) {
+                    h0 = (h0 === "Left") ? "Right" : "Left";
+                    h1 = (h1 === "Left") ? "Right" : "Left";
                 }
-
-                // 2. Secondary: 3D Anatomical Chirality Determinant (Geometric ground truth)
-                if (!handType && results.landmarks[i] && results.landmarks[i].length >= 21) {
-                    const lms = results.landmarks[i];
-                    const w = lms[0], idx = lms[5], pnk = lms[17], thm = lms[2];
-                    const ax = idx.x - w.x, ay = idx.y - w.y, az = (idx.z || 0) - (w.z || 0);
-                    const bx = pnk.x - w.x, by = pnk.y - w.y, bz = (pnk.z || 0) - (w.z || 0);
-                    const cx = thm.x - w.x, cy = thm.y - w.y, cz = (thm.z || 0) - (w.z || 0);
-                    const crx = by * cz - bz * cy;
-                    const cry = bz * cx - bx * cz;
-                    const crz = bx * cy - by * cx;
-                    const det = ax * crx + ay * cry + az * crz;
-                    handType = det > 0 ? "Right" : "Left";
-                }
-
-                resolved.push(handType || "Right");
+                return [h0, h1];
             }
 
-            // 3. Consistency spatial verification when both hands are visible
-            // In unmirrored camera space, user's physical Right Hand is on the camera sensor's left (lower X),
-            // and user's physical Left Hand is on the camera sensor's right (higher X).
-            if (numHands === 2) {
-                if (resolved[0] === resolved[1]) {
-                    const x0 = results.landmarks[0][0].x;
-                    const x1 = results.landmarks[1][0].x;
-                    if (isFrontCamera) {
-                        resolved[0] = x0 < x1 ? "Right" : "Left";
-                        resolved[1] = x0 < x1 ? "Left" : "Right";
-                    } else {
-                        resolved[0] = x0 < x1 ? "Left" : "Right";
-                        resolved[1] = x0 < x1 ? "Right" : "Left";
-                    }
+            // Case B: Single Hand Detected
+            const resolved = [];
+            for (let i = 0; i < numHands; i++) {
+                let mpLabel = null;
+                const hEntry = handednessCollection[i];
+                if (Array.isArray(hEntry) && hEntry.length > 0) {
+                    mpLabel = hEntry[0]?.categoryName || hEntry[0]?.displayName;
+                } else if (hEntry && typeof hEntry === 'object') {
+                    mpLabel = hEntry.categoryName || hEntry.displayName;
                 }
+
+                let handType = mpLabel;
+
+                // Fallback using screen position if MediaPipe label is absent:
+                if (!handType && results.landmarks[i] && results.landmarks[i].length > 0) {
+                    const screenWristX = 1 - results.landmarks[i][0].x;
+                    handType = screenWristX < 0.5 ? "Left" : "Right";
+                }
+
+                if (!handType) handType = "Left";
+
+                if (window.invertHandedness) {
+                    handType = (handType === "Left") ? "Right" : "Left";
+                }
+
+                resolved.push(handType);
             }
 
             return resolved;
@@ -746,36 +759,40 @@
         window.onload = () => {
             window.initTheme();
 
-            // 1. Check if Admin is opening User Portal from Admin Panel:
-            // "admin panel can directly open user portal no access required"
-            const adminToken = sessionStorage.getItem("ths_admin_token") || localStorage.getItem("ths_admin_token");
-            const adminRole = sessionStorage.getItem("ths_admin_role") || localStorage.getItem("ths_admin_role");
-            const isAdmin = !!(adminToken && (adminRole === "superadmin" || adminRole === "admin" || adminRole === "manager"));
+            const txt = document.getElementById('swap-hands-text');
+            if (txt && window.invertHandedness) {
+                txt.innerText = "Mode: Swapped (R/L)";
+            }
+
+            // Check if coming directly from Admin Panel:
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromAdmin = urlParams.get('from') === 'admin' || localStorage.getItem("ths_from_admin") === "true";
+            const adminToken = sessionStorage.getItem("ths_admin_token") || localStorage.getItem("ths_admin_token") || localStorage.getItem("ths_token");
+            const adminRole = sessionStorage.getItem("ths_admin_role") || localStorage.getItem("ths_admin_role") || localStorage.getItem("ths_role");
+            const isAdmin = fromAdmin || (adminRole === "superadmin" || adminRole === "admin" || adminRole === "manager");
 
             const userToken = localStorage.getItem("ths_token");
-            const userRole = localStorage.getItem("ths_role") || "user";
 
             if (isAdmin) {
-                // Admin has DIRECT MASTER ACCESS to the User Portal with NO RESTRICTIONS
-                currentUser.unique_id = sessionStorage.getItem("ths_admin_email") || localStorage.getItem("ths_admin_email") || "THS-ADMIN";
-                currentUser.email = sessionStorage.getItem("ths_admin_email") || localStorage.getItem("ths_admin_email") || "sayan@superadmin.com";
-                currentUser.name = sessionStorage.getItem("ths_admin_name") || localStorage.getItem("ths_admin_name") || "Sayan Chakraborty (Admin)";
+                // Admin has DIRECT UNCONDITIONAL ACCESS - no credentials or login required
+                currentUser.unique_id = localStorage.getItem("ths_uid") || "SUPERADMIN-MASTER";
+                currentUser.email = localStorage.getItem("ths_email") || "sayan@superadmin.com";
+                currentUser.name = localStorage.getItem("ths_name") || "Administrator";
                 currentUser.dob = "";
                 currentUser.mobile = "";
-                currentUser.role = adminRole;
-                currentUser.profile_picture = sessionStorage.getItem("ths_admin_pfp") || localStorage.getItem("ths_admin_pfp") || "https://ui-avatars.com/api/?name=Admin&background=20263f&color=7ae2d5";
-                currentUser.token = adminToken;
+                currentUser.role = adminRole || "superadmin";
+                currentUser.profile_picture = localStorage.getItem("ths_pfp") || "https://ui-avatars.com/api/?name=Admin&background=20263f&color=7ae2d5";
+                currentUser.token = adminToken || "ADMIN_MASTER_PASS";
 
-                // Make Admin Control Panel button visible in navbar for instant return
+                // Show Admin Panel return button in navigation
                 const navAdmin = document.getElementById('btn-nav-admin');
                 const dropAdmin = document.getElementById('dropdown-admin-link');
                 if (navAdmin) {
                     navAdmin.classList.remove('hidden');
-                    navAdmin.innerHTML = `<i class="fa-solid fa-shield-halved text-teal-400"></i> <span class="hidden md:inline">Back to Admin Panel</span>`;
+                    navAdmin.innerHTML = `<i class="fa-solid fa-shield-halved text-teal-400"></i> <span class="hidden md:inline">Admin Console</span>`;
                 }
                 if (dropAdmin) dropAdmin.classList.remove('hidden');
-            } else if (userToken && userRole === "user") {
-                // Normal user session
+            } else if (userToken) {
                 currentUser.unique_id = localStorage.getItem("ths_uid") || "THS-USER";
                 currentUser.email = localStorage.getItem("ths_email") || "";
                 currentUser.name = localStorage.getItem("ths_name") || "User";
@@ -785,13 +802,11 @@
                 currentUser.profile_picture = localStorage.getItem("ths_pfp") || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=7ae2d5&color=20263f`;
                 currentUser.token = userToken;
 
-                // Normal users never see admin buttons
                 const navAdmin = document.getElementById('btn-nav-admin');
                 const dropAdmin = document.getElementById('dropdown-admin-link');
                 if (navAdmin) navAdmin.classList.add('hidden');
                 if (dropAdmin) dropAdmin.classList.add('hidden');
             } else {
-                // Not authenticated -> redirect to login
                 window.location.replace("login.html");
                 return;
             }
