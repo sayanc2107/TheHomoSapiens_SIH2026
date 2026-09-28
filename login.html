@@ -37,10 +37,10 @@
         .glow-mint { box-shadow: 0 0 35px -5px rgba(122, 226, 213, 0.35); }
     </style>
 </head>
-<body class="bg-navy min-h-screen flex flex-col justify-between selection:bg-mint selection:text-navy relative overflow-x-hidden antialiased">
+<body class="bg-gradient-to-br from-slate-100 via-teal-50/50 to-indigo-50/30 dark:bg-navy min-h-screen flex flex-col justify-between selection:bg-mint selection:text-navy relative overflow-x-hidden antialiased transition-colors duration-200">
 
     <!-- Ambient Glow Background Blobs -->
-    <div class="absolute -top-32 -left-32 w-96 h-96 bg-mint/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-mint/20 dark:bg-mint/15 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
     <!-- Notification Toast Container -->
@@ -53,13 +53,18 @@
                 <i class="fa-solid fa-hands-asl-interpreting"></i>
             </div>
             <div>
-                <span class="font-extrabold text-lg md:text-xl text-white tracking-tight block leading-tight">TheHomoSapiens</span>
-                <span class="text-[10px] font-bold text-mint uppercase tracking-wider">SIH 2026 AI Innovation</span>
+                <span class="font-extrabold text-lg md:text-xl text-slate-900 dark:text-white tracking-tight block leading-tight">TheHomoSapiens</span>
+                <span class="text-[10px] font-bold text-teal-700 dark:text-mint uppercase tracking-wider">SIH 2026 AI Innovation</span>
             </div>
         </div>
-        <div class="text-xs text-slate-300 font-semibold hidden sm:flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>AI Recognition Engine Online</span>
+        <div class="flex items-center gap-3">
+            <div class="text-xs text-slate-600 dark:text-slate-300 font-semibold hidden sm:flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>AI Recognition Engine Online</span>
+            </div>
+            <button type="button" onclick="toggleTheme()" class="w-9 h-9 rounded-xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-sm flex items-center justify-center hover:scale-105 transition" title="Toggle Light/Dark Theme">
+                <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
+            </button>
         </div>
     </header>
 
@@ -126,10 +131,10 @@
 
             <!-- Bottom Navigation Link to Register -->
             <div class="w-full flex justify-between items-center mt-6 px-4">
-                <div class="text-white text-xs md:text-sm font-normal">
+                <div class="text-slate-700 dark:text-white text-xs md:text-sm font-semibold">
                     Don't have an account?
                 </div>
-                <a href="register.html" class="inline-flex items-center gap-1.5 text-mint hover:text-white font-extrabold text-xs md:text-sm uppercase tracking-wider bg-white/10 hover:bg-white/15 px-4 py-2 rounded-full border border-mint/30 transition">
+                <a href="register.html" class="inline-flex items-center gap-1.5 text-navy dark:text-mint hover:text-teal-700 dark:hover:text-white font-extrabold text-xs md:text-sm uppercase tracking-wider bg-navy/10 dark:bg-white/10 hover:bg-navy/15 dark:hover:bg-white/15 px-4 py-2 rounded-full border border-navy/20 dark:border-mint/30 transition">
                     <span>Create Account</span>
                     <i class="fa-solid fa-arrow-right text-[11px]"></i>
                 </a>
@@ -139,8 +144,8 @@
     </main>
 
     <!-- Footer -->
-    <footer class="w-full text-center py-4 text-slate-400 text-xs font-medium z-10 border-t border-slate-800/80">
-        Team TheHomoSapiens | SIH 2026 &bull; Developed by <a href="https://www.linkedin.com/in/sayan-chakraborty-282203379/" target="_blank" class="text-mint hover:underline font-bold">Sayan Chakraborty</a>
+    <footer class="w-full text-center py-4 text-slate-600 dark:text-slate-400 text-xs font-semibold z-10 border-t border-slate-300/80 dark:border-slate-800/80 bg-white/40 dark:bg-transparent backdrop-blur-sm">
+        Team TheHomoSapiens | SIH 2026 &bull; Developed by <a href="https://www.linkedin.com/in/sayan-chakraborty-282203379/" target="_blank" class="text-teal-700 dark:text-mint hover:underline font-bold">Sayan Chakraborty</a>
     </footer>
 
     <!-- Password Reset Modal -->
@@ -254,6 +259,11 @@
                         sessionStorage.setItem("ths_admin_email", d.email);
                         sessionStorage.setItem("ths_admin_role", d.role);
                         sessionStorage.setItem("ths_admin_pfp", d.profile_picture || "");
+                        localStorage.setItem("ths_admin_token", d.token);
+                        localStorage.setItem("ths_admin_name", d.name);
+                        localStorage.setItem("ths_admin_email", d.email);
+                        localStorage.setItem("ths_admin_role", d.role);
+                        localStorage.setItem("ths_admin_pfp", d.profile_picture || "");
                         
                         setTimeout(() => {
                             window.location.href = "admin.html";
@@ -353,10 +363,30 @@
             }
         }
 
+        function initTheme() {
+            const saved = localStorage.getItem("ths_theme") || "light";
+            const icon = document.getElementById("theme-icon");
+            if (saved === "dark") {
+                document.documentElement.classList.add("dark");
+                if (icon) icon.className = "fa-solid fa-sun text-amber-400 text-sm";
+            } else {
+                document.documentElement.classList.remove("dark");
+                if (icon) icon.className = "fa-solid fa-moon text-slate-700 text-sm";
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle("dark");
+            localStorage.setItem("ths_theme", isDark ? "dark" : "light");
+            const icon = document.getElementById("theme-icon");
+            if (icon) icon.className = isDark ? "fa-solid fa-sun text-amber-400 text-sm" : "fa-solid fa-moon text-slate-700 text-sm";
+        }
+
         // On Page Load:
         // 1. Admin MUST log in every time! Wipe any lingering admin keys from storage.
         // 2. Normal users stay logged in (redirect to index.html).
         window.addEventListener("DOMContentLoaded", () => {
+            initTheme();
             localStorage.removeItem("ths_admin_token");
             localStorage.removeItem("ths_admin_name");
             localStorage.removeItem("ths_admin_email");

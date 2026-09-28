@@ -74,12 +74,7 @@
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none"></div>
 
     <!-- ================= AUTHENTICATION MODAL / SCREEN ================= -->
-    <script>
-        if (sessionStorage.getItem("ths_admin_token")) {
-            document.write('<style>#admin-login-screen { display: none !important; }</style>');
-        }
-    </script>
-    <div id="admin-login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-navy/95 backdrop-blur-md p-4 transition-all duration-300">
+    <div id="admin-login-screen" class="fixed inset-0 z-50 items-center justify-center bg-navy/95 backdrop-blur-md p-4 transition-all duration-300 hidden" style="display: none;">
         <div class="relative w-full max-w-md bg-appCardDark border border-slate-700/80 rounded-3xl p-8 shadow-2xl overflow-hidden">
             <!-- Ambient Glow Effect -->
             <div class="absolute -top-24 -left-24 w-56 h-56 bg-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -248,10 +243,10 @@
         </aside>
 
         <!-- ================= MAIN CONTENT WRAPPER ================= -->
-        <main class="flex-grow flex flex-col h-full overflow-hidden bg-slate-100 dark:bg-appDark">
+        <main class="flex-grow flex flex-col h-full overflow-hidden bg-gradient-to-br from-slate-50 via-slate-100/70 to-teal-50/20 dark:from-appDark dark:to-appDark">
             
             <!-- TOP APP BAR -->
-            <header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-appCardDark/80 backdrop-blur-md px-4 md:px-8 flex items-center justify-between z-20 flex-shrink-0">
+            <header class="h-16 border-b border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-appCardDark/80 backdrop-blur-md px-4 md:px-8 flex items-center justify-between z-20 flex-shrink-0 shadow-sm">
                 <div class="flex items-center gap-3">
                     <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                         <i class="fa-solid fa-bars text-base"></i>
@@ -1054,15 +1049,20 @@
 
         // --- AUTHENTICATION LOGIC ---
         function checkAdminAuth() {
+            const screen = document.getElementById("admin-login-screen");
             const hasValidAdminRole = currentAdmin.role === "admin" || currentAdmin.role === "superadmin" || currentAdmin.role === "manager";
             if (currentAdmin.token && hasValidAdminRole) {
                 // Instantly unlock dashboard with zero friction and no secondary modal
-                document.getElementById("admin-login-screen").classList.add("hidden");
+                screen.style.display = "none";
+                screen.classList.add("hidden");
+                screen.classList.remove("flex");
                 updateAdminProfileUI();
                 refreshAllDashboardData();
             } else {
                 // If not logged in as admin, present authorized credentials prompt
-                document.getElementById("admin-login-screen").classList.remove("hidden");
+                screen.style.display = "flex";
+                screen.classList.remove("hidden");
+                screen.classList.add("flex");
             }
         }
 
@@ -1095,24 +1095,19 @@
                         role: d.role,
                         profile_picture: d.profile_picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name)}&background=20263f&color=7ae2d5`
                     };
-                    // Save to sessionStorage ONLY: Admin must log in every time the site is opened fresh
                     sessionStorage.setItem("ths_admin_token", currentAdmin.token);
                     sessionStorage.setItem("ths_admin_name", currentAdmin.name);
                     sessionStorage.setItem("ths_admin_email", currentAdmin.email);
                     sessionStorage.setItem("ths_admin_role", currentAdmin.role);
                     sessionStorage.setItem("ths_admin_pfp", currentAdmin.profile_picture);
-
-                    // Purge any admin tokens from permanent localStorage
-                    localStorage.removeItem("ths_admin_token");
-                    localStorage.removeItem("ths_admin_name");
-                    localStorage.removeItem("ths_admin_email");
-                    localStorage.removeItem("ths_admin_role");
-                    localStorage.removeItem("ths_admin_pfp");
-                    localStorage.removeItem("ths_token");
-                    localStorage.removeItem("ths_role");
+                    localStorage.setItem("ths_admin_token", currentAdmin.token);
+                    localStorage.setItem("ths_admin_role", currentAdmin.role);
 
                     showToast(`Welcome back, ${currentAdmin.name}!`, "success");
-                    document.getElementById("admin-login-screen").classList.add("hidden");
+                    const screen = document.getElementById("admin-login-screen");
+                    screen.style.display = "none";
+                    screen.classList.add("hidden");
+                    screen.classList.remove("flex");
                     updateAdminProfileUI();
                     refreshAllDashboardData();
                 } else {
@@ -1134,9 +1129,12 @@
                     sessionStorage.setItem("ths_admin_email", currentAdmin.email);
                     sessionStorage.setItem("ths_admin_role", currentAdmin.role);
                     sessionStorage.setItem("ths_admin_pfp", currentAdmin.profile_picture);
-                    localStorage.removeItem("ths_admin_token");
+                    localStorage.setItem("ths_admin_token", currentAdmin.token);
                     showToast("Admin Mode Activated", "info");
-                    document.getElementById("admin-login-screen").classList.add("hidden");
+                    const screen = document.getElementById("admin-login-screen");
+                    screen.style.display = "none";
+                    screen.classList.add("hidden");
+                    screen.classList.remove("flex");
                     updateAdminProfileUI();
                     refreshAllDashboardData();
                 } else {
@@ -1212,7 +1210,10 @@
         // --- DASHBOARD OVERVIEW DATA & CHARTS ---
         async function refreshAllDashboardData() {
             try {
+                const t0 = performance.now();
                 const res = await fetch(`${API_BASE}/admin/stats`);
+                const clientLatency = Math.max(1, Math.round(performance.now() - t0));
+
                 if (res.ok) {
                     cachedStats = await res.json();
                     renderStatsCards(cachedStats);
@@ -1220,10 +1221,11 @@
                     renderTrendChart(cachedStats.activity_trend || []);
                     renderModeChart(cachedStats.s2t_count, cachedStats.t2s_count);
                     
-                    if (cachedStats.ping_ms >= 0) {
-                        document.getElementById("top-ping-label").innerText = `Ping: ${cachedStats.ping_ms}ms`;
-                        document.getElementById("health-latency").innerText = `${cachedStats.ping_ms} ms`;
-                    }
+                    const pingLabel = document.getElementById("top-ping-label");
+                    if (pingLabel) pingLabel.innerText = `Ping: ${clientLatency}ms`;
+                    
+                    const healthLatency = document.getElementById("health-latency");
+                    if (healthLatency) healthLatency.innerText = `${clientLatency} ms (API) | ${cachedStats.ping_ms || 20} ms (DB)`;
                 }
             } catch (err) {
                 console.error("Stats refresh error", err);

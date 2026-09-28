@@ -46,11 +46,11 @@
         }
     </style>
 </head>
-<body class="bg-slate-200 dark:bg-appDark min-h-screen flex flex-col justify-between selection:bg-orangeBtn selection:text-white relative overflow-x-hidden antialiased">
+<body class="bg-gradient-to-br from-amber-50/60 via-slate-100 to-orange-50/40 dark:bg-appDark min-h-screen flex flex-col justify-between selection:bg-orangeBtn selection:text-white relative overflow-x-hidden antialiased transition-colors duration-200">
 
     <!-- Decorative Curved Waves -->
-    <div class="wave-top pointer-events-none"></div>
-    <div class="wave-bottom pointer-events-none"></div>
+    <div class="wave-top pointer-events-none opacity-80 dark:opacity-100"></div>
+    <div class="wave-bottom pointer-events-none opacity-80 dark:opacity-100"></div>
 
     <!-- Notification Toast Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none"></div>
@@ -66,29 +66,34 @@
                 <span class="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">SIH 2026 Registration</span>
             </div>
         </div>
-        <a href="login.html" class="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-orangeBtn flex items-center gap-1.5 transition">
-            <span>Already registered?</span> <span class="underline">Sign In</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
-        </a>
+        <div class="flex items-center gap-3">
+            <a href="login.html" class="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-orangeBtn flex items-center gap-1.5 transition">
+                <span>Already registered?</span> <span class="underline">Sign In</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </a>
+            <button type="button" onclick="toggleTheme()" class="w-9 h-9 rounded-xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-sm flex items-center justify-center hover:scale-105 transition" title="Toggle Light/Dark Theme">
+                <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
+            </button>
+        </div>
     </header>
 
     <!-- Main Registration Container -->
     <main class="flex-grow flex flex-col items-center justify-center px-4 py-8 relative z-10">
         <div class="w-full max-w-[460px]">
             
-            <div class="bg-darkCard border border-slate-700/80 rounded-[2.5rem] p-6 md:p-8 shadow-2xl relative text-white">
+            <div class="bg-white/95 dark:bg-darkCard border border-slate-200/90 dark:border-slate-700/80 rounded-[2.5rem] p-6 md:p-8 shadow-2xl relative text-slate-800 dark:text-white backdrop-blur-md">
                 
                 <div class="mb-5 text-center">
-                    <span class="inline-block px-3 py-1 rounded-full bg-orangeBtn/20 text-orange-400 text-[10px] font-black uppercase tracking-wider mb-1.5">
+                    <span class="inline-block px-3 py-1 rounded-full bg-orangeBtn/10 dark:bg-orangeBtn/20 text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase tracking-wider mb-1.5">
                         New Member Onboarding
                     </span>
-                    <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Create Your Account</h1>
-                    <p class="text-xs text-slate-400 mt-1 font-medium">Join the ISL Dual-Engine Communication Platform</p>
+                    <h1 class="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Create Your Account</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Join the ISL Dual-Engine Communication Platform</p>
                 </div>
 
                 <form id="register-form" onsubmit="handleRegisterSubmit(event)" class="space-y-3.5">
                     
                     <!-- Avatar Upload -->
-                    <div class="flex items-center gap-3.5 p-2.5 bg-darkInput/80 rounded-2xl border border-slate-700/60">
+                    <div class="flex items-center gap-3.5 p-2.5 bg-slate-50 dark:bg-darkInput/80 rounded-2xl border border-slate-200 dark:border-slate-700/60">
                         <div class="relative group w-12 h-12 cursor-pointer flex-shrink-0">
                             <img id="reg-avatar-preview" src="https://ui-avatars.com/api/?name=User&background=e26241&color=fff"
                                 class="w-12 h-12 rounded-full object-cover border-2 border-orangeBtn shadow-sm">
@@ -99,18 +104,18 @@
                                 class="absolute inset-0 opacity-0 cursor-pointer">
                         </div>
                         <div class="flex-grow">
-                            <span class="text-xs font-bold text-white block">Profile Picture</span>
-                            <span class="text-[11px] text-slate-400">Click photo to upload custom avatar</span>
+                            <span class="text-xs font-bold text-slate-800 dark:text-white block">Profile Picture</span>
+                            <span class="text-[11px] text-slate-500 dark:text-slate-400">Click photo to upload custom avatar</span>
                         </div>
                     </div>
 
                     <!-- Full Name -->
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1 pl-1">Full Name</label>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1 pl-1">Full Name</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"><i class="fa-solid fa-user text-xs"></i></span>
                             <input type="text" id="reg-name" required placeholder="John Doe"
-                                class="w-full h-11 pl-10 pr-4 rounded-xl bg-darkInput border border-slate-700 text-white placeholder-slate-500 text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
+                                class="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-50 dark:bg-darkInput border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
                         </div>
                     </div>
 
@@ -118,50 +123,50 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <div class="flex items-center justify-between mb-1 pl-1 pr-1">
-                                <label class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Date of Birth</label>
-                                <span id="reg-age-display" class="text-[10px] text-orange-400 font-extrabold"></span>
+                                <label class="text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Date of Birth</label>
+                                <span id="reg-age-display" class="text-[10px] text-orange-600 dark:text-orange-400 font-extrabold"></span>
                             </div>
                             <input type="date" id="reg-dob" required onchange="calculateAge(this.value)"
-                                class="w-full h-11 px-3 rounded-xl bg-darkInput border border-slate-700 text-white text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
+                                class="w-full h-11 px-3 rounded-xl bg-slate-50 dark:bg-darkInput border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1 pl-1">Mobile Number</label>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1 pl-1">Mobile Number</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"><i class="fa-solid fa-phone text-xs"></i></span>
                                 <input type="tel" id="reg-mobile" required placeholder="9876543210"
-                                    class="w-full h-11 pl-10 pr-3 rounded-xl bg-darkInput border border-slate-700 text-white placeholder-slate-500 text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
+                                    class="w-full h-11 pl-10 pr-3 rounded-xl bg-slate-50 dark:bg-darkInput border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
                             </div>
                         </div>
                     </div>
 
                     <!-- Email Address -->
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1 pl-1">Email Address</label>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1 pl-1">Email Address</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"><i class="fa-solid fa-envelope text-xs"></i></span>
                             <input type="email" id="reg-email" required placeholder="name@example.com"
-                                class="w-full h-11 pl-10 pr-4 rounded-xl bg-darkInput border border-slate-700 text-white placeholder-slate-500 text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
+                                class="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-50 dark:bg-darkInput border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
                         </div>
                     </div>
 
                     <!-- Password and Confirm Password -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1 pl-1">Password</label>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1 pl-1">Password</label>
                             <div class="relative">
                                 <input type="password" id="reg-password" required placeholder="••••••••"
-                                    class="w-full h-11 pl-3.5 pr-9 rounded-xl bg-darkInput border border-slate-700 text-white placeholder-slate-500 text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
-                                <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute right-3 inset-y-0 flex items-center text-slate-400 hover:text-white">
+                                    class="w-full h-11 pl-3.5 pr-9 rounded-xl bg-slate-50 dark:bg-darkInput border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
+                                <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute right-3 inset-y-0 flex items-center text-slate-400 hover:text-orangeBtn">
                                     <i class="fa-solid fa-eye text-xs"></i>
                                 </button>
                             </div>
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1 pl-1">Confirm Password</label>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1 pl-1">Confirm Password</label>
                             <div class="relative">
                                 <input type="password" id="reg-confirm-password" required placeholder="••••••••"
-                                    class="w-full h-11 pl-3.5 pr-9 rounded-xl bg-darkInput border border-slate-700 text-white placeholder-slate-500 text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
-                                <button type="button" onclick="togglePasswordVisibility('reg-confirm-password', this)" class="absolute right-3 inset-y-0 flex items-center text-slate-400 hover:text-white">
+                                    class="w-full h-11 pl-3.5 pr-9 rounded-xl bg-slate-50 dark:bg-darkInput border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs font-semibold focus:outline-none focus:border-orangeBtn transition">
+                                <button type="button" onclick="togglePasswordVisibility('reg-confirm-password', this)" class="absolute right-3 inset-y-0 flex items-center text-slate-400 hover:text-orangeBtn">
                                     <i class="fa-solid fa-eye text-xs"></i>
                                 </button>
                             </div>
@@ -176,9 +181,9 @@
                     </button>
                 </form>
 
-                <div class="text-center mt-5 text-xs text-slate-400">
+                <div class="text-center mt-5 text-xs text-slate-500 dark:text-slate-400">
                     Already have an account? 
-                    <a href="login.html" class="text-orange-400 hover:underline font-bold ml-1">Log In Here</a>
+                    <a href="login.html" class="text-orange-600 dark:text-orange-400 hover:underline font-bold ml-1">Log In Here</a>
                 </div>
             </div>
 
@@ -302,6 +307,27 @@
                 btn.disabled = false;
             }
         }
+
+        function initTheme() {
+            const saved = localStorage.getItem("ths_theme") || "light";
+            const icon = document.getElementById("theme-icon");
+            if (saved === "dark") {
+                document.documentElement.classList.add("dark");
+                if (icon) icon.className = "fa-solid fa-sun text-amber-400 text-sm";
+            } else {
+                document.documentElement.classList.remove("dark");
+                if (icon) icon.className = "fa-solid fa-moon text-slate-700 text-sm";
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle("dark");
+            localStorage.setItem("ths_theme", isDark ? "dark" : "light");
+            const icon = document.getElementById("theme-icon");
+            if (icon) icon.className = isDark ? "fa-solid fa-sun text-amber-400 text-sm" : "fa-solid fa-moon text-slate-700 text-sm";
+        }
+
+        window.addEventListener("DOMContentLoaded", initTheme);
     </script>
 </body>
 </html>

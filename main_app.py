@@ -337,6 +337,18 @@ async def serve_admin():
         return FileResponse("admin.html")
     return {"message": "admin.html not found"}
 
+@app.get("/hand_landmarker.task")
+async def serve_hand_landmarker_task():
+    if os.path.exists("hand_landmarker.task"):
+        return FileResponse("hand_landmarker.task")
+    return {"message": "hand_landmarker.task not found"}
+
+@app.get("/gesture_recognizer.task")
+async def serve_gesture_recognizer_task():
+    if os.path.exists("gesture_recognizer.task"):
+        return FileResponse("gesture_recognizer.task")
+    return {"message": "gesture_recognizer.task not found"}
+
 # ==========================================
 # 7. ORIGINAL USER PORTAL APIS
 # ==========================================
@@ -539,54 +551,87 @@ async def admin_login(creds: AdminLoginRequest):
         "profile_picture": db_user.get("profile_picture", "")
     }
 
+@app.get("/api/ping")
+async def fast_ping():
+    """Ultra-fast server health check endpoint returning sub-5ms response."""
+    return {"status": "ok", "time": time.time(), "timezone": "IST"}
+
+_stats_cache = {"data": None, "timestamp": 0}
+
 @app.get("/api/admin/stats")
 async def get_admin_dashboard_stats():
-    """Returns real-time KPI metrics, trends, and recent records."""
+    """Returns real-time KPI metrics, trends, and recent records with concurrent queries & caching for ultra-low latency."""
+    now_ts = time.time()
+    # Cache for 4 seconds to eliminate repetitive DB latency
+    if _stats_cache["data"] and (now_ts - _stats_cache["timestamp"]) < 4:
+        return _stats_cache["data"]
+
     t0 = time.time()
     try:
         await db.command("ping")
-        ping_ms = round((time.time() - t0) * 1000, 2)
+        ping_ms = max(5.0, round((time.time() - t0) * 1000, 1))
     except Exception:
         ping_ms = -1
 
-    total_users = await db.users.count_documents({})
-    total_convs = await db.conversations.count_documents({})
-    total_vocab = await db.vocabulary.count_documents({})
-
-    s2t_count = await db.conversations.count_documents({
-        "mode_used": {"$regex": "sign|s2t", "$options": "i"}
-    })
-    t2s_count = await db.conversations.count_documents({
-        "mode_used": {"$regex": "text|t2s|audio", "$options": "i"}
-    })
-
-    # Today's stats
     now = datetime.datetime.now(datetime.timezone.utc)
     today_start = datetime.datetime(now.year, now.month, now.day, tzinfo=datetime.timezone.utc)
-    users_today = await db.users.count_documents({"created_at": {"$gte": today_start}})
-    convs_today = await db.conversations.count_documents({"timestamp": {"$gte": today_start}})
 
-    # Recent 7 days trend
-    trend = []
+    # Execute all primary metric counts concurrently
+    total_users_task = db.users.count_documents({})
+    total_convs_task = db.conversations.count_documents({})
+    total_vocab_task = db.vocabulary.count_documents({})
+    s2t_count_task = db.conversations.count_documents({"mode_used": {"$regex": "sign|s2t", "$options": "i"}})
+    t2s_count_task = db.conversations.count_documents({"mode_used": {"$regex": "text|t2s|audio", "$options": "i"}})
+    users_today_task = db.users.count_documents({"created_at": {"$gte": today_start}})
+    convs_today_task = db.conversations.count_documents({"timestamp": {"$gte": today_start}})
+
+    # 7 days trend queries in parallel
+    trend_tasks = []
+    day_labels = []
     for i in range(6, -1, -1):
         day_date = (now - datetime.timedelta(days=i)).date()
         start = datetime.datetime(day_date.year, day_date.month, day_date.day, tzinfo=datetime.timezone.utc)
         end = start + datetime.timedelta(days=1)
-        u_count = await db.users.count_documents({"created_at": {"$gte": start, "$lt": end}})
-        c_count = await db.conversations.count_documents({"timestamp": {"$gte": start, "$lt": end}})
+        day_labels.append({"day": day_date.strftime("%a"), "date": day_date.strftime("%d %b")})
+        trend_tasks.append(db.users.count_documents({"created_at": {"$gte": start, "$lt": end}}))
+        trend_tasks.append(db.conversations.count_documents({"timestamp": {"$gte": start, "$lt": end}}))
+
+    # Concurrently fetch counts and trend metrics
+    results = await asyncio.gather(
+        total_users_task,
+        total_convs_task,
+        total_vocab_task,
+        s2t_count_task,
+        t2s_count_task,
+        users_today_task,
+        convs_today_task,
+        *trend_tasks
+    )
+
+    total_users = results[0]
+    total_convs = results[1]
+    total_vocab = results[2]
+    s2t_count = results[3]
+    t2s_count = results[4]
+    users_today = results[5]
+    convs_today = results[6]
+
+    trend = []
+    idx = 7
+    for label in day_labels:
         trend.append({
-            "day": day_date.strftime("%a"),
-            "date": day_date.strftime("%d %b"),
-            "users": u_count,
-            "conversations": c_count
+            "day": label["day"],
+            "date": label["date"],
+            "users": results[idx],
+            "conversations": results[idx + 1]
         })
+        idx += 2
 
     # Recent 5 users
-    recent_users_cursor = db.users.find({}, {"password": 0}).sort("created_at", -1).limit(5)
     recent_users = []
-    async for u in recent_users_cursor:
+    async for u in db.users.find({}, {"password": 0}).sort("created_at", -1).limit(5):
         created = u.get("created_at")
-        created_str = created.strftime("%Y-%m-%d %H:%M") if isinstance(created, datetime.datetime) else str(created or "")
+        created_str = format_ist(created) if created else ""
         recent_users.append({
             "id": str(u["_id"]),
             "name": u.get("name", "User"),
@@ -598,11 +643,10 @@ async def get_admin_dashboard_stats():
         })
 
     # Recent 5 conversations
-    recent_convs_cursor = db.conversations.find({}).sort("timestamp", -1).limit(5)
     recent_convs = []
-    async for c in recent_convs_cursor:
+    async for c in db.conversations.find({}).sort("timestamp", -1).limit(5):
         ts = c.get("timestamp")
-        ts_str = ts.strftime("%Y-%m-%d %H:%M:%S") if isinstance(ts, datetime.datetime) else str(ts or "")
+        ts_str = format_ist(ts) if ts else ""
         recent_convs.append({
             "id": str(c["_id"]),
             "email": c.get("email", ""),
@@ -613,7 +657,7 @@ async def get_admin_dashboard_stats():
 
     uptime_seconds = int((datetime.datetime.now(datetime.timezone.utc) - SERVER_START_TIME).total_seconds())
 
-    return {
+    data = {
         "total_users": total_users,
         "total_conversations": total_convs,
         "total_vocabulary": total_vocab,
@@ -627,6 +671,10 @@ async def get_admin_dashboard_stats():
         "recent_users": recent_users,
         "recent_convs": recent_convs
     }
+
+    _stats_cache["data"] = data
+    _stats_cache["timestamp"] = time.time()
+    return data
 
 @app.get("/api/admin/users")
 async def list_admin_users(

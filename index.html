@@ -57,7 +57,7 @@
         }
     </style>
 </head>
-<body class="bg-appBgLight dark:bg-appBgDark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+<body class="bg-gradient-to-br from-slate-100 via-sky-50/30 to-teal-50/30 dark:bg-appBgDark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
 
     <!-- ================= FIXED FOOTER ================= -->
     <footer class="fixed bottom-0 left-0 w-full bg-navy border-t border-slate-800 text-slate-300 text-center py-2.5 text-xs font-semibold z-50 shadow-md">
@@ -65,7 +65,7 @@
     </footer>
 
     <!-- ================= TOP NAVIGATION ================= -->
-    <nav id="global-nav" class="flex bg-appCardLight dark:bg-appCardDark border-b border-slate-200 dark:border-slate-800 px-4 md:px-8 py-3 justify-between items-center z-40 shadow-sm sticky top-0 transition-colors duration-200">
+    <nav id="global-nav" class="flex bg-white/95 dark:bg-appCardDark/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-4 md:px-8 py-3 justify-between items-center z-40 shadow-sm sticky top-0 transition-colors duration-200">
         <div class="flex items-center gap-3 md:gap-5">
             <div class="flex items-center gap-2 cursor-pointer" onclick="goHome()">
                 <div class="w-9 h-9 rounded-lg bg-teal-600 text-white flex items-center justify-center font-black text-lg shadow-sm">
@@ -123,31 +123,31 @@
         
         <!-- DASHBOARD HUB -->
         <div id="home-view" class="flex flex-col gap-6 w-full">
-            <div class="bg-appCardLight dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm transition-colors duration-200">
+            <div class="bg-white dark:bg-appCardDark border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-colors duration-200">
                 <div class="flex items-center gap-2 mb-3"><i class="fa-solid fa-circle-info text-teal-600 dark:text-neonTeal text-sm"></i><h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quick Setup Guidelines</h3></div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="flex items-center gap-3 bg-appBgLight dark:bg-appBgDark p-3 rounded-lg border border-slate-200 dark:border-slate-700/50"><div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-600 flex items-center justify-center font-black text-sm">1</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Ensure good lighting</span></div>
-                    <div class="flex items-center gap-3 bg-appBgLight dark:bg-appBgDark p-3 rounded-lg border border-slate-200 dark:border-slate-700/50"><div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-950/50 text-teal-600 dark:text-neonTeal flex items-center justify-center font-black text-sm">2</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Keep hands 2 feet from camera</span></div>
-                    <div class="flex items-center gap-3 bg-appBgLight dark:bg-appBgDark p-3 rounded-lg border border-slate-200 dark:border-slate-700/50"><div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950/50 text-indigo-600 dark:text-lightIndigo flex items-center justify-center font-black text-sm">3</div><span class="text-xs font-bold text-slate-700 dark:text-slate-200">Sign clearly</span></div>
+                    <div class="flex items-center gap-3 bg-amber-50/60 dark:bg-appBgDark p-3 rounded-xl border border-amber-200/70 dark:border-slate-700/50"><div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400 flex items-center justify-center font-black text-sm">1</div><span class="text-xs font-bold text-slate-800 dark:text-slate-200">Ensure good lighting</span></div>
+                    <div class="flex items-center gap-3 bg-teal-50/60 dark:bg-appBgDark p-3 rounded-xl border border-teal-200/70 dark:border-slate-700/50"><div class="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-950/50 text-teal-700 dark:text-neonTeal flex items-center justify-center font-black text-sm">2</div><span class="text-xs font-bold text-slate-800 dark:text-slate-200">Keep hands 2 feet from camera</span></div>
+                    <div class="flex items-center gap-3 bg-indigo-50/60 dark:bg-appBgDark p-3 rounded-xl border border-indigo-200/70 dark:border-slate-700/50"><div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950/50 text-indigo-700 dark:text-lightIndigo flex items-center justify-center font-black text-sm">3</div><span class="text-xs font-bold text-slate-800 dark:text-slate-200">Sign clearly</span></div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div onclick="openWorkspace('Sign2Text')" class="bg-appCardLight dark:bg-appCardDark border-2 border-slate-200 dark:border-slate-800 hover:border-teal-500 dark:hover:border-neonTeal rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-900 flex items-center justify-center text-teal-600 dark:text-neonTeal group-hover:scale-105 transition"><i class="fa-solid fa-hands text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-teal-600 dark:bg-neonTeal text-white dark:text-appBgDark px-2.5 py-1 rounded-full">Module 1</span></div>
-                    <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Sign to Audio / Text</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Dual-Hand skeletal tracking, audio pronunciation, and sentence queuing.</p></div>
+                <div onclick="openWorkspace('Sign2Text')" class="bg-gradient-to-br from-white via-teal-50/30 to-emerald-50/20 dark:from-appCardDark dark:to-appCardDark border-2 border-teal-200/80 dark:border-slate-800 hover:border-teal-500 dark:hover:border-neonTeal rounded-3xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-xl transition duration-200 flex flex-col justify-between group">
+                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-900 flex items-center justify-center text-teal-600 dark:text-neonTeal group-hover:scale-105 transition"><i class="fa-solid fa-hands text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-teal-600 dark:bg-neonTeal text-white dark:text-appBgDark px-2.5 py-1 rounded-full">Module 1</span></div>
+                    <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Sign to Audio / Text</h3><p class="text-xs font-medium text-slate-600 dark:text-slate-400 mt-1.5">Dual-Hand skeletal tracking, audio pronunciation, and sentence queuing.</p></div>
                     <div class="mt-6 flex items-center gap-2 text-xs font-bold text-teal-600 dark:text-neonTeal group-hover:translate-x-1 transition"><span>Open Live Camera Workspace</span> <i class="fa-solid fa-arrow-right"></i></div>
                 </div>
                 
-                <div onclick="openWorkspace('Text2Sign')" class="bg-appCardLight dark:bg-appCardDark border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-lightIndigo rounded-2xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 flex items-center justify-center text-indigo-600 dark:text-lightIndigo group-hover:scale-105 transition"><i class="fa-solid fa-microphone-lines text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-indigo-600 dark:bg-lightIndigo text-white dark:text-appBgDark px-2.5 py-1 rounded-full">Module 2</span></div>
-                    <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Audio / Text to Sign</h3><p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1.5">Microphone speech recognition and typing input rendered into 3D avatar animations.</p></div>
+                <div onclick="openWorkspace('Text2Sign')" class="bg-gradient-to-br from-white via-indigo-50/30 to-purple-50/20 dark:from-appCardDark dark:to-appCardDark border-2 border-indigo-200/80 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-lightIndigo rounded-3xl p-6 md:p-8 cursor-pointer shadow-sm hover:shadow-xl transition duration-200 flex flex-col justify-between group">
+                    <div class="flex items-start justify-between"><div class="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 flex items-center justify-center text-indigo-600 dark:text-lightIndigo group-hover:scale-105 transition"><i class="fa-solid fa-microphone-lines text-2xl"></i></div><span class="text-[10px] font-black uppercase bg-indigo-600 dark:bg-lightIndigo text-white dark:text-appBgDark px-2.5 py-1 rounded-full">Module 2</span></div>
+                    <div class="mt-6"><h3 class="text-xl font-black text-slate-900 dark:text-white">Audio / Text to Sign</h3><p class="text-xs font-medium text-slate-600 dark:text-slate-400 mt-1.5">Microphone speech recognition and typing input rendered into 3D avatar animations.</p></div>
                     <div class="mt-6 flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-lightIndigo group-hover:translate-x-1 transition"><span>Open Avatar Engine</span> <i class="fa-solid fa-arrow-right"></i></div>
                 </div>
             </div>
 
-            <div class="bg-appCardLight dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 transition-colors duration-200">
-                <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 text-xl"><i class="fa-solid fa-database"></i></div><div><h4 class="font-extrabold text-slate-900 dark:text-white">Master Conversation History</h4><p class="text-xs text-slate-500 mt-0.5">Search, filter, manage, and export official PDF/Word transcripts with metadata.</p></div></div>
+            <div class="bg-gradient-to-r from-white via-amber-50/30 to-orange-50/20 dark:from-appCardDark dark:to-appCardDark border border-amber-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-md flex flex-col md:flex-row items-center justify-between gap-4 transition duration-200">
+                <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-2xl bg-amber-100/70 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 flex items-center justify-center text-amber-600 text-xl"><i class="fa-solid fa-database"></i></div><div><h4 class="font-extrabold text-slate-900 dark:text-white">Master Conversation History</h4><p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">Search, filter, manage, and export official PDF/Word transcripts with metadata.</p></div></div>
                 <button onclick="openMasterHistoryView()" class="w-full md:w-auto px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl hover:opacity-90 transition">Open Records</button>
             </div>
         </div>
@@ -406,17 +406,33 @@
         async function initLocalAI() {
             try {
                 const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
-                handLandmarker = await HandLandmarker.createFromOptions(vision, {
-                    baseOptions: {
-                        modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
-                        delegate: "GPU"
-                    },
-                    runningMode: "VIDEO",
-                    numHands: 2,
-                    minHandDetectionConfidence: 0.5,
-                    minHandPresenceConfidence: 0.5,
-                    minTrackingConfidence: 0.5
-                });
+                const remoteModel = "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
+                try {
+                    handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                        baseOptions: {
+                            modelAssetPath: remoteModel,
+                            delegate: "GPU"
+                        },
+                        runningMode: "VIDEO",
+                        numHands: 2,
+                        minHandDetectionConfidence: 0.5,
+                        minHandPresenceConfidence: 0.5,
+                        minTrackingConfidence: 0.5
+                    });
+                } catch(netErr) {
+                    console.warn("Falling back to local hand_landmarker.task...", netErr);
+                    handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                        baseOptions: {
+                            modelAssetPath: "hand_landmarker.task",
+                            delegate: "GPU"
+                        },
+                        runningMode: "VIDEO",
+                        numHands: 2,
+                        minHandDetectionConfidence: 0.5,
+                        minHandPresenceConfidence: 0.5,
+                        minTrackingConfidence: 0.5
+                    });
+                }
 
                 const b = document.getElementById('ws-badge');
                 if (b) {
@@ -430,11 +446,79 @@
         initLocalAI();
 
         // --- GEOMETRIC DUAL-HAND ASL DECODER ---
+        function resolveHandTypes(results) {
+            if (!results || !results.landmarks || results.landmarks.length === 0) return [];
+
+            const numHands = results.landmarks.length;
+            const handednessCollection = results.handednesses || results.handedness || [];
+            const isFrontCamera = !window.currentFacingMode || window.currentFacingMode === "user";
+
+            const resolved = [];
+
+            for (let i = 0; i < numHands; i++) {
+                let handType = null;
+
+                // 1. Primary: MediaPipe's handednesses collection
+                const hEntry = handednessCollection[i]?.[0] || handednessCollection[i];
+                const mpCategory = hEntry?.categoryName || hEntry?.displayName;
+                if (mpCategory) {
+                    // MediaPipe HandLandmarker models assume mirrored selfie input.
+                    // When receiving the unmirrored raw camera feed in front-facing mode,
+                    // raw "Left" is the user's physical Right hand, and raw "Right" is the user's Left hand.
+                    handType = isFrontCamera ? (mpCategory === "Left" ? "Right" : "Left") : mpCategory;
+                }
+
+                // 2. Secondary: 3D Anatomical Chirality Determinant (Geometric ground truth)
+                if (!handType && results.landmarks[i] && results.landmarks[i].length >= 21) {
+                    const lms = results.landmarks[i];
+                    const w = lms[0], idx = lms[5], pnk = lms[17], thm = lms[2];
+                    const ax = idx.x - w.x, ay = idx.y - w.y, az = (idx.z || 0) - (w.z || 0);
+                    const bx = pnk.x - w.x, by = pnk.y - w.y, bz = (pnk.z || 0) - (w.z || 0);
+                    const cx = thm.x - w.x, cy = thm.y - w.y, cz = (thm.z || 0) - (w.z || 0);
+                    const crx = by * cz - bz * cy;
+                    const cry = bz * cx - bx * cz;
+                    const crz = bx * cy - by * cx;
+                    const det = ax * crx + ay * cry + az * crz;
+                    handType = det > 0 ? "Right" : "Left";
+                }
+
+                resolved.push(handType || "Right");
+            }
+
+            // 3. Consistency spatial verification when both hands are visible
+            // In unmirrored camera space, user's physical Right Hand is on the camera sensor's left (lower X),
+            // and user's physical Left Hand is on the camera sensor's right (higher X).
+            if (numHands === 2) {
+                if (resolved[0] === resolved[1]) {
+                    const x0 = results.landmarks[0][0].x;
+                    const x1 = results.landmarks[1][0].x;
+                    if (isFrontCamera) {
+                        resolved[0] = x0 < x1 ? "Right" : "Left";
+                        resolved[1] = x0 < x1 ? "Left" : "Right";
+                    } else {
+                        resolved[0] = x0 < x1 ? "Left" : "Right";
+                        resolved[1] = x0 < x1 ? "Right" : "Left";
+                    }
+                }
+            }
+
+            return resolved;
+        }
+
         function detectASL(landmarks, handedness) {
+            if (!landmarks || landmarks.length < 21) return "None";
+
             const isUp = (tip, pip) => landmarks[tip].y < landmarks[pip].y;
-            const isRight = handedness === "Right";
-            
-            const thumbUp = isRight ? landmarks[4].x < landmarks[3].x : landmarks[4].x > landmarks[3].x;
+            const dist = (p1, p2) => Math.hypot(p1.x - p2.x, p1.y - p2.y);
+            const handScale = Math.max(0.01, dist(landmarks[0], landmarks[9]));
+
+            // Robust thumb extension and upright posture
+            const thumbDistToIndex = dist(landmarks[4], landmarks[5]);
+            const thumbDistToPinky = dist(landmarks[4], landmarks[17]);
+            const thumbPointingUp = landmarks[4].y < landmarks[3].y;
+            const thumbExtended = (thumbDistToIndex > handScale * 0.42) || (thumbDistToPinky > handScale * 0.65);
+            const thumbUp = thumbExtended || thumbPointingUp;
+
             const indexUp = isUp(8, 6);
             const middleUp = isUp(12, 10);
             const ringUp = isUp(16, 14);
@@ -475,23 +559,34 @@
                     const badgeElem = document.getElementById('hand-count-badge');
                     if (badgeElem) badgeElem.innerText = `${numHands} Hand${numHands > 1 ? 's' : ''}`;
 
+                    const handTypes = resolveHandTypes(results);
+
                     for (let i = 0; i < numHands; i++) {
-                        const hType = results.handedness?.[i]?.[0]?.categoryName || (i === 0 ? "Right" : "Left");
-                        drawSkeletalLandmarks(results.landmarks[i], hType);
+                        drawSkeletalLandmarks(results.landmarks[i], handTypes[i]);
                     }
 
-                    const hType = results.handedness?.[0]?.[0]?.categoryName || "Right";
-                    const detectedGesture = detectASL(results.landmarks[0], hType);
+                    // Dynamically recognize gesture from the active signing hand
+                    let detectedGesture = "None";
+                    let activeHandType = handTypes[0] || "Right";
+
+                    for (let i = 0; i < numHands; i++) {
+                        const g = detectASL(results.landmarks[i], handTypes[i]);
+                        if (g !== "None") {
+                            detectedGesture = g;
+                            activeHandType = handTypes[i];
+                            break;
+                        }
+                    }
 
                     window.updateConfidenceDisplay(0.95);
 
                     const subInfo = document.getElementById('sub-hand-info');
                     if (detectedGesture !== "None") {
                         predictionBuffer.push(detectedGesture);
-                        if (subInfo) subInfo.innerText = `Active: ${hType} Hand (${numHands} in view)`;
+                        if (subInfo) subInfo.innerText = `Active: ${activeHandType} Hand (${numHands} in view)`;
                     } else {
                         predictionBuffer.push("None");
-                        if (subInfo) subInfo.innerText = "Hold sign steady in view";
+                        if (subInfo) subInfo.innerText = `Tracking: ${handTypes.map(h => h + ' Hand').join(' & ')}`;
                     }
 
                     if (predictionBuffer.length > PREDICTION_BUFFER_SIZE) {
@@ -650,42 +745,61 @@
         // --- GLOBAL VIEW CONTROLLER & AUTH GUARD ---
         window.onload = () => {
             window.initTheme();
-            const token = localStorage.getItem("ths_token");
-            const role = localStorage.getItem("ths_role") || "user";
 
-            // If not logged in, or if an admin session was lingering:
-            // "Admin should login every time. for normal users its ojk"
-            if (!token || role === "superadmin" || role === "admin" || role === "manager") {
-                if (role === "superadmin" || role === "admin" || role === "manager") {
-                    localStorage.removeItem("ths_token");
-                    localStorage.removeItem("ths_role");
-                    localStorage.removeItem("ths_admin_token");
-                    localStorage.removeItem("ths_admin_role");
+            // 1. Check if Admin is opening User Portal from Admin Panel:
+            // "admin panel can directly open user portal no access required"
+            const adminToken = sessionStorage.getItem("ths_admin_token") || localStorage.getItem("ths_admin_token");
+            const adminRole = sessionStorage.getItem("ths_admin_role") || localStorage.getItem("ths_admin_role");
+            const isAdmin = !!(adminToken && (adminRole === "superadmin" || adminRole === "admin" || adminRole === "manager"));
+
+            const userToken = localStorage.getItem("ths_token");
+            const userRole = localStorage.getItem("ths_role") || "user";
+
+            if (isAdmin) {
+                // Admin has DIRECT MASTER ACCESS to the User Portal with NO RESTRICTIONS
+                currentUser.unique_id = sessionStorage.getItem("ths_admin_email") || localStorage.getItem("ths_admin_email") || "THS-ADMIN";
+                currentUser.email = sessionStorage.getItem("ths_admin_email") || localStorage.getItem("ths_admin_email") || "sayan@superadmin.com";
+                currentUser.name = sessionStorage.getItem("ths_admin_name") || localStorage.getItem("ths_admin_name") || "Sayan Chakraborty (Admin)";
+                currentUser.dob = "";
+                currentUser.mobile = "";
+                currentUser.role = adminRole;
+                currentUser.profile_picture = sessionStorage.getItem("ths_admin_pfp") || localStorage.getItem("ths_admin_pfp") || "https://ui-avatars.com/api/?name=Admin&background=20263f&color=7ae2d5";
+                currentUser.token = adminToken;
+
+                // Make Admin Control Panel button visible in navbar for instant return
+                const navAdmin = document.getElementById('btn-nav-admin');
+                const dropAdmin = document.getElementById('dropdown-admin-link');
+                if (navAdmin) {
+                    navAdmin.classList.remove('hidden');
+                    navAdmin.innerHTML = `<i class="fa-solid fa-shield-halved text-teal-400"></i> <span class="hidden md:inline">Back to Admin Panel</span>`;
                 }
+                if (dropAdmin) dropAdmin.classList.remove('hidden');
+            } else if (userToken && userRole === "user") {
+                // Normal user session
+                currentUser.unique_id = localStorage.getItem("ths_uid") || "THS-USER";
+                currentUser.email = localStorage.getItem("ths_email") || "";
+                currentUser.name = localStorage.getItem("ths_name") || "User";
+                currentUser.dob = localStorage.getItem("ths_dob") || "";
+                currentUser.mobile = localStorage.getItem("ths_mobile") || "";
+                currentUser.role = "user";
+                currentUser.profile_picture = localStorage.getItem("ths_pfp") || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=7ae2d5&color=20263f`;
+                currentUser.token = userToken;
+
+                // Normal users never see admin buttons
+                const navAdmin = document.getElementById('btn-nav-admin');
+                const dropAdmin = document.getElementById('dropdown-admin-link');
+                if (navAdmin) navAdmin.classList.add('hidden');
+                if (dropAdmin) dropAdmin.classList.add('hidden');
+            } else {
+                // Not authenticated -> redirect to login
                 window.location.replace("login.html");
                 return;
             }
-
-            // Normal user session:
-            currentUser.unique_id = localStorage.getItem("ths_uid") || "THS-USER";
-            currentUser.email = localStorage.getItem("ths_email") || "";
-            currentUser.name = localStorage.getItem("ths_name") || "User";
-            currentUser.dob = localStorage.getItem("ths_dob") || "";
-            currentUser.mobile = localStorage.getItem("ths_mobile") || "";
-            currentUser.role = role;
-            currentUser.profile_picture = localStorage.getItem("ths_pfp") || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=7ae2d5&color=20263f`;
-            currentUser.token = token;
 
             const nameElem = document.getElementById('nav-user-name');
             const pfpElem = document.getElementById('nav-pfp');
             if (nameElem) nameElem.innerText = currentUser.name;
             if (pfpElem) pfpElem.src = currentUser.profile_picture;
-
-            // Normal users never see admin buttons
-            const navAdmin = document.getElementById('btn-nav-admin');
-            const dropAdmin = document.getElementById('dropdown-admin-link');
-            if (navAdmin) navAdmin.classList.add('hidden');
-            if (dropAdmin) dropAdmin.classList.add('hidden');
 
             window.goHome();
         };
