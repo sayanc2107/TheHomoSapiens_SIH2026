@@ -232,31 +232,48 @@
                 if (res.ok) {
                     showToast(`Welcome back, ${d.name}!`, "success");
 
-                    // Save Standard User Session
-                    localStorage.setItem("ths_token", d.token);
-                    localStorage.setItem("ths_uid", d.unique_id);
-                    localStorage.setItem("ths_name", d.name);
-                    localStorage.setItem("ths_email", d.email);
-                    localStorage.setItem("ths_dob", d.dob || "");
-                    localStorage.setItem("ths_mobile", d.mobile || "");
-                    localStorage.setItem("ths_role", d.role || "user");
-                    localStorage.setItem("ths_pfp", d.profile_picture || "");
-
                     // DIRECT REDIRECTION:
                     // If credentials belong to superadmin, admin, or manager -> DIRECT TO ADMIN PANEL WITH ZERO EXTRA LAYER!
                     const isAdmin = d.role === "superadmin" || d.role === "admin" || d.role === "manager" || d.redirect_url === "admin.html";
                     if (isAdmin) {
-                        localStorage.setItem("ths_admin_token", d.token);
-                        localStorage.setItem("ths_admin_name", d.name);
-                        localStorage.setItem("ths_admin_email", d.email);
-                        localStorage.setItem("ths_admin_role", d.role);
-                        localStorage.setItem("ths_admin_pfp", d.profile_picture || "");
+                        // Admin user: Store in sessionStorage ONLY so Admin must log in every time the site is opened fresh
+                        // Never persist Admin session in permanent localStorage
+                        localStorage.removeItem("ths_token");
+                        localStorage.removeItem("ths_uid");
+                        localStorage.removeItem("ths_name");
+                        localStorage.removeItem("ths_email");
+                        localStorage.removeItem("ths_role");
+                        localStorage.removeItem("ths_admin_token");
+                        localStorage.removeItem("ths_admin_name");
+                        localStorage.removeItem("ths_admin_email");
+                        localStorage.removeItem("ths_admin_role");
+                        localStorage.removeItem("ths_admin_pfp");
+
+                        sessionStorage.setItem("ths_admin_token", d.token);
+                        sessionStorage.setItem("ths_admin_name", d.name);
+                        sessionStorage.setItem("ths_admin_email", d.email);
+                        sessionStorage.setItem("ths_admin_role", d.role);
+                        sessionStorage.setItem("ths_admin_pfp", d.profile_picture || "");
                         
                         setTimeout(() => {
                             window.location.href = "admin.html";
                         }, 250);
                     } else {
-                        // Normal user -> DIRECT TO MAIN PORTAL PAGE (index.html)
+                        // Normal user: Save in localStorage so normal user stays logged in
+                        localStorage.setItem("ths_token", d.token);
+                        localStorage.setItem("ths_uid", d.unique_id);
+                        localStorage.setItem("ths_name", d.name);
+                        localStorage.setItem("ths_email", d.email);
+                        localStorage.setItem("ths_dob", d.dob || "");
+                        localStorage.setItem("ths_mobile", d.mobile || "");
+                        localStorage.setItem("ths_role", d.role || "user");
+                        localStorage.setItem("ths_pfp", d.profile_picture || "");
+
+                        // Clear any admin keys
+                        sessionStorage.clear();
+                        localStorage.removeItem("ths_admin_token");
+                        localStorage.removeItem("ths_admin_role");
+
                         setTimeout(() => {
                             window.location.href = "index.html";
                         }, 250);
@@ -270,22 +287,21 @@
                 console.warn("Backend connectivity issue", err);
                 // Emergency evaluation fallback for super admin credentials if network drops
                 if (id === "sayan@superadmin.com" && pwd === "SuperAdmin@123") {
-                    localStorage.setItem("ths_admin_token", "demo_admin_token_sih2026");
-                    localStorage.setItem("ths_admin_name", "Sayan Chakraborty (Super Admin)");
-                    localStorage.setItem("ths_admin_email", id);
-                    localStorage.setItem("ths_admin_role", "superadmin");
-                    localStorage.setItem("ths_token", "demo_admin_token_sih2026");
-                    localStorage.setItem("ths_name", "Sayan Chakraborty");
-                    localStorage.setItem("ths_email", id);
-                    localStorage.setItem("ths_role", "superadmin");
-                    showToast("Offline Admin Mode Unlocked", "info");
+                    localStorage.removeItem("ths_admin_token");
+                    localStorage.removeItem("ths_token");
+                    localStorage.removeItem("ths_role");
+                    sessionStorage.setItem("ths_admin_token", "demo_admin_token_sih2026");
+                    sessionStorage.setItem("ths_admin_name", "Sayan Chakraborty (Super Admin)");
+                    sessionStorage.setItem("ths_admin_email", id);
+                    sessionStorage.setItem("ths_admin_role", "superadmin");
+                    showToast("Admin Mode Unlocked", "info");
                     setTimeout(() => { window.location.href = "admin.html"; }, 300);
                 } else if (id === "sayan2008c@gmail.com" && pwd === "Sayan123") {
                     localStorage.setItem("ths_token", "demo_user_token_sih2026");
                     localStorage.setItem("ths_name", "Sayan Chakraborty");
                     localStorage.setItem("ths_email", id);
                     localStorage.setItem("ths_role", "user");
-                    showToast("Offline User Portal Unlocked", "info");
+                    showToast("User Portal Unlocked", "info");
                     setTimeout(() => { window.location.href = "index.html"; }, 300);
                 } else {
                     showToast("Could not reach API server. Please verify backend status.", "error");
@@ -336,6 +352,29 @@
                 btn.disabled = false;
             }
         }
+
+        // On Page Load:
+        // 1. Admin MUST log in every time! Wipe any lingering admin keys from storage.
+        // 2. Normal users stay logged in (redirect to index.html).
+        window.addEventListener("DOMContentLoaded", () => {
+            localStorage.removeItem("ths_admin_token");
+            localStorage.removeItem("ths_admin_name");
+            localStorage.removeItem("ths_admin_email");
+            localStorage.removeItem("ths_admin_role");
+            localStorage.removeItem("ths_admin_pfp");
+            sessionStorage.removeItem("ths_admin_token");
+            sessionStorage.removeItem("ths_admin_name");
+            sessionStorage.removeItem("ths_admin_email");
+            sessionStorage.removeItem("ths_admin_role");
+            sessionStorage.removeItem("ths_admin_pfp");
+
+            const token = localStorage.getItem("ths_token");
+            const role = localStorage.getItem("ths_role");
+            if (token && role === "user") {
+                // Normal user has valid persistent session
+                window.location.replace("index.html");
+            }
+        });
     </script>
 </body>
 </html>

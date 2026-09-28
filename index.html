@@ -112,7 +112,7 @@
                     <a href="#" onclick="openPasswordModal()" class="flex items-center px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-key w-6 text-amber-500"></i> Change Password</a>
                     <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
                     <a href="admin.html" id="dropdown-admin-link" class="hidden flex items-center px-4 py-2.5 text-xs font-bold text-teal-600 dark:text-neonTeal hover:bg-teal-50 dark:hover:bg-teal-950/40 transition"><i class="fa-solid fa-shield-halved w-6 text-teal-600 dark:text-neonTeal"></i> Admin Suite</a>
-                    <a href="#" onclick="logout()" class="flex items-center px-4 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition"><i class="fa-solid fa-right-from-bracket w-6"></i> Logout</a>
+                    <button type="button" onclick="logout(event)" class="w-full text-left flex items-center px-4 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition cursor-pointer"><i class="fa-solid fa-right-from-bracket w-6"></i> Logout</button>
                 </div>
             </div>
         </div>
@@ -651,19 +651,28 @@
         window.onload = () => {
             window.initTheme();
             const token = localStorage.getItem("ths_token");
-            if (!token) {
-                // Not authenticated -> redirect to login page directly
-                window.location.href = "login.html";
+            const role = localStorage.getItem("ths_role") || "user";
+
+            // If not logged in, or if an admin session was lingering:
+            // "Admin should login every time. for normal users its ojk"
+            if (!token || role === "superadmin" || role === "admin" || role === "manager") {
+                if (role === "superadmin" || role === "admin" || role === "manager") {
+                    localStorage.removeItem("ths_token");
+                    localStorage.removeItem("ths_role");
+                    localStorage.removeItem("ths_admin_token");
+                    localStorage.removeItem("ths_admin_role");
+                }
+                window.location.replace("login.html");
                 return;
             }
 
-            // Populate active user session data
+            // Normal user session:
             currentUser.unique_id = localStorage.getItem("ths_uid") || "THS-USER";
             currentUser.email = localStorage.getItem("ths_email") || "";
             currentUser.name = localStorage.getItem("ths_name") || "User";
             currentUser.dob = localStorage.getItem("ths_dob") || "";
             currentUser.mobile = localStorage.getItem("ths_mobile") || "";
-            currentUser.role = localStorage.getItem("ths_role") || "user";
+            currentUser.role = role;
             currentUser.profile_picture = localStorage.getItem("ths_pfp") || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=7ae2d5&color=20263f`;
             currentUser.token = token;
 
@@ -672,17 +681,11 @@
             if (nameElem) nameElem.innerText = currentUser.name;
             if (pfpElem) pfpElem.src = currentUser.profile_picture;
 
-            // Only display Admin Suite button for authorized roles
-            const isAdmin = currentUser.role === 'superadmin' || currentUser.role === 'admin' || currentUser.role === 'manager';
+            // Normal users never see admin buttons
             const navAdmin = document.getElementById('btn-nav-admin');
             const dropAdmin = document.getElementById('dropdown-admin-link');
-            if (isAdmin) {
-                if (navAdmin) navAdmin.classList.remove('hidden');
-                if (dropAdmin) dropAdmin.classList.remove('hidden');
-            } else {
-                if (navAdmin) navAdmin.classList.add('hidden');
-                if (dropAdmin) dropAdmin.classList.add('hidden');
-            }
+            if (navAdmin) navAdmin.classList.add('hidden');
+            if (dropAdmin) dropAdmin.classList.add('hidden');
 
             window.goHome();
         };
@@ -705,18 +708,14 @@
             if (window.activeWorkspace === 'Text2Sign') window.drawAvatar();
         };
 
-        window.logout = function() {
-            window.stopCamera();
-            localStorage.removeItem("ths_token");
-            localStorage.removeItem("ths_uid");
-            localStorage.removeItem("ths_name");
-            localStorage.removeItem("ths_email");
-            localStorage.removeItem("ths_role");
-            localStorage.removeItem("ths_dob");
-            localStorage.removeItem("ths_mobile");
-            localStorage.removeItem("ths_pfp");
+        function logout(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            try { window.stopCamera(); } catch(err) {}
+            localStorage.clear();
+            sessionStorage.clear();
             window.location.href = "login.html";
-        };
+        }
+        window.logout = logout;
 
         function saveSessionUser(d) {
             localStorage.setItem("ths_uid", d.unique_id);
@@ -768,16 +767,6 @@
             mv.classList.remove('hidden');
             mv.classList.add('flex');
             window.filterHist('All');
-        };
-
-        window.logout = function() {
-            window.stopCamera();
-            localStorage.clear();
-            currentUser = { unique_id: "", email: "", name: "", dob: "", mobile: "", profile_picture: "", token: "" };
-            document.getElementById('auth-container').classList.remove('hidden');
-            document.getElementById('global-nav').classList.add('hidden');
-            document.getElementById('app-container').classList.add('hidden');
-            window.switchAuth('login');
         };
 
         // --- UTILITY HELPERS ---

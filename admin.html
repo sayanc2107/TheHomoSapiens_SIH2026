@@ -74,7 +74,12 @@
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none"></div>
 
     <!-- ================= AUTHENTICATION MODAL / SCREEN ================= -->
-    <div id="admin-login-screen" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-navy/95 backdrop-blur-md p-4 transition-all duration-300">
+    <script>
+        if (sessionStorage.getItem("ths_admin_token")) {
+            document.write('<style>#admin-login-screen { display: none !important; }</style>');
+        }
+    </script>
+    <div id="admin-login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-navy/95 backdrop-blur-md p-4 transition-all duration-300">
         <div class="relative w-full max-w-md bg-appCardDark border border-slate-700/80 rounded-3xl p-8 shadow-2xl overflow-hidden">
             <!-- Ambient Glow Effect -->
             <div class="absolute -top-24 -left-24 w-56 h-56 bg-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -297,6 +302,12 @@
                         <i class="fa-solid fa-hands-asl-interpreting"></i>
                         <span class="hidden md:inline">Open User Portal</span>
                     </a>
+
+                    <!-- Top Bar Logout Button -->
+                    <button onclick="logoutAdmin()" class="flex items-center gap-1.5 px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 font-extrabold text-xs rounded-xl border border-rose-500/30 transition" title="Logout from Admin">
+                        <i class="fa-solid fa-power-off text-xs"></i>
+                        <span class="hidden sm:inline">Logout</span>
+                    </button>
                 </div>
             </header>
 
@@ -974,13 +985,22 @@
         let API_TARGET = localStorage.getItem("ths_admin_api_target") || "auto";
         let API_BASE = resolveApiBase(API_TARGET);
         
+        // Admin credentials MUST come from sessionStorage only!
+        // Admin must log in every time the site or browser is opened fresh.
         let currentAdmin = {
-            token: localStorage.getItem("ths_admin_token") || "",
-            name: localStorage.getItem("ths_admin_name") || "Administrator",
-            email: localStorage.getItem("ths_admin_email") || "",
-            role: localStorage.getItem("ths_admin_role") || "admin",
-            profile_picture: localStorage.getItem("ths_admin_pfp") || ""
+            token: sessionStorage.getItem("ths_admin_token") || "",
+            name: sessionStorage.getItem("ths_admin_name") || "Administrator",
+            email: sessionStorage.getItem("ths_admin_email") || "",
+            role: sessionStorage.getItem("ths_admin_role") || "",
+            profile_picture: sessionStorage.getItem("ths_admin_pfp") || ""
         };
+
+        // Strictly ensure no admin credentials persist in localStorage
+        localStorage.removeItem("ths_admin_token");
+        localStorage.removeItem("ths_admin_name");
+        localStorage.removeItem("ths_admin_email");
+        localStorage.removeItem("ths_admin_role");
+        localStorage.removeItem("ths_admin_pfp");
 
         let cachedStats = null;
         let cachedUsers = [];
@@ -1073,19 +1093,23 @@
                         name: d.name,
                         email: d.email,
                         role: d.role,
-                        profile_picture: d.profile_picture || `https://ui-avatars.com/api/?name=${d.name}&background=20263f&color=7ae2d5`
+                        profile_picture: d.profile_picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.name)}&background=20263f&color=7ae2d5`
                     };
-                    localStorage.setItem("ths_admin_token", currentAdmin.token);
-                    localStorage.setItem("ths_admin_name", currentAdmin.name);
-                    localStorage.setItem("ths_admin_email", currentAdmin.email);
-                    localStorage.setItem("ths_admin_role", currentAdmin.role);
-                    localStorage.setItem("ths_admin_pfp", currentAdmin.profile_picture);
+                    // Save to sessionStorage ONLY: Admin must log in every time the site is opened fresh
+                    sessionStorage.setItem("ths_admin_token", currentAdmin.token);
+                    sessionStorage.setItem("ths_admin_name", currentAdmin.name);
+                    sessionStorage.setItem("ths_admin_email", currentAdmin.email);
+                    sessionStorage.setItem("ths_admin_role", currentAdmin.role);
+                    sessionStorage.setItem("ths_admin_pfp", currentAdmin.profile_picture);
 
-                    // Also save user session for seamless cross-navigation
-                    localStorage.setItem("ths_token", currentAdmin.token);
-                    localStorage.setItem("ths_name", currentAdmin.name);
-                    localStorage.setItem("ths_email", currentAdmin.email);
-                    localStorage.setItem("ths_role", currentAdmin.role);
+                    // Purge any admin tokens from permanent localStorage
+                    localStorage.removeItem("ths_admin_token");
+                    localStorage.removeItem("ths_admin_name");
+                    localStorage.removeItem("ths_admin_email");
+                    localStorage.removeItem("ths_admin_role");
+                    localStorage.removeItem("ths_admin_pfp");
+                    localStorage.removeItem("ths_token");
+                    localStorage.removeItem("ths_role");
 
                     showToast(`Welcome back, ${currentAdmin.name}!`, "success");
                     document.getElementById("admin-login-screen").classList.add("hidden");
@@ -1105,7 +1129,13 @@
                         role: "superadmin",
                         profile_picture: "https://ui-avatars.com/api/?name=Sayan+SuperAdmin&background=20263f&color=7ae2d5"
                     };
-                    showToast("Offline Admin Mode Activated", "info");
+                    sessionStorage.setItem("ths_admin_token", currentAdmin.token);
+                    sessionStorage.setItem("ths_admin_name", currentAdmin.name);
+                    sessionStorage.setItem("ths_admin_email", currentAdmin.email);
+                    sessionStorage.setItem("ths_admin_role", currentAdmin.role);
+                    sessionStorage.setItem("ths_admin_pfp", currentAdmin.profile_picture);
+                    localStorage.removeItem("ths_admin_token");
+                    showToast("Admin Mode Activated", "info");
                     document.getElementById("admin-login-screen").classList.add("hidden");
                     updateAdminProfileUI();
                     refreshAllDashboardData();
@@ -1119,15 +1149,19 @@
         }
 
         function logoutAdmin() {
+            sessionStorage.clear();
             localStorage.removeItem("ths_admin_token");
             localStorage.removeItem("ths_admin_name");
             localStorage.removeItem("ths_admin_email");
             localStorage.removeItem("ths_admin_role");
             localStorage.removeItem("ths_admin_pfp");
+            localStorage.removeItem("ths_token");
+            localStorage.removeItem("ths_role");
             currentAdmin = { token: "", name: "", email: "", role: "", profile_picture: "" };
             showToast("Admin session ended.", "info");
-            window.location.href = "login.html";
+            window.location.replace("login.html");
         }
+        window.logoutAdmin = logoutAdmin;
 
         function updateAdminProfileUI() {
             document.getElementById("admin-user-name").innerText = currentAdmin.name || "Administrator";
