@@ -41,7 +41,32 @@ class DatabaseProxy:
 db = DatabaseProxy()
 
 SECRET_KEY = os.getenv("SECRET_KEY", "sih2026_super_secret_key_isl_12345")
-SERVER_START_TIME = datetime.datetime.now(datetime.timezone.utc)
+
+# ==========================================
+# INDIAN STANDARD / MEAN TIME (IST, UTC+05:30)
+# ==========================================
+IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
+SERVER_START_TIME = datetime.datetime.now(IST)
+
+def get_ist_now() -> datetime.datetime:
+    """Return current timestamp in Indian Mean Time (IST, UTC+05:30)."""
+    return datetime.datetime.now(IST)
+
+def format_ist(dt: Any) -> str:
+    """Format any datetime or ISO string to Indian Mean Time (IST, UTC+05:30)."""
+    if not dt:
+        return ""
+    if isinstance(dt, datetime.datetime):
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=datetime.timezone.utc)
+        return dt.astimezone(IST).strftime("%Y-%m-%d %I:%M:%S %p IST")
+    if isinstance(dt, str):
+        try:
+            parsed = datetime.datetime.fromisoformat(dt.replace("Z", "+00:00"))
+            return parsed.astimezone(IST).strftime("%Y-%m-%d %I:%M:%S %p IST")
+        except Exception:
+            return dt
+    return str(dt)
 
 # ==========================================
 # 2. MODELS & SCHEMAS
@@ -149,7 +174,7 @@ async def log_audit_event(action: str, details: str, performed_by: str = "Admin"
             "action": action,
             "details": details,
             "performed_by": performed_by,
-            "timestamp": datetime.datetime.now(datetime.timezone.utc)
+            "timestamp": get_ist_now()
         })
     except Exception as e:
         print(f"Audit log error: {e}")
@@ -281,16 +306,24 @@ async def startup_db_init():
 # 6. STATIC / PORTAL HTML ROUTES
 # ==========================================
 @app.get("/")
-async def root():
-    return {
-        "status": "Active",
-        "message": "TheHomoSapiens Backend & Admin Suite is awake!",
-        "version": "2.4.0",
-        "portal_url": "/portal",
-        "admin_url": "/admin"
-    }
+@app.get("/login")
+@app.get("/login.html")
+async def serve_login():
+    if os.path.exists("login.html"):
+        return FileResponse("login.html")
+    if os.path.exists("index.html"):
+        return FileResponse("index.html")
+    return {"message": "login.html not found"}
+
+@app.get("/register")
+@app.get("/register.html")
+async def serve_register():
+    if os.path.exists("register.html"):
+        return FileResponse("register.html")
+    return {"message": "register.html not found"}
 
 @app.get("/portal")
+@app.get("/main")
 @app.get("/index.html")
 async def serve_portal():
     if os.path.exists("index.html"):
@@ -319,7 +352,7 @@ async def register(user: UserRegister):
     user_dict["password"] = hashed
     user_dict["role"] = "user"
     user_dict["status"] = "active"
-    user_dict["created_at"] = datetime.datetime.now(datetime.timezone.utc)
+    user_dict["created_at"] = get_ist_now()
     
     await db.users.insert_one(user_dict)
     await log_audit_event("User Registered", f"New user registered: {user.email}", performed_by=user.email)
@@ -339,13 +372,16 @@ async def login(credentials: UserLogin):
         raise HTTPException(status_code=401, detail="Invalid password.")
     
     role = db_user.get("role", "superadmin" if db_user.get("email") == "sayan@superadmin.com" else "user")
-    redirect_url = "/admin" if role in ["superadmin", "admin", "manager"] else ""
+    redirect_url = "admin.html" if role in ["superadmin", "admin", "manager"] else "index.html"
     token = jwt.encode({
         "email": db_user["email"],
         "name": db_user["name"],
         "role": role,
         "unique_id": db_user.get("unique_id", "THS-USER")
     }, SECRET_KEY, algorithm="HS256")
+
+    # Record login audit event in Indian Mean Time
+    await log_audit_event("User Login", f"{db_user['email']} logged in (Role: {role})", performed_by=db_user["email"])
 
     return {
         "token": token,
@@ -432,7 +468,7 @@ async def save_chat(chat: ChatSave):
         "email": chat.email,
         "mode_used": chat.mode_used,
         "transcript": chat.transcript,
-        "timestamp": datetime.datetime.now(datetime.timezone.utc)
+        "timestamp": get_ist_now()
     }
     await db.conversations.insert_one(doc)
     return {"message": "Conversation saved."}
@@ -444,7 +480,7 @@ async def fetch_history(email: str):
     history = []
     for r in records:
         ts = r.get("timestamp")
-        ts_str = ts.strftime("%Y-%m-%d %H:%M:%S") if isinstance(ts, datetime.datetime) else str(ts)
+        ts_str = format_ist(ts)
         history.append({
             "id": str(r["_id"]),
             "unique_id": r.get("unique_id", "THS-USER"),
@@ -809,14 +845,13 @@ async def list_admin_conversations(
     convs = []
     async for c in cursor:
         ts = c.get("timestamp")
-        ts_str = ts.strftime("%Y-%m-%d %H:%M:%S") if isinstance(ts, datetime.datetime) else str(ts or "")
         convs.append({
             "id": str(c["_id"]),
             "unique_id": c.get("unique_id", "THS-USER"),
             "email": c.get("email", "Unknown"),
             "mode_used": c.get("mode_used", "General"),
             "transcript": c.get("transcript", ""),
-            "timestamp": ts_str
+            "timestamp": format_ist(ts)
         })
 
     return {
@@ -968,7 +1003,7 @@ async def system_health():
     vocab_count = await db.vocabulary.count_documents({})
     audit_count = await db.audit_logs.count_documents({})
 
-    uptime_sec = int((datetime.datetime.now(datetime.timezone.utc) - SERVER_START_TIME).total_seconds())
+    uptime_sec = int((get_ist_now() - SERVER_START_TIME).total_seconds())
 
     return {
         "server_status": "Healthy",
@@ -988,26 +1023,26 @@ async def system_health():
         "environment": {
             "python_version": platform.python_version(),
             "os": f"{platform.system()} {platform.release()}",
-            "server_start_time": SERVER_START_TIME.strftime("%Y-%m-%d %H:%M:%S UTC")
+            "server_start_time": format_ist(SERVER_START_TIME),
+            "timezone": "Indian Mean Time (IST, UTC+05:30)"
         }
     }
 
 @app.get("/api/admin/system/audit-logs")
 async def get_audit_logs(limit: int = 50):
-    """Retrieve recent administrative actions."""
+    """Retrieve recent administrative actions formatted in Indian Mean Time (IST, UTC+05:30)."""
     cursor = db.audit_logs.find({}).sort("timestamp", -1).limit(limit)
     logs = []
     async for item in cursor:
         ts = item.get("timestamp")
-        ts_str = ts.strftime("%Y-%m-%d %H:%M:%S") if isinstance(ts, datetime.datetime) else str(ts or "")
         logs.append({
             "id": str(item["_id"]),
             "action": item.get("action", ""),
             "details": item.get("details", ""),
             "performed_by": item.get("performed_by", "System"),
-            "timestamp": ts_str
+            "timestamp": format_ist(ts)
         })
-    return {"logs": logs}
+    return {"logs": logs, "timezone": "IST (UTC+05:30)"}
 
 @app.post("/api/admin/system/audit-logs")
 async def create_audit_log(entry: AuditLogItem):

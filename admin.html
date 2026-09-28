@@ -74,7 +74,7 @@
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none"></div>
 
     <!-- ================= AUTHENTICATION MODAL / SCREEN ================= -->
-    <div id="admin-login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-navy/95 backdrop-blur-md p-4 transition-all duration-300">
+    <div id="admin-login-screen" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-navy/95 backdrop-blur-md p-4 transition-all duration-300">
         <div class="relative w-full max-w-md bg-appCardDark border border-slate-700/80 rounded-3xl p-8 shadow-2xl overflow-hidden">
             <!-- Ambient Glow Effect -->
             <div class="absolute -top-24 -left-24 w-56 h-56 bg-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -715,8 +715,13 @@
                     <div class="bg-white dark:bg-appCardDark border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
                         <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                             <div>
-                                <h3 class="font-black text-base text-slate-900 dark:text-white">Security & Audit Event Trail</h3>
-                                <p class="text-xs text-slate-400 font-medium">Chronological record of administrative operations, logins, user alterations</p>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-black text-base text-slate-900 dark:text-white">Security & Audit Event Trail</h3>
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-neonTeal border border-teal-200 dark:border-teal-800 flex items-center gap-1">
+                                        <i class="fa-solid fa-clock text-[9px]"></i> Indian Mean Time (IST UTC+05:30)
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-400 font-medium mt-0.5">Chronological record of administrative operations, logins, user alterations (Synchronized to IST)</p>
                             </div>
                             <button onclick="loadAuditLogs()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 transition">
                                 <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh
@@ -726,7 +731,7 @@
                             <table class="w-full text-left text-xs">
                                 <thead class="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 text-slate-400 font-black uppercase text-[10px] tracking-wider">
                                     <tr>
-                                        <th class="py-3 px-4">Timestamp</th>
+                                        <th class="py-3 px-4">Timestamp (IST)</th>
                                         <th class="py-3 px-4">Action</th>
                                         <th class="py-3 px-4">Details</th>
                                         <th class="py-3 px-4">Performed By</th>
@@ -1029,11 +1034,14 @@
 
         // --- AUTHENTICATION LOGIC ---
         function checkAdminAuth() {
-            if (currentAdmin.token && currentAdmin.role === "admin") {
+            const hasValidAdminRole = currentAdmin.role === "admin" || currentAdmin.role === "superadmin" || currentAdmin.role === "manager";
+            if (currentAdmin.token && hasValidAdminRole) {
+                // Instantly unlock dashboard with zero friction and no secondary modal
                 document.getElementById("admin-login-screen").classList.add("hidden");
                 updateAdminProfileUI();
                 refreshAllDashboardData();
             } else {
+                // If not logged in as admin, present authorized credentials prompt
                 document.getElementById("admin-login-screen").classList.remove("hidden");
             }
         }
@@ -1072,6 +1080,12 @@
                     localStorage.setItem("ths_admin_email", currentAdmin.email);
                     localStorage.setItem("ths_admin_role", currentAdmin.role);
                     localStorage.setItem("ths_admin_pfp", currentAdmin.profile_picture);
+
+                    // Also save user session for seamless cross-navigation
+                    localStorage.setItem("ths_token", currentAdmin.token);
+                    localStorage.setItem("ths_name", currentAdmin.name);
+                    localStorage.setItem("ths_email", currentAdmin.email);
+                    localStorage.setItem("ths_role", currentAdmin.role);
 
                     showToast(`Welcome back, ${currentAdmin.name}!`, "success");
                     document.getElementById("admin-login-screen").classList.add("hidden");
@@ -1112,7 +1126,7 @@
             localStorage.removeItem("ths_admin_pfp");
             currentAdmin = { token: "", name: "", email: "", role: "", profile_picture: "" };
             showToast("Admin session ended.", "info");
-            document.getElementById("admin-login-screen").classList.remove("hidden");
+            window.location.href = "login.html";
         }
 
         function updateAdminProfileUI() {
