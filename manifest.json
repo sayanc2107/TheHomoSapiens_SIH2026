@@ -1,15 +1,26 @@
 {
-  "name": "TheHomoSapiens ISL Translator",
-  "short_name": "ISL Translator",
+  "name": "TheHomoSapiens - ISL Sign Language Portal",
+  "short_name": "ISL App",
+  "description": "Real-Time Indian Sign Language (ISL) Recognition & Two-Way Assistive Communication Platform for SIH 2026",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0d9488",
+  "orientation": "portrait-primary",
+  "background_color": "#0F172A",
+  "theme_color": "#0D9488",
+  "categories": ["education", "accessibility", "utilities"],
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/3845/3845873.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3845/3845873.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

@@ -7,6 +7,10 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#20263f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ISL App">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3845/3845873.png">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -91,6 +95,10 @@
         </div>
 
         <div class="flex items-center gap-3 md:gap-5">
+            <button id="btn-install-pwa" onclick="installPWA()" class="hidden text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-1.5 transition" title="Install Mobile App">
+                <i class="fa-solid fa-mobile-screen"></i> <span class="hidden sm:inline">Install App</span>
+            </button>
+
             <button onclick="toggleDarkMode()" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition border border-slate-200 dark:border-slate-700" title="Toggle Light/Dark Theme">
                 <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
             </button>
@@ -117,6 +125,23 @@
             </div>
         </div>
     </nav>
+ 
+    <!-- ================= MOBILE APP INSTALL BANNER ================= -->
+    <div id="mobile-install-banner" class="hidden fixed bottom-14 left-3 right-3 md:left-auto md:right-6 md:w-96 bg-slate-900/95 dark:bg-slate-800/95 text-white p-3.5 rounded-2xl shadow-2xl border border-teal-500/60 backdrop-blur-md flex items-center justify-between z-50 transition-all duration-300">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center text-white text-lg shadow-md flex-shrink-0">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+            </div>
+            <div class="leading-tight">
+                <div class="text-xs font-bold text-white">Use as Mobile App</div>
+                <div class="text-[10px] text-slate-300">Install to your home screen for full-screen camera view</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+            <button onclick="installPWA()" class="px-3 py-1.5 bg-teal-500 hover:bg-teal-400 text-slate-950 font-black text-xs rounded-lg shadow transition">Install</button>
+            <button onclick="dismissMobileBanner()" class="text-slate-400 hover:text-white text-sm px-1.5 py-1" title="Dismiss"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
 
     <!-- ================= DASHBOARD MAIN APPLICATION ================= -->
     <main id="app-container" class="flex flex-grow w-full max-w-7xl mx-auto flex flex-col p-4 md:p-6 gap-6">
@@ -1208,6 +1233,58 @@
             a.download = `ISL_Export_${Date.now()}.${format.toLowerCase()}`;
             a.click();
         };
+
+        // --- PWA SERVICE WORKER & MOBILE APP INSTALL LOGIC ---
+        let deferredPrompt = null;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.getElementById('btn-install-pwa');
+            if (btn) btn.classList.remove('hidden');
+
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const banner = document.getElementById('mobile-install-banner');
+            if (banner && isMobile && !sessionStorage.getItem('dismiss_install')) {
+                banner.classList.remove('hidden');
+            }
+        });
+
+        window.installPWA = async function() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const choice = await deferredPrompt.userChoice;
+                if (choice.outcome === 'accepted') {
+                    console.log('Mobile PWA installed');
+                }
+                deferredPrompt = null;
+                const btn = document.getElementById('btn-install-pwa');
+                if (btn) btn.classList.add('hidden');
+                const banner = document.getElementById('mobile-install-banner');
+                if (banner) banner.classList.add('hidden');
+            } else {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (isIOS) {
+                    alert("To install on iOS:\n1. Tap the Share button (square with arrow up)\n2. Scroll down and tap 'Add to Home Screen' (+)");
+                } else {
+                    alert("To install on Android:\n1. Tap browser menu (three dots in top right)\n2. Tap 'Install app' or 'Add to Home Screen'");
+                }
+            }
+        };
+
+        window.dismissMobileBanner = function() {
+            const banner = document.getElementById('mobile-install-banner');
+            if (banner) banner.classList.add('hidden');
+            sessionStorage.setItem('dismiss_install', 'true');
+        };
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('PWA ServiceWorker registered:', reg.scope))
+                    .catch(err => console.log('PWA ServiceWorker registration failed:', err));
+            });
+        }
     </script>
 </body>
 </html>

@@ -58,11 +58,14 @@ The system translates **ISL gestures to text/speech (Sign-to-Text/Voice)** and c
 ### **Audio & Accessibility**
 - **Web Speech API (`SpeechSynthesis`)** – In-browser voice synthesis.
 - **Pyttsx3** – Offline text-to-speech engine for desktop applications.
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---
+
 ## 📂 Project Architecture
 
 ```text
 TheHomoSapiens_SIH2026/
+├── android_app/            # Standalone Native Android Mobile App (Gradle/Java)
 ├── index.html              # Main user portal & live camera ISL recognition
 ├── login.html              # Secure member authentication interface
 ├── register.html           # New user registration portal
@@ -76,6 +79,14 @@ TheHomoSapiens_SIH2026/
 ├── models/                 # Serialized model weights & class dictionaries
 └── requirements.txt        # Python backend & ML dependencies
 ```
+
+---
+
+## 📱 Standalone Mobile App (Android APK)
+The project now includes a **Native Android Application** located in the `android_app/` directory:
+- **Zero-Friction Camera Access**: Bypasses browser restrictions by natively granting camera and audio capture via hardware acceleration.
+- **Native Android Bridge**: Integrates native Android Text-to-Speech (TTS), haptic vibrations, and toast alerts.
+- **Easy Compilation**: Open `android_app/` in Android Studio or push to GitHub to trigger the automated `.github/workflows/build_apk.yml` workflow for a downloadable `.apk` file!
 
 ---
 
