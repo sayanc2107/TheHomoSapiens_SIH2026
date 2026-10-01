@@ -337,6 +337,18 @@ async def serve_admin():
         return FileResponse("admin.html")
     return {"message": "admin.html not found"}
 
+@app.get("/manifest.json")
+async def serve_manifest():
+    if os.path.exists("manifest.json"):
+        return FileResponse("manifest.json", media_type="application/manifest+json")
+    return {"message": "manifest.json not found"}
+
+@app.get("/sw.js")
+async def serve_sw():
+    if os.path.exists("sw.js"):
+        return FileResponse("sw.js", media_type="application/javascript")
+    return {"message": "sw.js not found"}
+
 @app.get("/hand_landmarker.task")
 async def serve_hand_landmarker_task():
     if os.path.exists("hand_landmarker.task"):

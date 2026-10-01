@@ -10,6 +10,14 @@ env/
 # Downloaded AI Models (The code downloads this automatically, no need to push it)
 gesture_recognizer.task
 
+# Android & Gradle
+.gradle/
+**/android_app/.gradle/
+**/android_app/build/
+**/android_app/app/build/
+*.iml
+.idea/
+
 # OS generated files
 .DS_Store
 Thumbs.db
